@@ -372,7 +372,7 @@ body{transition:background var(--t),color var(--t);}
   transition:color .2s,transform .2s;
 }
 .hero-socials a:hover{color:#a5b4fc;transform:translateY(-2px);}
-.hero-socials img{width:20px;height:20px;opacity:.4;transition:opacity .2s,transform .2s;}
+.hero-socials img{width:28px;height:28px;object-fit:contain;opacity:.45;transition:opacity .2s,transform .2s;}
 .hero-socials a:hover img{opacity:1;transform:translateY(-2px);}
 
 /* Scroll indicator */
