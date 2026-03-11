@@ -90,15 +90,13 @@ function initGalaxy() {
 
 /* ── 2. THEME ── */
 function initTheme(){
-  const t  = document.getElementById('theme-toggle');
-  const ts = document.getElementById('theme-toggle-sidebar');
+  const t = document.getElementById('theme-toggle');
   if(!t) return;
   const saved = localStorage.getItem('theme');
   const systemDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
   const theme = saved || (systemDark ? 'dark' : 'light');
   document.body.setAttribute('data-theme', theme);
-  t.checked  = (theme === 'dark');
-  if(ts) ts.checked = (theme === 'dark');
+  t.checked = (theme === 'dark');
   // Sync galaxy with initial theme
   theme === 'dark' ? _galaxyCtrl?.start() : _galaxyCtrl?.stop();
 
@@ -106,12 +104,10 @@ function initTheme(){
     const th = dark ? 'dark' : 'light';
     document.body.setAttribute('data-theme', th);
     localStorage.setItem('theme', th);
-    t.checked  = dark;
-    if(ts) ts.checked = dark;
+    t.checked = dark;
     dark ? _galaxyCtrl?.start() : _galaxyCtrl?.stop();
   }
   t.addEventListener('change', ()=>applyTheme(t.checked));
-  ts?.addEventListener('change', ()=>applyTheme(ts.checked));
 
   // React to OS-level colour scheme changes (only when user hasn't set a manual preference)
   window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener('change', e=>{
@@ -281,13 +277,14 @@ function initHeader(){
   },100),{passive:true});
 
   // ── Sidebar open/close ──
+  let _sidebarScroll = 0;
   function openSidebar(){
+    _sidebarScroll = window.scrollY;
     sidebar?.classList.add('open');
     backdrop?.classList.add('open');
     sidebar?.setAttribute('aria-hidden','false');
     menuBtn?.setAttribute('aria-expanded','true');
     document.body.classList.add('sidebar-open');
-    // Focus first link for keyboard users
     sidebar?.querySelector('.sidebar-link')?.focus();
   }
   function closeSidebar(){
@@ -296,6 +293,7 @@ function initHeader(){
     sidebar?.setAttribute('aria-hidden','true');
     menuBtn?.setAttribute('aria-expanded','false');
     document.body.classList.remove('sidebar-open');
+    window.scrollTo(0, _sidebarScroll);
     menuBtn?.focus();
   }
 
@@ -303,9 +301,16 @@ function initHeader(){
   closeBtn?.addEventListener('click', closeSidebar);
   backdrop?.addEventListener('click', closeSidebar);
 
-  // Close on nav-link click
+  // Close on nav-link click — restore scroll first so anchor navigates from saved position
   sidebar?.querySelectorAll('.sidebar-link').forEach(a=>{
-    a.addEventListener('click', closeSidebar);
+    a.addEventListener('click', ()=>{
+      sidebar?.classList.remove('open');
+      backdrop?.classList.remove('open');
+      sidebar?.setAttribute('aria-hidden','true');
+      menuBtn?.setAttribute('aria-expanded','false');
+      document.body.classList.remove('sidebar-open');
+      window.scrollTo(0, _sidebarScroll);
+    });
   });
 
   // Escape key
