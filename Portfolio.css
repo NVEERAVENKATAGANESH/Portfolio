@@ -129,8 +129,7 @@ body[data-theme="dark"] #site-header{box-shadow:0 2px 20px rgba(0,0,0,.4)}
 .sidebar-socials{display:flex;gap:1rem;padding:.75rem 1.5rem;}
 .sidebar-socials a{color:var(--text-muted);font-size:1.25rem;text-decoration:none;transition:color var(--t),transform var(--t);}
 .sidebar-socials a:hover{color:var(--primary);transform:translateY(-2px);}
-.sidebar-theme-row{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.5rem;}
-.sidebar-theme-label{font-size:.85rem;color:var(--text-muted);font-weight:500;}
+
 /* Prevent body scroll when sidebar is open */
 body.sidebar-open{overflow:hidden;}
 
