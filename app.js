@@ -824,10 +824,10 @@ function initHashSync(){
 /* ── 20. HERO SPHERE (Three.js wireframe) ── */
 function initHeroSphere(){
   const container = document.getElementById('heroSphere');
-  if(!container || typeof THREE === 'undefined' || window.innerWidth < 992) return;
+  if(!container || typeof THREE === 'undefined') return;
 
-  const W = container.offsetWidth  || 420;
-  const H = container.offsetHeight || 420;
+  const W = container.offsetWidth  || 280;
+  const H = container.offsetHeight || 260;
 
   // Scene + camera
   const scene  = new THREE.Scene();
@@ -898,8 +898,6 @@ function initHeroSphere(){
 
   // Resize
   const onResize = () => {
-    if(window.innerWidth < 992){ renderer.domElement.style.display='none'; return; }
-    renderer.domElement.style.display='';
     const w = container.offsetWidth;
     const h = container.offsetHeight;
     camera.aspect = w / h;
