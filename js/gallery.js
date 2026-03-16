@@ -475,7 +475,8 @@ document.addEventListener('DOMContentLoaded', () => {
     gridBtn.addEventListener('click',  () => setViewMode('grid'));
 
     // ── INIT ──
-    document.getElementById('footerYear')?.textContent = new Date().getFullYear();
+    const _fyEl = document.getElementById('footerYear');
+    if (_fyEl) _fyEl.textContent = new Date().getFullYear();
     updateCounters();
     renderThumbnails();
     showPreview(true);
