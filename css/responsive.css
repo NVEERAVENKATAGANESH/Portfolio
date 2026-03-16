@@ -207,17 +207,27 @@
   .row{--bs-gutter-x:.75rem;}
 }
 
-/* ── Touch — remove hover transforms that feel broken on tap ── */
+/* ── Touch — no lift/scale transforms on tap, but keep the glow ── */
 @media(hover:none) and (pointer:coarse){
-  .skill-card:hover{transform:none!important;box-shadow:var(--shadow-card)!important;}
-  .project-card .card:hover{transform:none!important;box-shadow:var(--shadow-card)!important;outline:none!important;}
-  .achievement-card:hover{transform:none!important;box-shadow:var(--shadow-card)!important;}
-  .testimonial-card:hover{transform:none!important;box-shadow:var(--shadow-card)!important;}
-  .btn-about-cta:hover{transform:none!important;}
-  .hero-btn-primary:hover,.hero-btn-ghost:hover{transform:none!important;}
-  /* Tap highlight colours instead */
-  .skill-card:active{border-color:rgba(99,102,241,.5);box-shadow:0 0 0 2px rgba(99,102,241,.2);}
-  .project-card .card:active{border-color:rgba(79,70,229,.4);}
+  .skill-card:hover,.project-card .card:hover,.achievement-card:hover,.testimonial-card:hover{
+    transform:none!important;outline:none!important;
+  }
+  .btn-about-cta:hover,.hero-btn-primary:hover,.hero-btn-ghost:hover{transform:none!important;}
+  /* Full left-border glow on tap (same as desktop hover, no transform) */
+  .skill-card:active,
+  .achievement-card:active,
+  .testimonial-card:active{
+    border-left-color:#4f46e5;
+    border-color:rgba(99,102,241,.5);
+    box-shadow:-4px 0 20px rgba(99,102,241,.35),0 12px 40px rgba(99,102,241,.35),0 0 0 1px rgba(99,102,241,.3);
+  }
+  .project-card .card:active{
+    border-left-color:#4f46e5;
+    border-color:rgba(99,102,241,.5);
+    box-shadow:-4px 0 20px rgba(99,102,241,.35),0 12px 40px rgba(99,102,241,.35),0 0 0 1px rgba(99,102,241,.3);
+  }
+  /* Ensure card containers don't clip the left glow */
+  .project-card{overflow:visible;}
 }
 
 /* ── Sidebar links — larger tap targets ── */
