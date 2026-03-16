@@ -34,6 +34,12 @@
   <link rel="manifest" href="manifest.webmanifest"/>
   <meta name="theme-color" content="#4f46e5"/>
 
+  <!-- Resource hints -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+
   <!-- Dark-mode flash prevention — must run before body renders -->
   <script>(function(){var t=localStorage.getItem('theme');if(t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.setAttribute('data-theme','dark');})()</script>
 
@@ -45,7 +51,6 @@
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
   <link rel="stylesheet" href="css/components.css" />
-  <link rel="stylesheet" href="css/animations.css" />
   <link rel="stylesheet" href="css/responsive.css" />
 
   <style>
@@ -179,8 +184,8 @@
       box-shadow: 0 8px 32px rgba(0,0,0,0.12);
     }
     /* Fade transition for preview */
-    #previewMedia.fading { opacity: 0; transition: opacity 0.18s ease; }
-    #previewMedia.visible { opacity: 1; transition: opacity 0.22s ease; }
+    #previewMedia.fading { opacity: 0; transition: opacity var(--transition); }
+    #previewMedia.visible { opacity: 1; transition: opacity var(--transition); }
 
     /* Prev / Next overlay arrows */
     .preview-nav {
@@ -274,7 +279,7 @@
       display: block;
       transition: transform 0.3s ease;
     }
-    .thumb:hover { border-color: var(--accent); transform: translateX(-2px); }
+    .thumb:hover { border-color: var(--primary); transform: translateX(-2px); }
     .thumb:hover img { transform: scale(1.05); }
     .thumb.active { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(79,70,229,0.25); }
     .thumb:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
@@ -364,9 +369,8 @@
       align-items: center;
       justify-content: center;
       padding: 1rem;
-      animation: lbIn 0.22s ease;
     }
-    #lightbox.open { display: flex; }
+    #lightbox.open { display: flex; animation: lbIn 0.22s ease; }
     @keyframes lbIn {
       from { opacity: 0; transform: scale(0.95); }
       to   { opacity: 1; transform: scale(1); }
@@ -565,17 +569,18 @@
 </head>
 <body><script>(function(){var t=document.documentElement.getAttribute('data-theme');if(t)document.body.setAttribute('data-theme',t);})()</script>
 
-  <!-- nav injected by buildNav() in app.js — edit nav links/structure there -->
+  <!-- nav injected by buildNav() in js/nav.js — edit nav links/structure there -->
   <div id="nav-root"></div>
 
+  <main id="main-content">
   <h1 class="visually-hidden">Gallery — Photos &amp; Videos</h1>
 
   <!-- ── TOOLBAR ── -->
   <div class="gallery-toolbar">
     <div class="view-pills" id="filterPills" role="group" aria-label="Filter media type">
-      <button type="button" class="view-pill active" data-filter="all">All</button>
-      <button type="button" class="view-pill" data-filter="photo"><i class="fas fa-image" aria-hidden="true"></i> Photos</button>
-      <button type="button" class="view-pill" data-filter="video"><i class="fas fa-video" aria-hidden="true"></i> Videos</button>
+      <button type="button" class="view-pill active" data-filter="all" aria-pressed="true">All</button>
+      <button type="button" class="view-pill" data-filter="photo" aria-pressed="false"><i class="fas fa-image" aria-hidden="true"></i> Photos</button>
+      <button type="button" class="view-pill" data-filter="video" aria-pressed="false"><i class="fas fa-video" aria-hidden="true"></i> Videos</button>
     </div>
     <span class="item-counter" id="itemCounter">
       <strong id="visibleCount">0</strong> / <span id="totalCount">0</span> items
@@ -653,7 +658,7 @@
   <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <!-- main.js shared first (nav, theme, header), then gallery JS -->
-  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </main>
   <script defer src="js/main.js"></script>
   <script defer src="js/theme.js"></script>
   <script defer src="js/nav.js"></script>

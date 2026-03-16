@@ -8,10 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
       { type:'photo', src:'images/NASA-SAC.jpg',               alt:'NASA Space Apps Challenge' },
       { type:'photo', src:'images/Ganesh.jpg',                 alt:'Admiration Day' },
       { type:'photo', src:'images/IMG20220805181152.jpg',       alt:'August 15 Event' },
-      { type:'video', src:'images/HACK%20SUMMIT%203.0%20Teaser.mp4',
-        poster:'images/_DSC0024.jpg',                          alt:'Hack Summit 3.0 Teaser' },
-      { type:'video', src:'images/Hack%20Summit%203.0.mp4',
-        poster:'images/Aaruush%2022%20backdrop.png',           alt:'Hack Summit 3.0 After Movie' }
+      { type:'youtube', ytId:'gNVA7PGJWEg', alt:'Hack Summit 3.0 Teaser' },
+      { type:'youtube', ytId:'9JQ1v5sp870', alt:'Hack Summit 3.0 After Movie' }
     ];
 
     // ── STATE ──
@@ -20,22 +18,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let viewMode          = 'split'; // 'split' | 'grid'
     let slideshowOn       = false;
     let slideshowInterval = 4000;    // ms per slide
-    let slideshowElapsed  = 0;
     let slideshowTick     = null;
 
     // ── HELPERS ──
-    const filtered = () => items.filter(i => filterType === 'all' || i.type === filterType);
+    const filtered = () => items.filter(i => {
+      if (filterType === 'all') return true;
+      if (filterType === 'video') return i.type === 'video' || i.type === 'youtube';
+      return i.type === filterType;
+    });
     const clamp    = (idx, list) => ((idx % list.length) + list.length) % list.length;
 
-    function localShowToast(msg) {
-      const t = document.getElementById('toast');
-      if (!t) return;
-      t.textContent = msg;
-      t.classList.add('show');
-      clearTimeout(t._hide);
-      t._hide = setTimeout(() => t.classList.remove('show'), 2200);
-    }
-    const showToast = (msg, dur) => typeof window.showToast === 'function' ? window.showToast(msg) : localShowToast(msg);
+    const showToast = (msg, dur) => typeof window.showToast === 'function' ? window.showToast(msg) : undefined;
 
     // ── COUNTER ELEMENTS ──
     const visibleCountEl = document.getElementById('visibleCount');
@@ -52,19 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const thumbsEl = document.getElementById('thumbsContainer');
 
     function renderThumbnails() {
-      // Show skeletons first
       thumbsEl.innerHTML = '';
       const list = filtered();
-      list.forEach((_, i) => {
-        const skel = document.createElement('div');
-        skel.className = 'thumb-skeleton';
-        thumbsEl.appendChild(skel);
-      });
-
-      // Replace with real thumbs after micro delay (simulate lazy)
-      setTimeout(() => {
-        thumbsEl.innerHTML = '';
-        list.forEach((item, idx) => {
+      list.forEach((item, idx) => {
           const div = document.createElement('div');
           div.className = 'thumb';
           div.dataset.idx = idx;
@@ -79,11 +62,16 @@ document.addEventListener('DOMContentLoaded', () => {
           const img = document.createElement('img');
           img.loading = 'lazy';
           img.alt = item.alt;
-          img.src = item.type === 'photo' ? item.src : (item.poster || '');
+          img.src = item.type === 'photo'
+            ? item.src
+            : item.type === 'youtube'
+              ? `https://img.youtube.com/vi/${item.ytId}/hqdefault.jpg`
+              : (item.poster || '');
 
-          if (item.type === 'video') {
+          if (item.type === 'video' || item.type === 'youtube') {
             const overlay = document.createElement('div');
             overlay.className = 'play-icon';
+            overlay.setAttribute('aria-label', `Play video: ${item.alt}`);
             overlay.innerHTML = '<i class="fas fa-play-circle" aria-hidden="true"></i>';
             div.appendChild(overlay);
           }
@@ -106,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
           thumbsEl.appendChild(div);
         });
         highlightThumb();
-      }, 60);
     }
 
     function highlightThumb() {
@@ -137,9 +124,11 @@ document.addEventListener('DOMContentLoaded', () => {
       currentIndex = clamp(currentIndex, list);
       const item = list[currentIndex];
 
-      // Pause any playing video first
+      // Pause/stop any playing media first
       const oldVid = previewMedia.querySelector('video');
       if (oldVid) oldVid.pause();
+      const oldFrame = previewMedia.querySelector('iframe');
+      if (oldFrame) oldFrame.src = '';  // stops YouTube
 
       const doRender = () => {
         previewMedia.innerHTML = '';
@@ -153,6 +142,14 @@ document.addEventListener('DOMContentLoaded', () => {
           };
           img.addEventListener('click', () => openLightbox(currentIndex));
           previewMedia.appendChild(img);
+        } else if (item.type === 'youtube') {
+          const iframe = document.createElement('iframe');
+          iframe.src = `https://www.youtube.com/embed/${item.ytId}?rel=0`;
+          iframe.title = item.alt;
+          iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+          iframe.allowFullscreen = true;
+          iframe.style.cssText = 'width:100%;height:100%;min-height:320px;border:none;border-radius:var(--radius-sm);';
+          previewMedia.appendChild(iframe);
         } else {
           const vid = document.createElement('video');
           vid.src = item.src;
@@ -180,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const total = list.length;
       captionCounter.textContent = `${currentIndex + 1} / ${total}`;
       captionText.textContent    = item.alt || '';
-      captionType.textContent    = item.type === 'video' ? 'Video' : 'Photo';
+      captionType.textContent    = item.type === 'photo' ? 'Photo' : 'YouTube';
       mobileCounter.textContent  = `${currentIndex + 1} / ${total}`;
       currentCaptionEl.textContent = item.alt;
 
@@ -207,20 +204,18 @@ document.addEventListener('DOMContentLoaded', () => {
         div.setAttribute('tabindex', '0');
         div.setAttribute('aria-label', `Open ${item.alt}`);
 
+        const img = document.createElement('img');
+        img.alt = item.alt;
+        img.loading = 'lazy';
         if (item.type === 'photo') {
-          const img = document.createElement('img');
           img.src = item.src;
-          img.alt = item.alt;
-          img.loading = 'lazy';
-          img.onerror = () => img.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="120"><rect fill="%23334155" width="200" height="120"/></svg>';
-          div.appendChild(img);
+          img.onerror = () => { img.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="120"><rect fill="%23334155" width="200" height="120"/></svg>'; };
+        } else if (item.type === 'youtube') {
+          img.src = `https://img.youtube.com/vi/${item.ytId}/hqdefault.jpg`;
         } else {
-          const img = document.createElement('img');
           img.src = item.poster || '';
-          img.alt = item.alt;
-          img.loading = 'lazy';
-          div.appendChild(img);
         }
+        div.appendChild(img);
 
         const overlay = document.createElement('div');
         overlay.className = 'grid-overlay';
@@ -250,6 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let lbIndex = 0;
 
     let _lbOpener = null;
+    let _lbFocusables = [];
     function openLightbox(idx) {
       _lbOpener = document.activeElement;
       lbIndex = idx;
@@ -257,12 +253,15 @@ document.addEventListener('DOMContentLoaded', () => {
       lightbox.classList.add('open');
       document.body.style.overflow = 'hidden';
       document.getElementById('lbClose')?.focus({ preventScroll: true });
+      _lbFocusables = Array.from(lightbox.querySelectorAll('button:not([disabled]),a[href],[tabindex="0"]')).filter(el => el.offsetParent !== null);
     }
 
     function closeLightbox() {
-      // Pause lightbox video if playing
+      // Stop video/iframe on close
       const v = lbContent.querySelector('video');
       if (v) v.pause();
+      const fr = lbContent.querySelector('iframe');
+      if (fr) fr.src = '';   // stops YouTube playback
       lightbox.classList.remove('open');
       document.body.style.overflow = '';
       _lbOpener?.focus();
@@ -285,6 +284,14 @@ document.addEventListener('DOMContentLoaded', () => {
         img.src = item.src;
         img.alt = item.alt;
         lbContent.appendChild(img);
+      } else if (item.type === 'youtube') {
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube.com/embed/${item.ytId}?autoplay=1&rel=0`;
+        iframe.title = item.alt;
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        iframe.allowFullscreen = true;
+        iframe.style.cssText = 'width:min(90vw,960px);height:min(54vw,540px);border:none;border-radius:.75rem;';
+        lbContent.appendChild(iframe);
       } else {
         const vid = document.createElement('video');
         vid.src = item.src;
@@ -305,9 +312,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Focus trap — keep keyboard focus inside lightbox while open
     lightbox.addEventListener('keydown', e => {
       if (e.key !== 'Tab' || !lightbox.classList.contains('open')) return;
-      const focusable = Array.from(lightbox.querySelectorAll('button:not([disabled]),a[href],[tabindex="0"]')).filter(el => el.offsetParent !== null);
-      if (!focusable.length) return;
-      const first = focusable[0], last = focusable[focusable.length - 1];
+      if (!_lbFocusables.length) return;
+      const first = _lbFocusables[0], last = _lbFocusables[_lbFocusables.length - 1];
       if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
       else            { if (document.activeElement === last)  { e.preventDefault(); first.focus(); } }
     });
@@ -342,15 +348,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('mobileNext').addEventListener('click', () => navigate(1));
 
     // ── SWIPE SUPPORT ──
-    let touchStartX = 0, touchStartY = 0;
+    let touchStartX = 0, touchStartY = 0, _touchStartTime = 0;
     previewMedia.addEventListener('touchstart', e => {
       touchStartX = e.touches[0].clientX;
       touchStartY = e.touches[0].clientY;
+      _touchStartTime = e.timeStamp;
     }, { passive: true });
     previewMedia.addEventListener('touchend', e => {
       const dx = e.changedTouches[0].clientX - touchStartX;
       const dy = e.changedTouches[0].clientY - touchStartY;
-      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+      const dt = e.timeStamp - _touchStartTime;
+      const velocity = dt > 0 ? Math.abs(dx) / dt : 0;
+      if (Math.abs(dx) > Math.abs(dy) && (Math.abs(dx) > 40 || velocity > 0.4)) {
         navigate(dx < 0 ? 1 : -1);
       }
     }, { passive: true });
@@ -358,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── KEYBOARD ──
     document.addEventListener('keydown', e => {
       // Don't fire if user is typing in an input
-      if (['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
+      const tag = (document.activeElement||{}).tagName||''; if(['INPUT','TEXTAREA'].includes(tag)) return;
 
       if (e.key === 'ArrowLeft')  { e.preventDefault(); navigate(-1); }
       if (e.key === 'ArrowRight') { e.preventDefault(); navigate(1);  }
@@ -370,7 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const vid = previewMedia.querySelector('video');
         if (vid) {
           vid.paused ? vid.play() : vid.pause();
-          showToast(vid.paused ? '⏸ Paused' : '▶ Playing');
+          showToast(vid.paused ? 'Paused' : 'Playing');
         } else {
           toggleSlideshow();
         }
@@ -411,12 +420,12 @@ document.addEventListener('DOMContentLoaded', () => {
         slideshowBtn.innerHTML = '<i class="fas fa-stop"></i> Stop';
         slideshowBtn.classList.add('active');
         startSlideshowTimer();
-        showToast('▶ Slideshow started — Space to stop');
+        showToast('Slideshow started — Space to stop');
       } else {
         slideshowBtn.innerHTML = '<i class="fas fa-play"></i> Slideshow';
         slideshowBtn.classList.remove('active');
         stopSlideshowTimer();
-        showToast('⏸ Slideshow stopped');
+        showToast('Slideshow stopped');
       }
       highlightThumb();
     }
@@ -425,9 +434,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── FILTER ──
     document.querySelectorAll('.view-pill').forEach(pill => {
+      pill.setAttribute('aria-pressed', pill.classList.contains('active') ? 'true' : 'false');
       pill.addEventListener('click', () => {
-        document.querySelectorAll('.view-pill').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.view-pill').forEach(p => { p.classList.remove('active'); p.setAttribute('aria-pressed', 'false'); });
         pill.classList.add('active');
+        pill.setAttribute('aria-pressed', 'true');
         filterType = pill.dataset.filter;
         currentIndex = 0;
         updateCounters();
@@ -464,6 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
     gridBtn.addEventListener('click',  () => setViewMode('grid'));
 
     // ── INIT ──
+    document.getElementById('footerYear')?.textContent = new Date().getFullYear();
     updateCounters();
     renderThumbnails();
     showPreview(true);

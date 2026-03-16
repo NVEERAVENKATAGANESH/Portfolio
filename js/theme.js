@@ -27,8 +27,11 @@ function initTheme(){
   if(sb) sb.addEventListener('click', ()=>applyTheme(document.body.getAttribute('data-theme') !== 'dark'));
 
   // React to OS-level colour scheme changes (only when user hasn't set a manual preference)
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e=>{
+  const mql = window.matchMedia('(prefers-color-scheme: dark)');
+  const onSchemeChange = e => {
     if(localStorage.getItem('theme')) return; // manual preference takes priority
     applyTheme(e.matches);
-  });
+  };
+  mql.addEventListener('change', onSchemeChange);
+  window.addEventListener('beforeunload', () => { mql.removeEventListener('change', onSchemeChange); });
 }

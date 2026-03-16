@@ -34,7 +34,9 @@ function initTyped(){
 /* ── 6. PHOTO TILT ── */
 function initPhotoTilt(){
   const wrap=document.querySelector('.about-photo-wrap'); if(!wrap) return;
+  let _tiltLast=0;
   wrap.addEventListener('mousemove',e=>{
+    const now=Date.now(); if(now-_tiltLast<16) return; _tiltLast=now;
     const r=wrap.getBoundingClientRect();
     const x=((e.clientX-r.left)/r.width-0.5)*22;
     const y=((e.clientY-r.top)/r.height-0.5)*-22;
@@ -119,6 +121,8 @@ function initSkillCharts(){
   // Single shared rAF loop — all visible charts animate in one ticker
   const active=new Map(); // chart → {pct, target, valEl}
   let rafId=null;
+  let _animatedCount=0;
+  const _totalCharts=charts.length;
   function tick(){
     let running=false;
     active.forEach((state,chart)=>{
@@ -126,7 +130,7 @@ function initSkillCharts(){
       chart.style.setProperty('--pct',state.pct);
       if(state.valEl) state.valEl.textContent=Math.round(state.pct)+'%';
       if(state.pct<state.target) running=true;
-      else active.delete(chart);
+      else { active.delete(chart); _animatedCount++; if(_animatedCount>=_totalCharts && _skillObs) { _skillObs.disconnect(); _skillObs=null; } }
     });
     if(running) rafId=requestAnimationFrame(tick);
     else rafId=null;
@@ -139,11 +143,12 @@ function initSkillCharts(){
     active.set(chart,{pct:0,target,valEl});
     if(!rafId) rafId=requestAnimationFrame(tick);
   }
+  let _skillObs=null;
   if('IntersectionObserver' in window){
-    const obs=new IntersectionObserver(entries=>{
-      entries.forEach(e=>{ if(e.isIntersecting){enqueue(e.target);obs.unobserve(e.target);} });
+    _skillObs=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{ if(e.isIntersecting){enqueue(e.target);_skillObs&&_skillObs.unobserve(e.target);} });
     },{threshold:0.05,rootMargin:'0px 0px -20px 0px'});
-    charts.forEach(c=>obs.observe(c));
+    charts.forEach(c=>_skillObs.observe(c));
   } else {
     charts.forEach(c=>enqueue(c));
   }
@@ -228,6 +233,20 @@ function initCertModal(){
     btn.addEventListener('click', closeAll);
   });
 
+  // Focus trap — keep Tab cycling inside each cert modal while open
+  Object.values(MODALS).forEach(m => {
+    if (!m.modal) return;
+    m.modal.addEventListener('keydown', e => {
+      if (e.key !== 'Tab' || !m.modal.classList.contains('is-open')) return;
+      const focusable = Array.from(m.modal.querySelectorAll('button,a,input,[tabindex]:not([tabindex="-1"])'))
+        .filter(el => !el.disabled && el.offsetParent !== null);
+      if (!focusable.length) return;
+      const first = focusable[0], last = focusable[focusable.length - 1];
+      if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
+      else { if (document.activeElement === last) { e.preventDefault(); first.focus(); } }
+    });
+  });
+
   // Click backdrop to close
   Object.values(MODALS).forEach(m => {
     if (!m.modal) return;
@@ -290,18 +309,22 @@ function initCertModal(){
         const img = new Image();
         img.alt = certName;
         img.style.cssText = 'width:100%;border-radius:0.75rem;display:none;';
-        img.onload  = () => { m.contentEl.innerHTML = ''; img.style.display = 'block'; m.contentEl.appendChild(img); };
-        img.onerror = () => {
+        let _certImgTid = null;
+        const showCertError = (msg) => {
+          clearTimeout(_certImgTid); _certImgTid = null;
           // Build error via DOM — no innerHTML with user-derived paths
           const er = document.createElement('div'); er.className = 'cert-error';
           const erI = document.createElement('i'); erI.className = 'fas fa-exclamation-circle'; erI.setAttribute('aria-hidden','true');
-          const erP = document.createElement('p'); erP.textContent = 'Could not load preview.';
+          const erP = document.createElement('p'); erP.textContent = msg || 'Could not load preview.';
           const erA = document.createElement('a'); erA.href = certPath; erA.target = '_blank'; erA.rel = 'noopener'; erA.className = 'btn btn-outline-primary btn-sm';
           const erAI = document.createElement('i'); erAI.className = 'fas fa-external-link-alt me-1'; erAI.setAttribute('aria-hidden','true');
           erA.appendChild(erAI); erA.appendChild(document.createTextNode('Open directly'));
           er.appendChild(erI); er.appendChild(erP); er.appendChild(erA);
           m.contentEl.replaceChildren(er);
         };
+        img.onload  = () => { clearTimeout(_certImgTid); _certImgTid = null; m.contentEl.innerHTML = ''; img.style.display = 'block'; m.contentEl.appendChild(img); };
+        img.onerror = () => showCertError('Could not load preview.');
+        _certImgTid = setTimeout(() => { img.src = ''; showCertError('Certificate took too long to load.'); }, 8000);
         img.src = certPath;
       }
 
@@ -328,7 +351,8 @@ function initContact(){
     if(!form.checkValidity()){
       form.classList.add('was-validated');
       form.querySelectorAll('input,textarea,select').forEach(el=>{
-        el.setAttribute('aria-invalid', el.validity.valid ? 'false' : 'true');
+        if(el.validity.valid) el.removeAttribute('aria-invalid');
+        else el.setAttribute('aria-invalid','true');
       });
       form.querySelector(':invalid')?.focus();
       return;
@@ -524,7 +548,19 @@ function initTestimonialsCarousel(){
     modal?.setAttribute('aria-hidden','true');
     form?.reset();
     if(feedback){ feedback.textContent=''; feedback.className='mb-2 ltm-feedback-hidden'; }
+    openBtn?.focus();
   }
+
+  // Focus trap — keep Tab cycling inside the modal while open
+  modal?.addEventListener('keydown', e=>{
+    if(e.key!=='Tab' || !modal.classList.contains('is-open')) return;
+    const focusable = Array.from(modal.querySelectorAll('input,textarea,button,select,[tabindex]:not([tabindex="-1"])'))
+      .filter(el=>!el.disabled && el.offsetParent!==null);
+    if(!focusable.length) return;
+    const first=focusable[0], last=focusable[focusable.length-1];
+    if(e.shiftKey){ if(document.activeElement===first){ e.preventDefault(); last.focus(); } }
+    else { if(document.activeElement===last){ e.preventDefault(); first.focus(); } }
+  });
 
   openBtn?.addEventListener('click', openModal);
   closeBtn?.addEventListener('click', closeModal);
@@ -558,13 +594,12 @@ function initHashSync(){
   const sections = Array.from(document.querySelectorAll('main section[id]'));
   if(!sections.length) return;
   const obs = new IntersectionObserver(entries=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting && e.intersectionRatio >= 0.35){
-        const id = e.target.id;
-        history.replaceState(null,'','#'+id);
-      }
-    });
-  },{threshold:0.35});
+    // Pick the entry with the highest intersectionRatio when multiple fire at once
+    const visible = entries.filter(e=>e.isIntersecting);
+    if(!visible.length) return;
+    const best = visible.reduce((a,b)=>b.intersectionRatio>a.intersectionRatio?b:a);
+    if(best.intersectionRatio >= 0.35) history.replaceState(null,'','#'+best.target.id);
+  },{threshold:[0.35,0.5,0.7]});
   sections.forEach(s=>obs.observe(s));
 }
 
@@ -622,16 +657,17 @@ function initProjectThumbs(){
 function initMagneticIcons(){
   if(IS_TOUCH) return;
   document.querySelectorAll('.hero-socials a,.about-social-link,.footer-social a').forEach(el=>{
+    el.style.transition='transform 0.4s cubic-bezier(.34,1.56,.64,1)';
     el.addEventListener('mousemove',e=>{
       const r=el.getBoundingClientRect();
       const x=(e.clientX-r.left-r.width/2)*0.4;
       const y=(e.clientY-r.top-r.height/2)*0.4;
-      el.style.transform=`translate(${x}px,${y}px) scale(1.2)`;
       el.style.transition='transform 0.1s ease';
+      el.style.transform=`translate(${x}px,${y}px) scale(1.2)`;
     });
     el.addEventListener('mouseleave',()=>{
-      el.style.transform='';
       el.style.transition='transform 0.4s cubic-bezier(.34,1.56,.64,1)';
+      el.style.transform='';
     });
   });
 }
@@ -665,7 +701,7 @@ function initCursorGlow(){
   }
   document.addEventListener('mousemove',()=>{ if(!_glowRaf) _glowRaf=requestAnimationFrame(animate); },{passive:true});
   _glowRaf=requestAnimationFrame(animate);
-  document.addEventListener('mouseleave',()=>{glow.style.opacity='0';});
+  document.addEventListener('mouseleave',()=>{ glow.style.opacity='0'; if(_glowRaf){ cancelAnimationFrame(_glowRaf); _glowRaf=null; } });
   document.addEventListener('mouseenter',()=>{glow.style.opacity='1';});
 }
 
@@ -694,7 +730,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initProjectModal();
   initContact();
   initPhotoTilt();
-  initHeroParallax();
   initHireBanner();
   initCopyEmail();
   initTestimonialsCarousel();

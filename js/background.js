@@ -1,5 +1,7 @@
 'use strict';
 
+let _bgMouseBound = false;
+
 /* ── 1. GALAXY ── */
 function initGalaxy() {
   if (reducedMotion) return; // skip all canvas animation for vestibular-disorder users
@@ -16,7 +18,7 @@ function initGalaxy() {
 
   function build(){
     // More stars, each with autonomous drift velocity for a "flying through space" feel
-    const N = Math.floor(W*H/900);
+    const N = Math.min(Math.floor(W*H/900), 3000);
     const COLORS = ['#ffffff','#fffde0','#c8e6ff','#ffd8d8','#d0ffe8','#a5b4fc'];
     stars = Array.from({length:N}, ()=>{
       const layer = Math.floor(Math.random()*3); // 0=far/slow, 1=mid, 2=near/fast
@@ -45,7 +47,7 @@ function initGalaxy() {
   let mx=0, my=0;
   if(!IS_TOUCH){
     let _rafMx=false;
-    window.addEventListener('mousemove', e=>{ if(_rafMx) return; _rafMx=true; requestAnimationFrame(()=>{ mx=(e.clientX/W-0.5)*2; my=(e.clientY/H-0.5)*2; _rafMx=false; }); },{passive:true});
+    if(!_bgMouseBound){ _bgMouseBound=true; window.addEventListener('mousemove', e=>{ if(_rafMx) return; _rafMx=true; requestAnimationFrame(()=>{ mx=(e.clientX/W-0.5)*2; my=(e.clientY/H-0.5)*2; _rafMx=false; }); },{passive:true}); }
   }
 
   let t=0;
@@ -96,6 +98,7 @@ function initGalaxy() {
 
 /* ── 1b. 3D BACKGROUND (Three.js) — replaces 2D galaxy on desktop ── */
 function init3DBackground() {
+  if(typeof reducedMotion !== 'undefined' && reducedMotion){ initGalaxy(); return; }
   // Mobile fallback — use 2D galaxy instead
   if (window.innerWidth < 768 || IS_TOUCH) {
     initGalaxy();
@@ -108,22 +111,26 @@ function init3DBackground() {
   const canvas = document.getElementById('galaxyCanvas');
   if (!canvas) { initGalaxy(); return; }
 
+  try {
+
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.z = 5;
 
+  const DPR = Math.min(window.devicePixelRatio || 1, 1.5);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  renderer.setPixelRatio(DPR);
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x000000, 0);
 
   const rand = (a, b) => Math.random() * (b - a) + a;
 
   // ── Particle layers — dense galaxy field with z-drift for "passing stars" feel ──
+  const isMobile = window.innerWidth < 768;
   const layerDefs = [
-    { count: 2200, color: 0xffffff, spread: 18, depth: 22, size: 0.16, opacity: 1.0,  speedMul: 1.0,  vz: 0.014 },
-    { count: 1400, color: 0xa5b4fc, spread: 26, depth: 30, size: 0.11, opacity: 0.9,  speedMul: 0.65, vz: 0.008 },
-    { count:  800, color: 0x67e8f9, spread: 36, depth: 40, size: 0.07, opacity: 0.75, speedMul: 0.35, vz: 0.004 },
+    { count: Math.floor(2200 * (isMobile ? 0.5 : 1)), color: 0xffffff, spread: 18, depth: 22, size: 0.16, opacity: 1.0,  speedMul: 1.0,  vz: 0.014 },
+    { count: Math.floor(1400 * (isMobile ? 0.5 : 1)), color: 0xa5b4fc, spread: 26, depth: 30, size: 0.11, opacity: 0.9,  speedMul: 0.65, vz: 0.008 },
+    { count: Math.floor( 800 * (isMobile ? 0.5 : 1)), color: 0x67e8f9, spread: 36, depth: 40, size: 0.07, opacity: 0.75, speedMul: 0.35, vz: 0.004 },
   ];
   const particleGroups = layerDefs.map(def => {
     const positions = new Float32Array(def.count * 3);
@@ -390,6 +397,8 @@ function init3DBackground() {
     window.removeEventListener('resize', onResize);
     renderer.dispose();
   };
+
+  } catch(e) { initGalaxy(); }
 }
 
 /* ── 20. HERO SPHERE (Three.js wireframe) ── */

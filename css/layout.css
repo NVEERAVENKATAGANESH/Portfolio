@@ -67,6 +67,7 @@
   display:inline-block;
   background: linear-gradient(135deg, #818cf8 0%, #67e8f9 35%, #a5b4fc 65%, #c4b5fd 100%);
   background-size: 300% 300%;
+  color: #a5b4fc;
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
   background-clip:text;
@@ -151,8 +152,8 @@
 }
 .hero-sphere-wrap canvas{
   display:block;
-  width:100%!important;
-  height:100%!important;
+  width:100%;
+  height:100%;
 }
 
 /* ══ CONTENT-VISIBILITY — defer rendering of below-fold sections ══ */
@@ -163,7 +164,7 @@
 
 /* ══ ABOUT ══ */
 #about{background:transparent}
-.about-photo-wrap{display:inline-block;padding:5px;border-radius:50%;background:var(--primary-gradient);box-shadow:var(--shadow-hover);transition:transform .4s cubic-bezier(.34,1.4,.64,1);}
+.about-photo-wrap{display:inline-block;padding:.3rem;border-radius:50%;background:var(--primary-gradient);box-shadow:var(--shadow-hover);transition:transform .4s cubic-bezier(.34,1.4,.64,1);}
 .about-photo{width:210px;height:210px;border-radius:50%;object-fit:cover;border:4px solid var(--card);display:block;}
 .about-chip{display:inline-flex;align-items:center;padding:.3rem .8rem;background:var(--bg-light);border:1px solid var(--border);border-radius:999px;font-size:.8rem;font-weight:500;color:var(--text-dark);gap:.25rem;}
 .about-chip--open{background:#dcfce7;border-color:#86efac;color:#166534}
@@ -194,7 +195,7 @@ body[data-theme="dark"] .about-chip--open{background:#14532d;border-color:#16653
 .tl-tag--exp{background:rgba(16,185,129,.1);color:#059669;border-color:rgba(16,185,129,.25)}
 body[data-theme="dark"] .tl-tag{background:rgba(129,140,248,.12);color:#a5b4fc;border-color:rgba(129,140,248,.25)}
 body[data-theme="dark"] .tl-tag--exp{background:rgba(16,185,129,.12);color:#34d399;border-color:rgba(16,185,129,.25)}
-.tl-desc{font-size:.875rem}.tl-badge-sm{font-size:.65rem}
+.tl-desc{font-size:.875rem}
 .timeline-toggle{position:relative;display:flex;justify-content:center;width:fit-content;margin:0 auto 1.5rem;background:var(--bg);border-radius:2rem;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;user-select:none;}
 .timeline-toggle::before{content:"";position:absolute;top:.2rem;bottom:.2rem;left:var(--pill-left,0);width:50%;background:var(--primary);border-radius:1.8rem;transition:left var(--t);z-index:0;}
 .timeline-toggle .toggle-btn{position:relative;flex:1;padding:.55rem 1.75rem;background:none;border:none;font-size:.95rem;font-weight:500;color:var(--text-muted);cursor:pointer;z-index:1;transition:color var(--t);line-height:1;white-space:nowrap;font-family:var(--font);}

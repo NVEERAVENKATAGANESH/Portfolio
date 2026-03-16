@@ -2,10 +2,14 @@
    RESPONSIVE — all @media queries
    ══════════════════════════════════════════ */
 
-@media(max-width:768px){html{scroll-padding-top:50px;}}
+@media(max-width:768px){html{scroll-padding-top:64px;}}
 
 @media(max-width:1100px){.header-link span{display:none}.header-link{padding:.35rem .5rem}}
 @media(max-width:768px){
+  /* Fix header so it stays visible while scrolling on mobile */
+  #site-header{position:fixed;width:100%;top:0;left:0;}
+  /* Push body content below the fixed header */
+  body{padding-top:48px;}
   .header-inner{height:48px;padding:0 .6rem;gap:.2rem;}
   .header-nav{display:flex;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex:1;gap:0;}
   .header-nav::-webkit-scrollbar{display:none;}
@@ -67,7 +71,7 @@
   }
 }
 
-@media(max-width:576px){.about-cta-row{justify-content:center;}.btn-about-cta{width:100%;text-align:center;}}
+@media(max-width:576px){.about-cta-row{justify-content:center;flex-direction:column;}.btn-about-cta{width:100%;text-align:center;}}
 
 /* ══════════════════════════════════════════
    MOBILE OVERHAUL — comprehensive responsive
@@ -114,8 +118,6 @@
 @media(max-width:576px){
   .about-stat-card{padding:.9rem .6rem;}
   .about-stat-number{font-size:1.6rem;}
-  .about-cta-row{flex-direction:column;}
-  .btn-about-cta{width:100%;text-align:center;}
 }
 
 /* ── Timeline ── */
@@ -328,6 +330,7 @@
     display:inline-flex;align-items:center;justify-content:center;
   }
   .hero-btn-primary,.hero-btn-ghost{min-height:44px;}
+  .view-pill{min-height:44px;min-width:44px;}
   .contact-copy-btn,.hire-banner-cta{min-height:40px;}
 }
 
@@ -368,4 +371,9 @@
 @media(max-width:480px){
   section{padding:48px 0;}
   .container{padding-left:.85rem;padding-right:.85rem;}
+}
+
+@media(min-width:2560px){
+  .section-heading{font-size:2.5rem;}
+  section{padding:80px 0;}
 }

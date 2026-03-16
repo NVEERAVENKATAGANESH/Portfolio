@@ -120,23 +120,12 @@ function initAnimations(){
 
 }
 
-/* ── 5. HERO PARALLAX ── */
-function initHeroParallax(){
-  const hero = document.querySelector('.hero-section');
-  if(!hero) return;
-  if(reducedMotion) return;
-  window.addEventListener('scroll', throttle(()=>{
-    const offset = window.scrollY;
-    if(offset < window.innerHeight){
-      hero.style.backgroundPositionY = `calc(50% + ${offset * 0.3}px)`;
-    }
-  }, 16), {passive:true});
-}
-
 /* ── SECTION ENTRY BURST (GSAP onStart) ── */
 function sectionEntryBurst(triggerEl) {
+  if(document.querySelector('.burst-canvas')) return;
   const rect = triggerEl.getBoundingClientRect();
   const cvs  = document.createElement('canvas');
+  cvs.className = 'burst-canvas';
   cvs.width  = rect.width;
   cvs.height = rect.height;
   Object.assign(cvs.style, {
@@ -149,6 +138,8 @@ function sectionEntryBurst(triggerEl) {
     zIndex: '9998',
   });
   document.body.appendChild(cvs);
+  const onHidden = () => { if(document.hidden){ cvs.remove(); document.removeEventListener('visibilitychange', onHidden); } };
+  document.addEventListener('visibilitychange', onHidden);
   const ctx  = cvs.getContext('2d');
   const cx   = rect.width / 2, cy = rect.height / 2;
   const COLS = ['rgba(99,102,241,', 'rgba(6,182,212,', 'rgba(139,92,246,'];
@@ -182,7 +173,7 @@ function sectionEntryBurst(triggerEl) {
       }
     });
     if (anyAlive && elapsed < 900) requestAnimationFrame(draw);
-    else cvs.remove();
+    else { document.removeEventListener('visibilitychange', onHidden); cvs.remove(); }
   }
   requestAnimationFrame(draw);
 }
