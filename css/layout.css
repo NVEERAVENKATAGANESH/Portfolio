@@ -77,7 +77,7 @@
 .hero-subtitle{font-size:clamp(1rem,2.8vw,1.3rem);opacity:.8;min-height:1.9em;margin-top:.75rem;}
 
 /* Desc */
-.hero-desc{font-size:.96rem;opacity:.65;max-width:460px;line-height:1.8;margin-top:.9rem;}
+.hero-desc{font-size:.96rem;color:rgba(255,255,255,.82);max-width:460px;line-height:1.8;margin-top:.9rem;}
 
 /* CTA row */
 .hero-cta-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:2rem;}
@@ -104,7 +104,7 @@
 /* Social links */
 .hero-socials{display:flex;gap:1.1rem;align-items:center;margin-top:1.75rem;}
 .hero-socials a{
-  color:rgba(255,255,255,.4);font-size:1.2rem;text-decoration:none;
+  color:rgba(255,255,255,.75);font-size:1.2rem;text-decoration:none;
   display:flex;align-items:center;
   transition:color .2s,transform .2s;
 }
@@ -155,6 +155,12 @@
   height:100%!important;
 }
 
+/* ══ CONTENT-VISIBILITY — defer rendering of below-fold sections ══ */
+#about,#timeline,#skills,#projects,#achievements,#testimonials,#contact,#resume{
+  content-visibility:auto;
+  contain-intrinsic-size:0 600px;
+}
+
 /* ══ ABOUT ══ */
 #about{background:transparent}
 .about-photo-wrap{display:inline-block;padding:5px;border-radius:50%;background:var(--primary-gradient);box-shadow:var(--shadow-hover);transition:transform .4s cubic-bezier(.34,1.4,.64,1);}
@@ -178,7 +184,7 @@ body[data-theme="dark"] .about-chip--open{background:#14532d;border-color:#16653
 #timeline{background:transparent}
 .tl-icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;margin-bottom:.65rem;flex-shrink:0;color:#fff;background:var(--primary);box-shadow:0 0 0 3px var(--card),0 0 0 5px var(--primary);}
 .tl-icon--exp{background:#10b981;box-shadow:0 0 0 3px var(--card),0 0 0 5px #10b981}
-.tl-badge--edu{background:var(--primary)!important;color:#fff!important}
+.tl-badge--edu{background:#3730a3!important;color:#fff!important}
 .tl-badge--exp{background:#10b981!important;color:#fff!important}
 .tl-institution{font-size:.875rem;color:var(--text-muted);margin-bottom:.5rem;}
 .tl-bullets{font-size:.855rem;color:var(--text-muted);line-height:1.65;padding-left:1.1rem;margin:.4rem 0 .6rem;}
@@ -276,14 +282,7 @@ section + section::before{
   box-shadow: 0 0 8px rgba(99,102,241,.3);
   z-index:2;
 }
-body[data-theme="light"] section + section::before{
-  background:linear-gradient(90deg,
-    transparent 0%,
-    rgba(99,102,241,.15) 25%,
-    rgba(6,182,212,.2) 50%,
-    rgba(139,92,246,.15) 75%,
-    transparent 100%);
-}
+body[data-theme="light"] section+section::before{display:none;}
 
 /* ══ TASK 3 FIX — Skip portal on home→about (hero already has bottom fade) ══ */
 #home + section::before{display:none;}

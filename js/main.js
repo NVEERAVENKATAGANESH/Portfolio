@@ -1,5 +1,7 @@
 'use strict';
 
+const IS_GALLERY_PAGE = location.pathname.includes('gallery');
+
 const throttle = (fn, ms=50) => { let l=0; return (...a) => { const n=Date.now(); if(n-l>=ms){l=n;fn(...a);} }; };
 const debounce = (fn, ms=100) => { let id; return (...a) => { clearTimeout(id); id=setTimeout(()=>fn(...a),ms); }; };
 
@@ -104,41 +106,46 @@ function initSkillCharts(){
   const charts=Array.from(document.querySelectorAll('.skill-chart'));
   if(!charts.length) return;
   charts.forEach(c=>c.style.setProperty('--pct',0));
-  function animate(chart){
-    if(chart.dataset.animated) return;
-    chart.dataset.animated='1';
-    const card=chart.closest('.skill-card');
-    const pct=parseFloat(card.dataset.value)||0;
-    if(reducedMotion){
-      chart.style.setProperty('--pct',pct);
-      const valEl=card.querySelector('.skill-value');
+  if(reducedMotion){
+    charts.forEach(c=>{
+      const card=c.closest('.skill-card');
+      const pct=parseFloat(card?.dataset.value)||0;
+      c.style.setProperty('--pct',pct);
+      const valEl=card?.querySelector('.skill-value');
       if(valEl) valEl.textContent=Math.round(pct)+'%';
-      return;
-    }
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      chart.style.setProperty('--pct',pct);
-      const valEl=card.querySelector('.skill-value');
-      if(valEl){
-        let start=null; const dur=1300;
-        const step=(ts)=>{
-          if(!start) start=ts;
-          const p=Math.min((ts-start)/dur,1);
-          const e=1-Math.pow(1-p,3); // ease-out cubic
-          valEl.textContent=Math.round(pct*e)+'%';
-          if(p<1) requestAnimationFrame(step);
-        };
-        requestAnimationFrame(step);
-      }
-    }));
+    });
+    return;
+  }
+  // Single shared rAF loop — all visible charts animate in one ticker
+  const active=new Map(); // chart → {pct, target, valEl}
+  let rafId=null;
+  function tick(){
+    let running=false;
+    active.forEach((state,chart)=>{
+      state.pct=Math.min(state.target,state.pct+1.5);
+      chart.style.setProperty('--pct',state.pct);
+      if(state.valEl) state.valEl.textContent=Math.round(state.pct)+'%';
+      if(state.pct<state.target) running=true;
+      else active.delete(chart);
+    });
+    if(running) rafId=requestAnimationFrame(tick);
+    else rafId=null;
+  }
+  function enqueue(chart){
+    if(active.has(chart)) return;
+    const card=chart.closest('.skill-card');
+    const target=parseFloat(card?.dataset.value)||0;
+    const valEl=card?.querySelector('.skill-value');
+    active.set(chart,{pct:0,target,valEl});
+    if(!rafId) rafId=requestAnimationFrame(tick);
   }
   if('IntersectionObserver' in window){
     const obs=new IntersectionObserver(entries=>{
-      entries.forEach(e=>{ if(e.isIntersecting){animate(e.target);obs.unobserve(e.target);} });
+      entries.forEach(e=>{ if(e.isIntersecting){enqueue(e.target);obs.unobserve(e.target);} });
     },{threshold:0.05,rootMargin:'0px 0px -20px 0px'});
     charts.forEach(c=>obs.observe(c));
   } else {
-    // No IntersectionObserver — animate all immediately
-    charts.forEach(c=>animate(c));
+    charts.forEach(c=>enqueue(c));
   }
 }
 
@@ -429,7 +436,7 @@ function initHireBanner(){
 
 /* ── TOAST ── */
 function showToast(msg, icon='check-circle', color='#6ee7b7'){
-  let t=document.getElementById('_toast');
+  let t=document.getElementById('_toast')||document.getElementById('toast');
   if(!t){ t=document.createElement('div'); t.id='_toast'; document.body.appendChild(t); }
   // Build DOM safely — no innerHTML with msg to prevent XSS
   t.textContent='';
@@ -663,9 +670,6 @@ function initCursorGlow(){
 }
 
 /* ── BOOT ── */
-// Detect which page we're on to skip irrelevant inits
-const IS_GALLERY_PAGE = location.pathname.includes('gallery');
-
 document.addEventListener('DOMContentLoaded', () => {
   buildNav();           // inject nav first — all other inits depend on it
   initScrollBar();

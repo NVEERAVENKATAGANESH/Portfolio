@@ -327,8 +327,8 @@
   footer .container{padding-top:.5rem;padding-bottom:.5rem;}
 }
 
-/* ── Scrollbar decoration: hide on mobile ── */
-@media(max-width:768px){
+/* ── Scrollbar decoration: hide on mobile and tablet ── */
+@media(max-width:991px){
   .testimonial-ring-wrap{display:none;}
 }
 

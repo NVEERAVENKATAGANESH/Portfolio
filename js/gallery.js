@@ -27,13 +27,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const filtered = () => items.filter(i => filterType === 'all' || i.type === filterType);
     const clamp    = (idx, list) => ((idx % list.length) + list.length) % list.length;
 
-    function showToast(msg) {
+    function localShowToast(msg) {
       const t = document.getElementById('toast');
+      if (!t) return;
       t.textContent = msg;
       t.classList.add('show');
       clearTimeout(t._hide);
       t._hide = setTimeout(() => t.classList.remove('show'), 2200);
     }
+    const showToast = (msg, dur) => typeof window.showToast === 'function' ? window.showToast(msg) : localShowToast(msg);
 
     // ── COUNTER ELEMENTS ──
     const visibleCountEl = document.getElementById('visibleCount');
@@ -380,20 +382,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const slideshowProgress = document.getElementById('slideshowProgress');
 
     function startSlideshowTimer() {
-      clearInterval(slideshowTick); // guard against stacking intervals
-      slideshowElapsed = 0;
-      slideshowProgress.style.width = '0%';
-
-      slideshowTick = setInterval(() => {
-        slideshowElapsed += 100;
-        const pct = Math.min((slideshowElapsed / slideshowInterval) * 100, 100);
+      stopSlideshowTimer();
+      let _ssStart = null;
+      function tick(ts) {
+        if (!_ssStart) _ssStart = ts;
+        const elapsed = ts - _ssStart;
+        const pct = Math.min(100, (elapsed / slideshowInterval) * 100);
         slideshowProgress.style.width = pct + '%';
-        if (slideshowElapsed >= slideshowInterval) navigate(1);
-      }, 100);
+        if (elapsed >= slideshowInterval) { navigate(1); return; }
+        slideshowTick = requestAnimationFrame(tick);
+      }
+      slideshowTick = requestAnimationFrame(tick);
     }
 
     function stopSlideshowTimer() {
-      clearInterval(slideshowTick);
+      if (slideshowTick) { cancelAnimationFrame(slideshowTick); slideshowTick = null; }
       slideshowProgress.style.width = '0%';
     }
 

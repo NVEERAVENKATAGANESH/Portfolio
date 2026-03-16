@@ -203,8 +203,8 @@ body[data-theme="dark"] .hire-banner{background:linear-gradient(90deg,#14532d 0%
 
 /* ══ SKILL CARDS ══ */
 .skill-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem .75rem;text-align:center;color:var(--text-dark);width:100%;transition:transform var(--t),box-shadow var(--t),border-color var(--t);box-shadow:var(--shadow-card);}
-.skill-card:hover{transform:translateY(-6px) scale(1.04);box-shadow:0 12px 40px rgba(99,102,241,.35),0 0 0 1px rgba(99,102,241,.3);border-color:rgba(99,102,241,.5)}
-body[data-theme="dark"] .skill-card:hover{border-color:rgba(129,140,248,.35);box-shadow:0 0 0 1px rgba(129,140,248,.2),0 12px 40px rgba(79,70,229,.25)}
+.skill-card:hover{transform:translateY(-6px) scale(1.04);box-shadow:-4px 0 20px rgba(99,102,241,.35),0 12px 40px rgba(99,102,241,.35),0 0 0 1px rgba(99,102,241,.3);border-color:rgba(99,102,241,.5);border-left-color:#4f46e5;}
+body[data-theme="dark"] .skill-card:hover{border-left-color:#818cf8;border-color:rgba(129,140,248,.35);box-shadow:-4px 0 20px rgba(99,102,241,.35),0 0 0 1px rgba(129,140,248,.2),0 12px 40px rgba(79,70,229,.25);}
 .skill-chart{--clr:var(--primary);--pct:0;width:78px;height:78px;border-radius:50%;background:conic-gradient(var(--clr) calc(var(--pct)*1%),var(--bg-light) 0);display:flex;align-items:center;justify-content:center;margin:0 auto .9rem;position:relative;transition:background 1.2s ease-in-out,transform var(--t);}
 .skill-chart::after{content:"";position:absolute;width:56px;height:56px;border-radius:50%;background:var(--card);transition:background var(--t);}
 .skill-chart:hover{transform:scale(1.1)}
@@ -218,8 +218,8 @@ body[data-theme="dark"] .skill-chart::after{background:var(--card)}
 
 /* ══ PROJECT CARDS ══ */
 .project-card .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-card);transition:transform var(--t),box-shadow var(--t),border-color var(--t);border-top-width:3px;overflow:hidden;}
-.project-card .card:hover{transform:translateY(-6px) scale(1.04);box-shadow:0 12px 40px rgba(99,102,241,.35),0 0 0 1px rgba(99,102,241,.3);border-color:rgba(99,102,241,.5);}
-body[data-theme="dark"] .project-card .card:hover{border-color:rgba(129,140,248,.35);box-shadow:0 0 0 1px rgba(129,140,248,.2),0 12px 40px rgba(79,70,229,.25);}
+.project-card .card:hover{transform:translateY(-6px) scale(1.04);box-shadow:-4px 0 20px rgba(99,102,241,.35),0 12px 40px rgba(99,102,241,.35),0 0 0 1px rgba(99,102,241,.3);border-color:rgba(99,102,241,.5);border-left-color:#4f46e5;}
+body[data-theme="dark"] .project-card .card:hover{border-left-color:#818cf8;border-color:rgba(129,140,248,.35);box-shadow:-4px 0 20px rgba(99,102,241,.35),0 0 0 1px rgba(129,140,248,.2),0 12px 40px rgba(79,70,229,.25);}
 .project-card[data-category="ai"] .card{border-top-color:#8b5cf6}
 .project-card[data-category="web"] .card{border-top-color:#06b6d4}
 .project-card[data-category="frontend"] .card{border-top-color:#f59e0b}
@@ -239,17 +239,18 @@ body[data-theme="dark"] .project-tag{background:rgba(129,140,248,.15);color:#a5b
 .project-thumb::after{content:'';position:absolute;inset:auto 0 0 0;height:52px;background:linear-gradient(transparent,var(--card));pointer-events:none;z-index:1;}
 .project-thumb:hover svg{transform:scale(1.04);}
 .project-thumb svg{transition:transform 0.5s ease;}
+body[data-theme="light"] .project-thumb{background:#1e293b;}
 
 
 /* ══ ACHIEVEMENT CARDS ══ */
 .achievement-card{border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-card);transition:transform var(--t),box-shadow var(--t),border-color var(--t);}
-.achievement-card:hover{transform:translateY(-8px);box-shadow:0 16px 48px rgba(99,102,241,.3),0 0 0 1px rgba(99,102,241,.2);border-color:rgba(99,102,241,.3);}
+.achievement-card:hover{transform:translateY(-8px);box-shadow:-4px 0 20px rgba(99,102,241,.35),0 16px 48px rgba(99,102,241,.3),0 0 0 1px rgba(99,102,241,.2);border-color:rgba(99,102,241,.3);border-left-color:#4f46e5;}
 .achievement-icon{font-size:1.6rem;margin-bottom:.75rem}
 
 /* ══ TESTIMONIAL CARDS ══ */
 .testimonial-card{border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-card);transition:transform var(--t),box-shadow var(--t),border-color var(--t);}
-.testimonial-card:hover{transform:translateY(-6px) scale(1.04);box-shadow:0 12px 40px rgba(99,102,241,.35),0 0 0 1px rgba(99,102,241,.3);border-color:rgba(99,102,241,.5);}
-body[data-theme="dark"] .testimonial-card:hover{border-color:rgba(129,140,248,.35);box-shadow:0 0 0 1px rgba(129,140,248,.2),0 12px 40px rgba(79,70,229,.25);}
+.testimonial-card:hover{transform:translateY(-6px) scale(1.04);box-shadow:-4px 0 20px rgba(99,102,241,.35),0 12px 40px rgba(99,102,241,.35),0 0 0 1px rgba(99,102,241,.3);border-color:rgba(99,102,241,.5);border-left-color:#4f46e5;}
+body[data-theme="dark"] .testimonial-card:hover{border-left-color:#818cf8;border-color:rgba(129,140,248,.35);box-shadow:-4px 0 20px rgba(99,102,241,.35),0 0 0 1px rgba(129,140,248,.2),0 12px 40px rgba(79,70,229,.25);}
 .testimonial-quote-icon{font-size:1.6rem;color:var(--primary);opacity:.6}
 .testimonial-headshot{width:48px;height:48px;object-fit:cover;border-radius:50%;border:2px solid var(--border);flex-shrink:0}
 
@@ -489,19 +490,19 @@ body[data-theme="light"] .gallery-tunnel-ring{
   opacity:0.7;
 }
 
-/* ══ TASK 2G — Stat counter card pulse ══ */
+/* ══ STAT COUNTER HOVER GLOW ══ */
 .about-stat-card:hover .about-stat-number{
   text-shadow: 0 0 20px rgba(99,102,241,.6);
   animation: statPulse 0.6s ease-out;
 }
 
-/* ══ TASK 2H — Timeline item border glow on hover ══ */
+/* ══ TIMELINE ITEM BORDER GLOW ON HOVER ══ */
 .timeline-item:hover{
   border-left-color: #4f46e5 !important;
   box-shadow: -4px 0 20px rgba(99,102,241,.35), var(--shadow-hover);
 }
 
-/* ══ TASK 2I — CTA primary button pulse ring ══ */
+/* ══ CTA PRIMARY BUTTON PULSE RING ══ */
 .hero-btn-primary{
   position:relative;
   overflow:visible;
@@ -516,7 +517,7 @@ body[data-theme="light"] .gallery-tunnel-ring{
   pointer-events:none;
 }
 
-/* ══ TASK 2J — Testimonial card hover lift ══ */
+/* ══ LIGHT MODE CARD SHADOW ENHANCEMENT ══ */
 /* ══ Light mode card shadow enhancement: better separation from bg ══ */
 body[data-theme="light"] .card,
 body[data-theme="light"] .achievement-card,
