@@ -1,5 +1,5 @@
 'use strict';
-const CACHE = 'portfolio-v1';
+const CACHE = 'portfolio-v2';
 const OFFLINE = [
   '/',
   '/index.html',
@@ -34,16 +34,24 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  const isNavigation = e.request.mode === 'navigate';
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
       return fetch(e.request).then(res => {
+        // Server returned 404 or error for a page navigation → serve 404.html
+        if (isNavigation && (!res || res.status === 404 || res.status >= 500)) {
+          return caches.match('/404.html');
+        }
         if (res && res.status === 200 && res.type === 'basic') {
           const clone = res.clone();
           caches.open(CACHE).then(c => c.put(e.request, clone));
         }
         return res;
-      }).catch(() => caches.match('/index.html'));
+      }).catch(() => {
+        // Network failure — serve 404.html for page navigations, nothing for assets
+        if (isNavigation) return caches.match('/404.html');
+      });
     })
   );
 });

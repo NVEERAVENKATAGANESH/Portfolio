@@ -705,6 +705,25 @@ function initCursorGlow(){
   document.addEventListener('mouseenter',()=>{glow.style.opacity='1';});
 }
 
+/* ── BROKEN LINK HANDLER ── */
+function initBrokenLinkHandler(){
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    // Skip: external, anchors, mailto/tel, blank targets, javascript:
+    if (!href || href.startsWith('#') || href.startsWith('http') ||
+        href.startsWith('mailto') || href.startsWith('tel') ||
+        href.startsWith('javascript') || a.target === '_blank') return;
+    // Only intercept relative .html page links
+    if (!href.match(/\.html(\?|#|$)|^\/[^.]*$/)) return;
+    e.preventDefault();
+    fetch(href, { method: 'HEAD' })
+      .then(res => { window.location.href = res.ok ? href : '404.html'; })
+      .catch(() => { window.location.href = '404.html'; });
+  });
+}
+
 /* ── BOOT ── */
 document.addEventListener('DOMContentLoaded', () => {
   buildNav();           // inject nav first — all other inits depend on it
@@ -713,6 +732,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeader();
   initTheme();          // shared — runs on all pages now that nav is injected
   initFooter();
+  initBrokenLinkHandler();
   initMagneticIcons();
   initCursorGlow();
 
