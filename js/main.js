@@ -718,6 +718,7 @@ function initBrokenLinkHandler(){
     // Only intercept relative .html page links
     if (!href.match(/\.html(\?|#|$)|^\/[^.]*$/)) return;
     e.preventDefault();
+    if (window.location.protocol === 'file:') { window.location.href = href; return; }
     fetch(href, { method: 'HEAD' })
       .then(res => { window.location.href = res.ok ? href : '404.html'; })
       .catch(() => { window.location.href = '404.html'; });

@@ -5,9 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── GALLERY DATA ──
     const items = [
       { type:'photo', src:'images/Aaruush.jpg',               alt:'Core Team of Aaruush 22' },
-      { type:'photo', src:'images/NASA-SAC.jpg',               alt:'NASA Space Apps Challenge' },
       { type:'photo', src:'images/Ganesh.jpg',                 alt:'Admiration Day' },
       { type:'photo', src:'images/IMG20220805181152.jpg',       alt:'August 15 Event' },
+      { type:'photo', src:'images/IMG_3351.JPG',               alt:'IMG_3351' },
       { type:'youtube', ytId:'gNVA7PGJWEg', alt:'Hack Summit 3.0 Teaser' },
       { type:'youtube', ytId:'9JQ1v5sp870', alt:'Hack Summit 3.0 After Movie' }
     ];
