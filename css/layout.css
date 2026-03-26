@@ -224,7 +224,8 @@ body[data-theme="dark"] .jrny-now{background:rgba(16,185,129,.12);border-color:r
 .jrny-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem 1.5rem 1.25rem;box-shadow:var(--shadow-card);position:relative;overflow:hidden;transition:transform var(--t),box-shadow var(--t);}
 .jrny-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#6366f1,#818cf8);}
 .jrny-card--exp::before{background:linear-gradient(90deg,#059669,#34d399);}
-.jrny-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover);}
+.jrny-card:hover{transform:translateY(-3px);box-shadow:-4px 0 20px rgba(99,102,241,.35),0 16px 48px rgba(99,102,241,.3),0 0 0 1px rgba(99,102,241,.2);border-color:rgba(99,102,241,.3);}
+body[data-theme="dark"] .jrny-card:hover{box-shadow:-4px 0 20px rgba(99,102,241,.35),0 0 0 1px rgba(129,140,248,.2),0 12px 40px rgba(79,70,229,.25);border-color:rgba(129,140,248,.35);}
 
 /* ── Card content ── */
 .jrny-date{display:inline-block;padding:.2rem .72rem;background:rgba(79,70,229,.09);color:var(--primary);border:1px solid rgba(79,70,229,.2);border-radius:999px;font-size:.72rem;font-weight:600;letter-spacing:.04em;margin-bottom:.65rem;}
@@ -262,7 +263,7 @@ body[data-theme="dark"] .jrny-tag--exp{background:rgba(16,185,129,.1);color:#34d
 /* ══ SKILLS ══ */
 #skills{background:transparent}
 .skills-toggle{--count:7;--pill-index:0;display:flex;max-width:860px;margin:0 auto 2rem;background:var(--bg-light);border:1px solid var(--border);border-radius:2rem;position:relative;height:2.75rem;overflow:hidden;}
-.skills-toggle::before{content:"";position:absolute;top:.3rem;bottom:.3rem;left:calc(var(--pill-index)*(100%/var(--count)));width:calc(100%/var(--count));background:var(--primary);border-radius:1.5rem;transition:left var(--t);z-index:0;}
+.skills-toggle::before{content:"";position:absolute;top:.3rem;bottom:.3rem;left:0;width:calc(100%/var(--count));background:var(--primary);border-radius:1.5rem;transform:translateX(calc(var(--pill-index)*(100%)));transition:transform var(--t);z-index:0;}
 .toggle-btn{flex:1;background:none;border:none;padding:0;line-height:2.75rem;text-align:center;cursor:pointer;font-size:.88rem;font-weight:500;color:var(--text-muted);position:relative;z-index:1;transition:color var(--t);white-space:nowrap;font-family:var(--font);}
 .toggle-btn:hover{color:var(--text-dark)}
 .toggle-btn[aria-selected="true"]{color:#fff}

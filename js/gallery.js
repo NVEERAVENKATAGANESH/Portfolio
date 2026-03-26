@@ -134,6 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const doRender = () => {
         previewMedia.innerHTML = '';
+        const tc = document.getElementById('transcriptContainer');
+        if (tc) tc.innerHTML = '';
         if (item.type === 'photo') {
           const img = document.createElement('img');
           img.alt = item.alt;
@@ -153,9 +155,11 @@ document.addEventListener('DOMContentLoaded', () => {
           iframe.style.cssText = 'width:100%;height:100%;min-height:320px;border:none;border-radius:var(--radius-sm);';
           previewMedia.appendChild(iframe);
           // Transcript fallback for accessibility / non-JS players
+          const transcriptContainer = document.getElementById('transcriptContainer');
+          transcriptContainer.innerHTML = '';
           if (item.transcript) {
             const details = document.createElement('details');
-            details.style.cssText = 'margin-top:.75rem;font-size:.82rem;color:var(--text-muted);';
+            details.style.cssText = 'padding:.5rem 1rem;font-size:.82rem;color:var(--text-muted);';
             const summary = document.createElement('summary');
             summary.textContent = 'Video description / transcript';
             summary.style.cssText = 'cursor:pointer;font-weight:600;margin-bottom:.35rem;';
@@ -164,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
             p.style.cssText = 'margin:.35rem 0 0;line-height:1.55;';
             details.appendChild(summary);
             details.appendChild(p);
-            previewMedia.appendChild(details);
+            transcriptContainer.appendChild(details);
           }
         } else {
           const vid = document.createElement('video');
@@ -321,9 +325,9 @@ document.addEventListener('DOMContentLoaded', () => {
       lbCounter.textContent = `${lbIndex + 1} / ${list.length}`;
     }
 
-    document.getElementById('lbClose').addEventListener('click', closeLightbox);
-    document.getElementById('lbPrev').addEventListener('click', () => { const _lbList=filtered(); lbIndex=((lbIndex-1)+_lbList.length)%_lbList.length; renderLightbox(); currentIndex=lbIndex; showPreview(true); });
-    document.getElementById('lbNext').addEventListener('click', () => { const _lbList=filtered(); lbIndex=(lbIndex+1)%_lbList.length; renderLightbox(); currentIndex=lbIndex; showPreview(true); });
+    document.getElementById('lbClose')?.addEventListener('click', closeLightbox);
+    document.getElementById('lbPrev')?.addEventListener('click', () => { const _lbList=filtered(); lbIndex=((lbIndex-1)+_lbList.length)%_lbList.length; renderLightbox(); currentIndex=lbIndex; showPreview(true); });
+    document.getElementById('lbNext')?.addEventListener('click', () => { const _lbList=filtered(); lbIndex=(lbIndex+1)%_lbList.length; renderLightbox(); currentIndex=lbIndex; showPreview(true); });
     lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
     // Focus trap — keep keyboard focus inside lightbox while open
     lightbox.addEventListener('keydown', e => {
@@ -348,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.exitFullscreen?.();
       }
     }
-    document.getElementById('mobileFullscreen').addEventListener('click', toggleFullscreen);
+    document.getElementById('mobileFullscreen')?.addEventListener('click', toggleFullscreen);
 
     // ── PREV / NEXT ──
     function navigate(dir) {
@@ -358,10 +362,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (slideshowOn) resetSlideshowTimer();
     }
 
-    document.getElementById('prevBtn').addEventListener('click', () => navigate(-1));
-    document.getElementById('nextBtn').addEventListener('click', () => navigate(1));
-    document.getElementById('mobilePrev').addEventListener('click', () => navigate(-1));
-    document.getElementById('mobileNext').addEventListener('click', () => navigate(1));
+    document.getElementById('prevBtn')?.addEventListener('click', () => navigate(-1));
+    document.getElementById('nextBtn')?.addEventListener('click', () => navigate(1));
+    document.getElementById('mobilePrev')?.addEventListener('click', () => navigate(-1));
+    document.getElementById('mobileNext')?.addEventListener('click', () => navigate(1));
 
     // ── SWIPE SUPPORT ──
     let touchStartX = 0, touchStartY = 0, _touchStartTime = 0;

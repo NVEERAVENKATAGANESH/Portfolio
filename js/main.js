@@ -14,7 +14,6 @@ const IS_TOUCH = window.matchMedia('(hover:none)').matches;
 // Cached reduced-motion preference — queried once to avoid repeated style recalcs
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-let _galaxyCtrl = null; // controlled by initTheme after initGalaxy runs
 
 /* ── 3. TYPED ── */
 function initTyped(){
@@ -652,10 +651,13 @@ function initCertPreview(){
   const loading = document.getElementById('certPopLoading');
 
   function position(){
+    const isMobile = window.innerWidth < 768;
+    pop.classList.toggle('cert-popover--mobile', isMobile);
+    backdrop.classList.toggle('cert-pop-backdrop--mobile', isMobile);
+    if(isMobile) return;
     const section = document.getElementById('achievements');
     const POP_W   = Math.min(420, section.offsetWidth * 0.94);
     const POP_H   = pop.offsetHeight || 500;
-    // Center horizontally and vertically within the section
     const left = (section.offsetWidth  - POP_W) / 2;
     const top  = section.scrollTop + (section.clientHeight - POP_H) / 2;
     pop.style.left = Math.max(14, left) + 'px';
@@ -845,7 +847,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const elapsed  = Date.now() - _preStart;
 
   setTimeout(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({top:0,behavior:'instant'});
     document.body.classList.remove('pre-loading');
     pre.classList.add('pre-done');
     pre.addEventListener('transitionend', () => pre.remove(), { once: true });
@@ -857,5 +859,4 @@ document.addEventListener('DOMContentLoaded', () => {
 // Three.js renderer cleanup on navigate/close to prevent battery drain
 window.addEventListener('beforeunload', () => {
   window._heroSphereCleanup?.();
-  window._galaxyCleanup?.();
 });

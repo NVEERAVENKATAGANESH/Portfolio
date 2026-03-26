@@ -2,7 +2,7 @@
    RESPONSIVE — all @media queries
    ══════════════════════════════════════════ */
 
-@media(max-width:768px){html{scroll-padding-top:64px;}}
+@media(max-width:768px){html{scroll-padding-top:48px;}}
 
 @media(max-width:1100px){.header-link span{display:none}.header-link{padding:.35rem .5rem}}
 @media(max-width:768px){
@@ -205,7 +205,7 @@
 /* ── Touch — no lift/scale transforms on tap, but keep the glow ── */
 @media(hover:none) and (pointer:coarse){
   .skill-card:hover,.project-card .card:hover,.achievement-card:hover,.testimonial-card:hover{
-    transform:none!important;outline:none!important;
+    transform:none!important;
   }
   .btn-about-cta:hover,.hero-btn-primary:hover,.hero-btn-ghost:hover{transform:none!important;}
   /* Full left-border glow on tap (same as desktop hover, no transform) */

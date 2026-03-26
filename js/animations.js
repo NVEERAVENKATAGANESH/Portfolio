@@ -46,7 +46,7 @@ function initAnimations(){
       {clipPath:'inset(0 0% 0 0)',opacity:1,duration:0.85,ease:'power3.out',
         scrollTrigger:{
           trigger:el,start:'top 88%',toggleActions:'play none none none',
-          onStart:()=>{ el.classList.add('heading-visible'); sectionEntryBurst(el); }
+          onStart:()=>{ el.classList.add('heading-visible'); }
         }}
     );
   });
@@ -118,63 +118,6 @@ function initAnimations(){
 
 }
 
-/* ── SECTION ENTRY BURST (GSAP onStart) ── */
-function sectionEntryBurst(triggerEl) {
-  if(document.querySelector('.burst-canvas')) return;
-  const rect = triggerEl.getBoundingClientRect();
-  const cvs  = document.createElement('canvas');
-  cvs.className = 'burst-canvas';
-  cvs.width  = rect.width;
-  cvs.height = rect.height;
-  Object.assign(cvs.style, {
-    position: 'fixed',
-    top: rect.top + 'px',
-    left: rect.left + 'px',
-    width: rect.width + 'px',
-    height: rect.height + 'px',
-    pointerEvents: 'none',
-    zIndex: '9998',
-  });
-  document.body.appendChild(cvs);
-  const onHidden = () => { if(document.hidden){ cvs.remove(); document.removeEventListener('visibilitychange', onHidden); } };
-  document.addEventListener('visibilitychange', onHidden);
-  const ctx  = cvs.getContext('2d');
-  const cx   = rect.width / 2, cy = rect.height / 2;
-  const COLS = ['rgba(99,102,241,', 'rgba(6,182,212,', 'rgba(139,92,246,'];
-
-  const particles = Array.from({ length: 60 }, () => {
-    const angle = Math.random() * Math.PI * 2;
-    const speed = 0.5 + Math.random() * 3;
-    return {
-      x: cx, y: cy,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed,
-      r: 2 + Math.random() * 2,
-      a: 0.9,
-      col: COLS[Math.floor(Math.random() * 3)],
-    };
-  });
-
-  const start = performance.now();
-  function draw(ts) {
-    const elapsed = ts - start;
-    ctx.clearRect(0, 0, cvs.width, cvs.height);
-    let anyAlive = false;
-    particles.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      p.vx *= 0.96; p.vy *= 0.96;
-      p.a = Math.max(0, 0.9 - elapsed / 800);
-      if (p.a > 0) {
-        anyAlive = true;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = p.col + p.a + ')'; ctx.fill();
-      }
-    });
-    if (anyAlive && elapsed < 900) requestAnimationFrame(draw);
-    else { document.removeEventListener('visibilitychange', onHidden); cvs.remove(); }
-  }
-  requestAnimationFrame(draw);
-}
 
 /* ── 18. STAT COUNTERS ── */
 function initStatCounters(){
