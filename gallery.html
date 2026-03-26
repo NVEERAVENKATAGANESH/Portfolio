@@ -148,7 +148,18 @@
       font-size: 0.72rem;
       color: var(--text);
     }
-    @media (max-width: 768px) { .kbd-hint { display: none; } }
+    /* On mobile: replace keyboard hint with swipe hint */
+    @media (max-width: 768px) {
+      .kbd-hint { display: none; }
+      .kbd-hint ~ .swipe-hint { display: flex; }
+    }
+    .swipe-hint {
+      display: none; /* shown only on mobile via above rule */
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      align-items: center;
+      gap: 0.35rem;
+    }
 
     /* ── Split View ── */
     .split-view {
@@ -587,8 +598,11 @@
     </span>
     <span id="currentCaption" class="gallery-current-caption"></span>
     <div class="toolbar-spacer"></div>
-    <span class="kbd-hint">
+    <span class="kbd-hint" aria-hidden="true">
       <kbd>←</kbd><kbd>→</kbd> navigate &nbsp;·&nbsp; <kbd>Space</kbd> play/pause &nbsp;·&nbsp; <kbd>F</kbd> fullscreen
+    </span>
+    <span class="swipe-hint" aria-hidden="true">
+      <i class="fas fa-hand-pointer"></i> Swipe to navigate
     </span>
     <button type="button" class="toolbar-btn" id="slideshowBtn" title="Toggle Slideshow">
       <i class="fas fa-play"></i> Slideshow
@@ -654,14 +668,13 @@
     </div>
   </footer>
 
-  <!-- ── TOAST ── -->
-  <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
-
-  <!-- main.js shared first (nav, theme, header), then gallery JS -->
   </main>
-  <script defer src="js/main.js"></script>
-  <script defer src="js/theme.js"></script>
+
+  <!-- Scripts -->
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script defer src="js/nav.js"></script>
+  <script defer src="js/theme.js"></script>
+  <script defer src="js/main.js"></script>
   <script defer src="js/gallery.js"></script>
 </body>
 </html>

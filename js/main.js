@@ -1,6 +1,10 @@
 'use strict';
 
+// Prevent browser from restoring scroll position on refresh — always start at top
+if('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
 const IS_GALLERY_PAGE = location.pathname.includes('gallery');
+const _preStart = Date.now(); // track page load start for smart preloader timing
 
 const throttle = (fn, ms=50) => { let l=0; return (...a) => { const n=Date.now(); if(n-l>=ms){l=n;fn(...a);} }; };
 const debounce = (fn, ms=100) => { let id; return (...a) => { clearTimeout(id); id=setTimeout(()=>fn(...a),ms); }; };
@@ -54,36 +58,32 @@ function initScrollBar(){
   },16),{passive:true});
 }
 
-/* ── 8. BACK TO TOP ── */
-function initBackToTop(){
-  const btn=document.getElementById('backToTop'); if(!btn) return;
-  window.addEventListener('scroll',throttle(()=>{
-    btn.style.display=window.scrollY>300?'flex':'none';
-  },100),{passive:true});
-  btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
-}
 
 /* ── 10. TIMELINE ── */
 function initTimeline(){
-  const toggle=document.querySelector('.timeline-toggle'); if(!toggle) return;
-  const btns=Array.from(toggle.querySelectorAll('.toggle-btn'));
-  const secs={education:document.querySelector('.section-education'),experience:document.querySelector('.section-experience')};
-  function show(name){
-    toggle.dataset.active=name;
-    toggle.style.setProperty('--pill-left',name==='education'?'0%':'50%');
-    btns.forEach(b=>b.setAttribute('aria-selected',b.dataset.section===name));
-    Object.entries(secs).forEach(([k,el])=>{
+  const tabs=Array.from(document.querySelectorAll('.jrny-tab'));
+  if(!tabs.length) return;
+  const panels={};
+  tabs.forEach(t=>{ panels[t.dataset.panel]=document.getElementById(`jpanel-${t.dataset.panel}`); });
+
+  function show(id){
+    tabs.forEach(t=>t.setAttribute('aria-selected', t.dataset.panel===id));
+    Object.entries(panels).forEach(([k,el])=>{
       if(!el) return;
-      el.classList.toggle('d-none',k!==name);
-      if(k===name) el.querySelectorAll('.timeline-item').forEach((item,i)=>{
-        item.classList.add('tl-anim');
-        item.classList.remove('visible');
-        setTimeout(()=>item.classList.add('visible'),i*160);
-      });
+      el.classList.toggle('d-none', k!==id);
+      if(k===id){
+        const entries=Array.from(el.querySelectorAll('.jrny-entry'));
+        entries.forEach((e,i)=>{
+          if(!e.classList.contains('jrny-in')){
+            setTimeout(()=>e.classList.add('jrny-in'), i*130);
+          }
+        });
+      }
     });
   }
-  btns.forEach(b=>b.addEventListener('click',()=>show(b.dataset.section)));
-  requestAnimationFrame(()=>requestAnimationFrame(()=>show(toggle.dataset.active||'education')));
+
+  tabs.forEach(t=>t.addEventListener('click',()=>show(t.dataset.panel)));
+  requestAnimationFrame(()=>requestAnimationFrame(()=>show('edu')));
 }
 
 /* ── 11. SKILLS ── */
@@ -107,19 +107,50 @@ function initSkills(){
 function initSkillCharts(){
   const charts=Array.from(document.querySelectorAll('.skill-chart'));
   if(!charts.length) return;
-  charts.forEach(c=>c.style.setProperty('--pct',0));
+
+  // Inject category badge + animated bar into each card (done once)
+  const CAT_LABELS={frontend:'Frontend',backend:'Backend',databases:'Databases',cloud:'Cloud',devops:'DevOps',methodologies:'Practices'};
+  charts.forEach(c=>{
+    const card=c.closest('.skill-card');
+    if(!card) return;
+    // Category badge (after .skill-name)
+    if(!card.querySelector('.skill-cat-badge')){
+      const badge=document.createElement('span');
+      badge.className='skill-cat-badge';
+      badge.textContent=CAT_LABELS[card.dataset.cat]||card.dataset.cat||'';
+      const nameEl=card.querySelector('.skill-name');
+      nameEl?nameEl.after(badge):card.appendChild(badge);
+    }
+    // Progress bar track (before .skill-value)
+    if(!card.querySelector('.skill-bar-track')){
+      const track=document.createElement('div');
+      track.className='skill-bar-track';
+      const bar=document.createElement('div');
+      bar.className='skill-bar';
+      bar.setAttribute('role','progressbar');
+      bar.setAttribute('aria-valuemin','0');
+      bar.setAttribute('aria-valuemax','100');
+      bar.setAttribute('aria-valuenow','0');
+      track.appendChild(bar);
+      const valEl=card.querySelector('.skill-value');
+      valEl?card.insertBefore(track,valEl):card.appendChild(track);
+    }
+  });
+
   if(reducedMotion){
     charts.forEach(c=>{
       const card=c.closest('.skill-card');
       const pct=parseFloat(card?.dataset.value)||0;
-      c.style.setProperty('--pct',pct);
+      const bar=card?.querySelector('.skill-bar');
+      if(bar){bar.style.width=pct+'%';bar.setAttribute('aria-valuenow',Math.round(pct));}
       const valEl=card?.querySelector('.skill-value');
       if(valEl) valEl.textContent=Math.round(pct)+'%';
     });
     return;
   }
+
   // Single shared rAF loop — all visible charts animate in one ticker
-  const active=new Map(); // chart → {pct, target, valEl}
+  const active=new Map(); // chart → {pct, target, valEl, bar}
   let rafId=null;
   let _animatedCount=0;
   const _totalCharts=charts.length;
@@ -127,7 +158,7 @@ function initSkillCharts(){
     let running=false;
     active.forEach((state,chart)=>{
       state.pct=Math.min(state.target,state.pct+1.5);
-      chart.style.setProperty('--pct',state.pct);
+      if(state.bar){state.bar.style.width=state.pct+'%';state.bar.setAttribute('aria-valuenow',Math.round(state.pct));}
       if(state.valEl) state.valEl.textContent=Math.round(state.pct)+'%';
       if(state.pct<state.target) running=true;
       else { active.delete(chart); _animatedCount++; if(_animatedCount>=_totalCharts && _skillObs) { _skillObs.disconnect(); _skillObs=null; } }
@@ -140,7 +171,8 @@ function initSkillCharts(){
     const card=chart.closest('.skill-card');
     const target=parseFloat(card?.dataset.value)||0;
     const valEl=card?.querySelector('.skill-value');
-    active.set(chart,{pct:0,target,valEl});
+    const bar=card?.querySelector('.skill-bar');
+    active.set(chart,{pct:0,target,valEl,bar});
     if(!rafId) rafId=requestAnimationFrame(tick);
   }
   let _skillObs=null;
@@ -157,16 +189,27 @@ function initSkillCharts(){
 /* ── 12. PROJECT FILTER ── */
 function initProjectFilter(){
   const search=document.getElementById('projectSearch');
-  const filter=document.getElementById('projectFilter');
   const sort=document.getElementById('projectSort');
   const cont=document.getElementById('projectGallery');
   const noMsg=document.getElementById('noProjectsMsg');
-  if(!search||!filter||!sort||!cont||!noMsg) return;
+  const resultCount=document.getElementById('projResultCount');
+  const pills=Array.from(document.querySelectorAll('.proj-pill'));
+  if(!search||!sort||!cont||!noMsg) return;
   const cards=Array.from(document.querySelectorAll('.project-card'));
+
+  // Populate pill counts
+  pills.forEach(pill=>{
+    const cat=pill.dataset.cat;
+    const count=cat==='all'?cards.length:cards.filter(c=>c.dataset.category===cat).length;
+    const el=pill.querySelector('.proj-pill-count');
+    if(el) el.textContent=count;
+  });
+
+  let activeCat='all';
+
   function apply(){
-    const term=search.value.trim().toLowerCase(), cat=filter.value;
+    const term=search.value.trim().toLowerCase();
     const getTitle=c=>(c.querySelector('.card-title')?.textContent||'');
-    // Sort first so DOM order always reflects active sort, then apply filter visibility
     const sorted=[...cards];
     if(sort.value==='az') sorted.sort((a,b)=>getTitle(a).localeCompare(getTitle(b)));
     if(sort.value==='za') sorted.sort((a,b)=>getTitle(b).localeCompare(getTitle(a)));
@@ -175,169 +218,29 @@ function initProjectFilter(){
     sorted.forEach(c=>{
       const t=(c.querySelector('.card-title')?.textContent??'').toLowerCase();
       const d=(c.querySelector('.card-text')?.textContent??'').toLowerCase();
-      const ok=(!term||t.includes(term)||d.includes(term))&&(cat==='all'||c.dataset.category===cat);
+      const tags=(c.dataset.tags||'').toLowerCase();
+      const ok=(!term||t.includes(term)||d.includes(term)||tags.includes(term))&&(activeCat==='all'||c.dataset.category===activeCat);
       c.style.display=ok?'':'none'; vis+=ok?1:0;
       frag.appendChild(c);
     });
     cont.appendChild(frag);
     noMsg.classList.toggle('d-none',vis>0);
+    if(resultCount) resultCount.textContent=`Showing ${vis} of ${cards.length} project${cards.length!==1?'s':''}`;
   }
+
+  pills.forEach(pill=>{
+    pill.addEventListener('click',()=>{
+      activeCat=pill.dataset.cat;
+      pills.forEach(p=>{p.classList.toggle('active',p===pill);p.setAttribute('aria-pressed',p===pill);});
+      apply();
+    });
+  });
+
   search.addEventListener('input',debounce(apply,100));
-  filter.addEventListener('change',apply);
   sort.addEventListener('change',apply);
   apply();
 }
 
-/* ── 13. CERTIFICATE MODAL ── */
-function initCertModal(){
-  // Section-local modals keyed by data-cert-modal attribute value
-  const MODALS = {
-    achievements: {
-      modal:     document.getElementById('achievementsCertModal'),
-      titleEl:   document.getElementById('achievementsCertModalTitle'),
-      subEl:     document.getElementById('achievementsCertModalSubtitle'),
-      contentEl: document.getElementById('achievementsCertModalContent'),
-      openLink:  document.getElementById('achievementsCertModalOpenLink'),
-      dlBtn:     document.getElementById('achievementsCertModalDownload'),
-    },
-    testimonials: {
-      modal:     document.getElementById('testimonialsCertModal'),
-      titleEl:   document.getElementById('testimonialsCertModalTitle'),
-      subEl:     document.getElementById('testimonialsCertModalSubtitle'),
-      contentEl: document.getElementById('testimonialsCertModalContent'),
-      openLink:  document.getElementById('testimonialsCertModalOpenLink'),
-      dlBtn:     document.getElementById('testimonialsCertModalDownload'),
-    }
-  };
-
-  let _certOpener = null;
-  let _clearTid = null;
-  function closeAll(){
-    clearTimeout(_clearTid); // cancel any stale content-clear that could wipe a freshly opened modal
-    Object.values(MODALS).forEach(m => {
-      if (!m.modal) return;
-      m.modal.classList.remove('is-open');
-      m.modal.setAttribute('aria-hidden', 'true');
-    });
-    document.body.classList.remove('cert-modal-open');
-    const opener = _certOpener;
-    _certOpener = null;
-    _clearTid = setTimeout(() => {
-      Object.values(MODALS).forEach(m => { if (m.contentEl) m.contentEl.innerHTML = ''; });
-      opener?.focus(); // return focus to the trigger after animation completes
-    }, 250);
-  }
-
-  // Close buttons inside modals
-  document.querySelectorAll('.section-cert-close').forEach(btn => {
-    btn.addEventListener('click', closeAll);
-  });
-
-  // Focus trap — keep Tab cycling inside each cert modal while open
-  Object.values(MODALS).forEach(m => {
-    if (!m.modal) return;
-    m.modal.addEventListener('keydown', e => {
-      if (e.key !== 'Tab' || !m.modal.classList.contains('is-open')) return;
-      const focusable = Array.from(m.modal.querySelectorAll('button,a,input,[tabindex]:not([tabindex="-1"])'))
-        .filter(el => !el.disabled && el.offsetParent !== null);
-      if (!focusable.length) return;
-      const first = focusable[0], last = focusable[focusable.length - 1];
-      if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
-      else { if (document.activeElement === last) { e.preventDefault(); first.focus(); } }
-    });
-  });
-
-  // Click backdrop to close
-  Object.values(MODALS).forEach(m => {
-    if (!m.modal) return;
-    m.modal.addEventListener('click', e => { if (e.target === m.modal) closeAll(); });
-    // Swipe down to close on touch devices
-    let touchY = 0;
-    const box = m.modal.querySelector('.section-cert-modal-box');
-    if (box) {
-      box.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
-      box.addEventListener('touchend', e => { if (e.changedTouches[0].clientY - touchY > 80) closeAll(); }, { passive: true });
-    }
-  });
-
-  // Escape key
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      const anyOpen = Object.values(MODALS).some(m => m.modal?.classList.contains('is-open'));
-      if (anyOpen) closeAll();
-    }
-  });
-
-  // Open modal on [data-cert] button click
-  document.querySelectorAll('[data-cert]').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.preventDefault();
-      const certPath = (btn.dataset.cert || '').trim().replace(/\0/g, '');
-      if(!certPath || !/^(https?:\/\/|\/[^/]|images\/)/.test(certPath) || certPath.includes('..')) return;
-      const certName = btn.dataset.certName || 'Certificate';
-      const modalKey = btn.dataset.certModal || 'achievements';
-      const m = MODALS[modalKey];
-      if (!m || !m.modal || !m.contentEl) return;
-
-      const isPdf = /\.pdf$/i.test(certPath);
-
-      if (m.titleEl) m.titleEl.textContent = certName;
-      if (m.subEl)   m.subEl.textContent   = isPdf ? 'PDF preview' : 'Image preview';
-      if (m.openLink){ m.openLink.href = certPath; }
-      if (m.dlBtn)   { m.dlBtn.href = certPath; m.dlBtn.setAttribute('download', certName); }
-
-      m.contentEl.innerHTML = '<div class="cert-spinner"><div class="cert-spinner-ring"></div><span>Loading certificate…</span></div>';
-
-      if (isPdf) {
-        m.contentEl.innerHTML = '';
-        const obj = document.createElement('object');
-        obj.data = certPath;
-        obj.type = 'application/pdf';
-        obj.style.cssText = 'width:100%;height:520px;border:none;border-radius:0.75rem;background:#fff;display:block;';
-        obj.setAttribute('aria-label', certName);
-        // Build fallback via DOM — no innerHTML with user-derived paths
-        const fb = document.createElement('div'); fb.className = 'cert-error';
-        const fbI = document.createElement('i'); fbI.className = 'fas fa-file-pdf'; fbI.setAttribute('aria-hidden','true');
-        const fbP = document.createElement('p'); fbP.textContent = 'PDF preview not available in this browser.';
-        const fbA = document.createElement('a'); fbA.href = certPath; fbA.target = '_blank'; fbA.rel = 'noopener'; fbA.className = 'btn btn-primary btn-sm';
-        const fbAI = document.createElement('i'); fbAI.className = 'fas fa-external-link-alt me-1'; fbAI.setAttribute('aria-hidden','true');
-        fbA.appendChild(fbAI); fbA.appendChild(document.createTextNode('Open PDF'));
-        fb.appendChild(fbI); fb.appendChild(fbP); fb.appendChild(fbA);
-        obj.appendChild(fb);
-        m.contentEl.appendChild(obj);
-      } else {
-        const img = new Image();
-        img.alt = certName;
-        img.style.cssText = 'width:100%;border-radius:0.75rem;display:none;';
-        let _certImgTid = null;
-        const showCertError = (msg) => {
-          clearTimeout(_certImgTid); _certImgTid = null;
-          // Build error via DOM — no innerHTML with user-derived paths
-          const er = document.createElement('div'); er.className = 'cert-error';
-          const erI = document.createElement('i'); erI.className = 'fas fa-exclamation-circle'; erI.setAttribute('aria-hidden','true');
-          const erP = document.createElement('p'); erP.textContent = msg || 'Could not load preview.';
-          const erA = document.createElement('a'); erA.href = certPath; erA.target = '_blank'; erA.rel = 'noopener'; erA.className = 'btn btn-outline-primary btn-sm';
-          const erAI = document.createElement('i'); erAI.className = 'fas fa-external-link-alt me-1'; erAI.setAttribute('aria-hidden','true');
-          erA.appendChild(erAI); erA.appendChild(document.createTextNode('Open directly'));
-          er.appendChild(erI); er.appendChild(erP); er.appendChild(erA);
-          m.contentEl.replaceChildren(er);
-        };
-        img.onload  = () => { clearTimeout(_certImgTid); _certImgTid = null; m.contentEl.innerHTML = ''; img.style.display = 'block'; m.contentEl.appendChild(img); };
-        img.onerror = () => showCertError('Could not load preview.');
-        _certImgTid = setTimeout(() => { img.src = ''; showCertError('Certificate took too long to load.'); }, 8000);
-        img.src = certPath;
-      }
-
-      _certOpener = btn; // track for focus restoration on close
-      clearTimeout(_clearTid); // cancel any pending content-clear from a previous close
-      m.modal.classList.add('is-open');
-      m.modal.setAttribute('aria-hidden', 'false');
-      document.body.classList.add('cert-modal-open');
-      const certBox = m.modal.querySelector('.section-cert-modal-box') || m.modal.querySelector('[tabindex="-1"]');
-      if(certBox){ certBox.setAttribute('tabindex','-1'); requestAnimationFrame(()=>certBox.focus({ preventScroll:true })); }
-    });
-  });
-}
 
 /* ── 14. CONTACT ── */
 function initContact(){
@@ -389,61 +292,6 @@ function initContact(){
 }
 
 
-/* ── 14b. PROJECT DETAIL MODAL ── */
-function initProjectModal(){
-  const modal     = document.getElementById('projectModal');
-  const closeBtn  = document.getElementById('projModalClose');
-  if(!modal) return;
-
-  const titleEl   = document.getElementById('projModalTitle');
-  const tagEl     = document.getElementById('projModalTag');
-  const descEl    = document.getElementById('projModalDesc');
-  const actionsEl = document.getElementById('projModalActions');
-
-  let _projOpener = null;
-  function openModal(card){
-    const title   = card.querySelector('.card-title')?.textContent?.trim() || '';
-    const tag     = card.querySelector('.project-tag')?.textContent?.trim() || '';
-    const desc    = card.querySelector('.card-text')?.textContent?.trim() || '';
-    const actions = card.querySelector('.project-actions');
-
-    if(titleEl) titleEl.textContent = title;
-    if(tagEl)   tagEl.textContent   = tag;
-    if(descEl)  descEl.textContent  = desc;
-    // Clone DOM nodes instead of copying innerHTML to avoid any XSS risk
-    if(actionsEl && actions) actionsEl.replaceChildren(...Array.from(actions.cloneNode(true).childNodes));
-
-    _projOpener = document.activeElement;
-    modal.classList.add('is-open');
-    modal.setAttribute('aria-hidden','false');
-    closeBtn?.focus({ preventScroll: true });
-  }
-  function closeModal(){
-    modal.classList.remove('is-open');
-    modal.setAttribute('aria-hidden','true');
-    _projOpener?.focus();
-    _projOpener = null;
-  }
-
-  closeBtn?.addEventListener('click', closeModal);
-  modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
-  document.addEventListener('keydown', e=>{ if(e.key==='Escape'&&modal.classList.contains('is-open')) closeModal(); });
-
-  // Make entire project card clickable — skip if clicking a link/button inside project-actions
-  document.querySelectorAll('.project-card').forEach(card=>{
-    card.setAttribute('role','button');
-    card.setAttribute('tabindex','0');
-    card.setAttribute('aria-label', card.querySelector('.card-title')?.textContent?.trim() || 'Project details');
-    card.style.cursor='pointer';
-    card.addEventListener('click', e=>{
-      if(e.target.closest('.project-actions')) return;
-      openModal(card);
-    });
-    card.addEventListener('keydown', e=>{
-      if((e.key==='Enter'||e.key===' ') && !e.target.closest('.project-actions')) openModal(card);
-    });
-  });
-}
 
 /* ── 15. HIRE BANNER ── */
 function initHireBanner(){
@@ -494,41 +342,71 @@ function initCopyEmail(){
   emailSpan?.addEventListener('click',doCopy);
 }
 
-/* ── 17. TESTIMONIALS PAGINATOR + LEAVE A TESTIMONIAL ── */
+/* ── 17. TESTIMONIALS CAROUSEL + LEAVE A TESTIMONIAL ── */
 function initTestimonialsCarousel(){
-  const grid   = document.getElementById('tpGrid');
-  const navEl  = document.getElementById('tpNav');
-  const prevBtn= document.getElementById('tpPrev');
-  const nextBtn= document.getElementById('tpNext');
-  const pageInfo= document.getElementById('tpPageInfo');
-  if(!grid) return;
+  const track   = document.getElementById('tcTrack');
+  const prevBtn = document.getElementById('tpPrev');
+  const nextBtn = document.getElementById('tpNext');
+  const dotsEl  = document.getElementById('tcDots');
+  const carousel= document.getElementById('testimonialsCarousel');
+  if(!track) return;
 
-  const PER_PAGE = 3;
-  let cards = Array.from(grid.querySelectorAll('.tp-card'));
-  let page  = 0;
+  const slides = Array.from(track.querySelectorAll('.tc-slide'));
+  const total  = slides.length;
+  const dots   = dotsEl ? Array.from(dotsEl.querySelectorAll('.tc-dot')) : [];
+  let current  = 0;
+  let autoTimer= null;
 
-  function totalPages(){ return Math.ceil(cards.length / PER_PAGE); }
-
-  function render(){
-    const tp = totalPages();
-    cards.forEach((c,i)=>{
-      const onPage = Math.floor(i / PER_PAGE) === page;
-      c.classList.toggle('visible', onPage);
+  function goTo(idx, announce=true){
+    current = ((idx % total) + total) % total;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    slides.forEach((s,i)=>{
+      s.setAttribute('aria-hidden', i !== current ? 'true' : 'false');
+      s.setAttribute('tabindex',    i !== current ? '-1'    : '0');
     });
-    if(tp > 1){
-      navEl.classList.add('visible');
-      if(pageInfo) pageInfo.textContent = `Page ${page+1} of ${tp}`;
-      if(prevBtn)  prevBtn.disabled = page === 0;
-      if(nextBtn)  nextBtn.disabled = page === tp - 1;
-    } else {
-      navEl.classList.remove('visible');
+    dots.forEach((d,i)=>{
+      const active = i === current;
+      d.classList.toggle('active', active);
+      d.setAttribute('aria-selected', String(active));
+    });
+    if(announce && carousel){
+      carousel.setAttribute('aria-label', `Testimonials — ${current+1} of ${total}`);
     }
   }
 
-  prevBtn?.addEventListener('click',()=>{ if(page>0){ page--; render(); } });
-  nextBtn?.addEventListener('click',()=>{ if(page<totalPages()-1){ page++; render(); } });
+  function startAuto(){
+    if(reducedMotion) return;
+    clearInterval(autoTimer);
+    autoTimer = setInterval(()=>goTo(current+1), 5000);
+  }
+  function stopAuto(){ clearInterval(autoTimer); }
 
-  render();
+  prevBtn?.addEventListener('click',()=>{ goTo(current-1); startAuto(); });
+  nextBtn?.addEventListener('click',()=>{ goTo(current+1); startAuto(); });
+  dots.forEach(d=>d.addEventListener('click',()=>{ goTo(parseInt(d.dataset.idx,10)||0); startAuto(); }));
+
+  // Pause auto-scroll while user is interacting
+  carousel?.addEventListener('mouseenter', stopAuto);
+  carousel?.addEventListener('mouseleave', startAuto);
+  carousel?.addEventListener('focusin',    stopAuto);
+  carousel?.addEventListener('focusout',   startAuto);
+
+  // Touch swipe
+  let _touchX = 0;
+  carousel?.addEventListener('touchstart', e=>{ _touchX=e.touches[0].clientX; },{passive:true});
+  carousel?.addEventListener('touchend',   e=>{
+    const dx = e.changedTouches[0].clientX - _touchX;
+    if(Math.abs(dx)>50){ goTo(dx<0?current+1:current-1); startAuto(); }
+  },{passive:true});
+
+  // Keyboard arrow navigation when carousel is focused
+  carousel?.addEventListener('keydown', e=>{
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'){ e.preventDefault(); goTo(current+1); startAuto(); }
+    if(e.key==='ArrowLeft' ||e.key==='ArrowUp')  { e.preventDefault(); goTo(current-1); startAuto(); }
+  });
+
+  goTo(0, false);
+  startAuto();
 
   // Leave a Testimonial modal
   const openBtn  = document.getElementById('leaveTestimonialBtn');
@@ -568,7 +446,7 @@ function initTestimonialsCarousel(){
   modal?.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
   document.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal?.classList.contains('is-open')) closeModal(); });
 
-  form?.addEventListener('submit', e=>{
+  form?.addEventListener('submit', async e=>{
     e.preventDefault();
     const name = document.getElementById('ltmName')?.value.trim();
     const msg  = document.getElementById('ltmMessage')?.value.trim();
@@ -579,13 +457,35 @@ function initTestimonialsCarousel(){
       }
       return;
     }
-    // Show thank-you message (submissions reviewed before going live)
-    if(feedback){
-      feedback.textContent = 'Thank you! Your testimonial has been submitted for review.';
-      feedback.className = 'mb-2 alert alert-success py-2';
-    }
+    const submitBtn = form.querySelector('button[type="submit"]');
     form.querySelectorAll('input,textarea,button[type="submit"]').forEach(el=>el.disabled=true);
-    setTimeout(closeModal, 2800);
+    if(feedback){
+      feedback.textContent = 'Submitting…';
+      feedback.className = 'mb-2 alert alert-info py-2';
+    }
+    try{
+      const res = await fetch('https://formspree.io/f/mwkajzzb', {
+        method:'POST',
+        headers:{'Accept':'application/json','Content-Type':'application/json'},
+        body: JSON.stringify({name, message: msg, _subject:'New Testimonial Submission'})
+      });
+      if(res.ok){
+        if(feedback){
+          feedback.textContent = 'Thank you! Your testimonial has been submitted for review.';
+          feedback.className = 'mb-2 alert alert-success py-2';
+        }
+        setTimeout(closeModal, 2800);
+      } else {
+        throw new Error('server');
+      }
+    } catch(_){
+      if(feedback){
+        feedback.textContent = 'Submission failed. Please try again or email me directly.';
+        feedback.className = 'mb-2 alert alert-danger py-2';
+      }
+      form.querySelectorAll('input,textarea').forEach(el=>el.disabled=false);
+      if(submitBtn) submitBtn.disabled=false;
+    }
   });
 }
 
@@ -672,39 +572,6 @@ function initMagneticIcons(){
   });
 }
 
-/* ── CURSOR GLOW ── */
-function initCursorGlow(){
-  if(IS_TOUCH) return;
-  if(document.getElementById('cursorGlow')) return; // guard against duplicate init
-  const glow=document.createElement('div');
-  glow.id='cursorGlow';
-  // Static styles set once; position driven via CSS vars --gx/--gy to avoid per-frame style recalc
-  Object.assign(glow.style,{
-    position:'fixed',width:'300px',height:'300px',
-    borderRadius:'50%',
-    background:'radial-gradient(circle,rgba(99,102,241,.12) 0%,transparent 70%)',
-    pointerEvents:'none',zIndex:'1',
-    transform:'translate(calc(var(--gx,0px) - 50%), calc(var(--gy,0px) - 50%))',
-    transition:'opacity 0.3s ease',
-    willChange:'transform',left:'0px',top:'0px',
-  });
-  document.body.appendChild(glow);
-  let gx=0,gy=0,cx=0,cy=0;
-  window.addEventListener('mousemove',e=>{cx=e.clientX;cy=e.clientY;},{passive:true});
-  let _glowRaf=null;
-  function animate(){
-    gx+=(cx-gx)*.08; gy+=(cy-gy)*.08;
-    glow.style.setProperty('--gx',gx+'px');
-    glow.style.setProperty('--gy',gy+'px');
-    if(Math.abs(cx-gx)>.3||Math.abs(cy-gy)>.3) _glowRaf=requestAnimationFrame(animate);
-    else _glowRaf=null;
-  }
-  document.addEventListener('mousemove',()=>{ if(!_glowRaf) _glowRaf=requestAnimationFrame(animate); },{passive:true});
-  _glowRaf=requestAnimationFrame(animate);
-  document.addEventListener('mouseleave',()=>{ glow.style.opacity='0'; if(_glowRaf){ cancelAnimationFrame(_glowRaf); _glowRaf=null; } });
-  document.addEventListener('mouseenter',()=>{glow.style.opacity='1';});
-}
-
 /* ── BROKEN LINK HANDLER ── */
 function initBrokenLinkHandler(){
   document.addEventListener('click', e => {
@@ -725,30 +592,217 @@ function initBrokenLinkHandler(){
   });
 }
 
+/* ── Shared preview modal helper ── */
+function _openPvModal(modalEl, frameEl, loadingEl, src, title){
+  if(!modalEl || !frameEl) return;
+  // Reset
+  frameEl.classList.remove('pv-loaded');
+  if(loadingEl) loadingEl.classList.remove('pv-hidden');
+  frameEl.src = '';
+
+  document.body.classList.add('pv-open');
+  modalEl.classList.add('is-open');
+  modalEl.setAttribute('aria-hidden','false');
+
+  // Trap focus
+  const focusable = modalEl.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])');
+  const first = focusable[0], last = focusable[focusable.length-1];
+  function trapFocus(e){
+    if(e.key!=='Tab') return;
+    if(e.shiftKey){ if(document.activeElement===first){e.preventDefault();last.focus();} }
+    else{ if(document.activeElement===last){e.preventDefault();first.focus();} }
+  }
+  modalEl._trapFocus = trapFocus;
+  modalEl.addEventListener('keydown',trapFocus);
+  setTimeout(()=>{ if(first) first.focus(); },50);
+
+  // Load PDF
+  frameEl.onload = ()=>{
+    frameEl.classList.add('pv-loaded');
+    if(loadingEl) loadingEl.classList.add('pv-hidden');
+  };
+  frameEl.src = src;
+
+  if(title){
+    const titleEl = modalEl.querySelector('.pv-title');
+    if(titleEl) titleEl.textContent = title;
+  }
+}
+
+function _closePvModal(modalEl, frameEl){
+  if(!modalEl) return;
+  document.body.classList.remove('pv-open');
+  modalEl.classList.remove('is-open');
+  modalEl.setAttribute('aria-hidden','true');
+  if(modalEl._trapFocus){ modalEl.removeEventListener('keydown',modalEl._trapFocus); delete modalEl._trapFocus; }
+  // Delay src clear so transition finishes
+  setTimeout(()=>{ if(frameEl) frameEl.src=''; }, 300);
+}
+
+/* ── 14a. CERT PREVIEW — anchored popover ── */
+function initCertPreview(){
+  const pop      = document.getElementById('certPopover');
+  const backdrop = document.getElementById('certPopBackdrop');
+  if(!pop || !backdrop) return;
+
+  const img     = document.getElementById('certPopImg');
+  const frame   = document.getElementById('certPopFrame');
+  const title   = document.getElementById('certPopTitle');
+  const dl      = document.getElementById('certPopDl');
+  const loading = document.getElementById('certPopLoading');
+
+  function position(){
+    const section = document.getElementById('achievements');
+    const POP_W   = Math.min(420, section.offsetWidth * 0.94);
+    const POP_H   = pop.offsetHeight || 500;
+    // Center horizontally and vertically within the section
+    const left = (section.offsetWidth  - POP_W) / 2;
+    const top  = section.scrollTop + (section.clientHeight - POP_H) / 2;
+    pop.style.left = Math.max(14, left) + 'px';
+    pop.style.top  = Math.max(14, top)  + 'px';
+    pop.style.transformOrigin = '50% 50%';
+  }
+
+  function open(src, name){
+    if(title)   title.textContent = name;
+    if(dl)    { dl.href = src; dl.setAttribute('download', name); }
+    if(loading) loading.classList.remove('hidden');
+
+    const isPDF = src.toLowerCase().endsWith('.pdf');
+    if(isPDF){
+      img.classList.add('d-none');   img.src = '';
+      frame.src = src;               frame.classList.remove('d-none');
+    } else {
+      frame.classList.add('d-none'); frame.src = '';
+      img.src = src;                 img.classList.remove('d-none');
+      img.onload = () => { if(loading) loading.classList.add('hidden'); };
+    }
+    // PDFs: hide spinner after a short delay (iframe load event is unreliable for PDFs)
+    if(isPDF) setTimeout(() => { if(loading) loading.classList.add('hidden'); }, 800);
+
+    backdrop.classList.add('is-open');
+    pop.setAttribute('aria-hidden', 'false');
+
+    // Measure then position
+    pop.style.opacity = '0';
+    pop.classList.add('is-open');
+    requestAnimationFrame(() => {
+      position();
+      pop.style.opacity = '';
+      document.getElementById('certPopClose')?.focus();
+    });
+
+    document.body.classList.add('pv-open');
+  }
+
+  function close(){
+    pop.classList.remove('is-open');
+    backdrop.classList.remove('is-open');
+    pop.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('pv-open');
+    setTimeout(() => {
+      img.src = '';  img.classList.add('d-none');
+      frame.src = ''; frame.classList.add('d-none');
+      if(loading) loading.classList.remove('hidden');
+    }, 260);
+  }
+
+  document.querySelectorAll('[data-certificate]').forEach(btn => {
+    btn.addEventListener('click', () =>
+      open(btn.dataset.certificate || '', btn.dataset.certificateName || 'Certificate')
+    );
+  });
+
+  document.getElementById('certPopClose')?.addEventListener('click', close);
+  document.getElementById('certPopCloseBtn')?.addEventListener('click', close);
+  backdrop.addEventListener('click', close);
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && pop.classList.contains('is-open')) close();
+  });
+}
+
+/* ── 14b. RESUME PREVIEW + PRINT ── */
+function initResumePreview(){
+  const section    = document.getElementById('resume');
+  const modal      = document.getElementById('pvResumeModal');
+  const frame      = document.getElementById('pvResumeFrame');
+  const loading    = document.getElementById('pvResumeLoading');
+  const previewBtn = document.getElementById('resumePreviewBtn');
+  const printBtn   = document.getElementById('resumePrintBtn');
+
+  // Preview modal — section-scoped (position:absolute inside #resume)
+  if(modal && frame && previewBtn && section){
+    function openResume(){
+      frame.classList.remove('pv-loaded');
+      if(loading) loading.classList.remove('pv-hidden');
+      frame.src = '';
+      section.classList.add('resume-modal-open');
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden','false');
+      frame.onload = ()=>{ frame.classList.add('pv-loaded'); if(loading) loading.classList.add('pv-hidden'); };
+      frame.src = 'Ganesh_SDE.pdf';
+      setTimeout(()=>{ modal.querySelector('button,[href]')?.focus(); }, 50);
+    }
+    function closeResume(){
+      section.classList.remove('resume-modal-open');
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden','true');
+      frame.src = '';
+      frame.classList.remove('pv-loaded');
+      previewBtn.focus();
+    }
+    previewBtn.addEventListener('click', openResume);
+    document.getElementById('pvResumeClose')?.addEventListener('click', closeResume);
+    document.getElementById('pvResumeCloseBtn')?.addEventListener('click', closeResume);
+    modal.addEventListener('click', e=>{ if(e.target===modal) closeResume(); });
+    modal.addEventListener('keydown', e=>{ if(e.key==='Escape') closeResume(); });
+  }
+
+  // Print (hidden iframe)
+  if(!printBtn) return;
+  function printPDF(){
+    let pf = document.getElementById('_resumePrintFrame');
+    if(!pf){
+      pf = document.createElement('iframe');
+      pf.id = '_resumePrintFrame';
+      pf.style.cssText = 'position:fixed;top:-1px;left:-1px;width:1px;height:1px;border:none;visibility:hidden;';
+      document.body.appendChild(pf);
+    }
+    let _done = false;
+    const doPrint = () => {
+      if(_done) return; _done = true;
+      try{ pf.contentWindow.focus(); pf.contentWindow.print(); }
+      catch(e){ window.open('Ganesh_SDE.pdf','_blank'); }
+    };
+    pf.onload = doPrint;
+    setTimeout(doPrint, 900);
+    pf.src = 'Ganesh_SDE.pdf';
+  }
+  printBtn.addEventListener('click', printPDF);
+}
+
 /* ── BOOT ── */
 document.addEventListener('DOMContentLoaded', () => {
   buildNav();           // inject nav first — all other inits depend on it
   initScrollBar();
-  initBackToTop();
   initHeader();
   initTheme();          // shared — runs on all pages now that nav is injected
   initFooter();
   initBrokenLinkHandler();
   initMagneticIcons();
-  initCursorGlow();
 
   if(IS_GALLERY_PAGE) return; // gallery-specific JS is in js/gallery.js
 
   // Index-only inits
   initHeroSphere();
-  init3DBackground();
+  // init3DBackground(); // galaxy removed
   initTyped();
   initTimeline();
   initSkills();
   initSkillCharts();
   initProjectFilter();
-  initCertModal();
-  initProjectModal();
+  initCertPreview();
+  initResumePreview();
   initContact();
   initPhotoTilt();
   initHireBanner();
@@ -759,9 +813,45 @@ document.addEventListener('DOMContentLoaded', () => {
   initProjectThumbs();
 });
 
+// Two flags so initAnimations only runs once GSAP is ready AND preloader is done
+let _gsapReady = false;
+let _preReady  = false;
+function _maybeInitAnimations(){
+  if(_gsapReady && _preReady) initAnimations();
+}
+
 // GSAP loads via defer — guaranteed available on window.load
 window.addEventListener('load', () => {
-  initAnimations();
+  _gsapReady = true;
+  _maybeInitAnimations();
+});
+
+// Preloader — fixed 3s display, independent of asset loading
+document.addEventListener('DOMContentLoaded', () => {
+  const pre = document.getElementById('preloader');
+
+  // Returning visitor — preloader hidden via CSS, skip immediately
+  if(!pre || document.documentElement.classList.contains('no-preload')){
+    if(pre) pre.remove();
+    document.body.classList.remove('pre-loading');
+    _preReady = true; _maybeInitAnimations();
+    return;
+  }
+
+  // First visit this session — mark so subsequent navigations skip
+  sessionStorage.setItem('_pvst', '1');
+
+  const DURATION = 3000;
+  const elapsed  = Date.now() - _preStart;
+
+  setTimeout(() => {
+    window.scrollTo(0, 0);
+    document.body.classList.remove('pre-loading');
+    pre.classList.add('pre-done');
+    pre.addEventListener('transitionend', () => pre.remove(), { once: true });
+    // Signal ready — initAnimations fires as soon as GSAP is also loaded
+    setTimeout(() => { _preReady = true; _maybeInitAnimations(); }, 400);
+  }, Math.max(DURATION - elapsed, 0));
 });
 
 // Three.js renderer cleanup on navigate/close to prevent battery drain

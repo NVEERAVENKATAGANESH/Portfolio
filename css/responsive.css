@@ -6,9 +6,6 @@
 
 @media(max-width:1100px){.header-link span{display:none}.header-link{padding:.35rem .5rem}}
 @media(max-width:768px){
-  /* Fix header so it stays visible while scrolling on mobile */
-  #site-header{position:fixed;width:100%;top:0;left:0;}
-  /* Push body content below the fixed header */
   body{padding-top:48px;}
   .header-inner{height:48px;padding:0 .6rem;gap:.2rem;}
   .header-nav{display:flex;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex:1;gap:0;}
@@ -22,17 +19,21 @@
 /* Only render sidebar on mobile */
 @media(min-width:769px){.mobile-sidebar,.sidebar-backdrop{display:none!important}}
 
-@media(max-width:1400px){.skills-grid{grid-template-columns:repeat(7,1fr)}}
-@media(max-width:1200px){.skills-grid{grid-template-columns:repeat(6,1fr)}}
-@media(max-width:992px){.skills-grid{grid-template-columns:repeat(4,1fr)}}
-@media(max-width:768px){.skills-grid{grid-template-columns:repeat(3,1fr);gap:1rem}}
-@media(max-width:480px){.skills-grid{grid-template-columns:repeat(2,1fr);gap:.75rem}}
+@media(max-width:1200px){.skills-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){.skills-grid{grid-template-columns:repeat(2,1fr);gap:.85rem}}
+@media(max-width:480px){.skills-grid{grid-template-columns:1fr;gap:.75rem}}
 
 @media(max-width:992px){
-  #timeline .timeline-line{left:1rem;transform:translateX(-50%)}
-  .section-education .timeline-item:nth-child(odd),.section-education .timeline-item:nth-child(even),
-  .section-experience .timeline-item:nth-child(odd),.section-experience .timeline-item:nth-child(even){left:2.25rem;width:calc(100% - 2.75rem);padding-left:1.75rem}
-  .timeline-item::before{content:"";position:absolute;left:-1.25rem;top:1.2rem;width:10px;height:10px;background:var(--primary);border-radius:50%;transform:translateX(-50%)}
+  /* Journey timeline: switch to single-column spine on the left */
+  .jrny-panel{padding-left:56px;}
+  .jrny-spine{left:20px;transform:none;}
+  .jrny-entry{grid-template-columns:44px 1fr;column-gap:.9rem;}
+  .jrny-node,.jrny-entry--left .jrny-node{grid-column:1;grid-row:1;}
+  .jrny-card,.jrny-entry--left .jrny-card{grid-column:2;grid-row:1;}
+  .jrny-node{width:42px;height:42px;font-size:.95rem;box-shadow:0 0 0 3px var(--bg),0 0 0 5px rgba(99,102,241,.3);}
+  .jrny-node--exp{box-shadow:0 0 0 3px var(--bg),0 0 0 5px rgba(16,185,129,.3);}
+  .jrny-entry--left,.jrny-entry--right{transform:translateY(16px);}
+  .jrny-entry--left.jrny-in,.jrny-entry--right.jrny-in{transform:translateY(0);}
 }
 
 /* Mobile hero */
@@ -120,19 +121,18 @@
   .about-stat-number{font-size:1.6rem;}
 }
 
-/* ── Timeline ── */
-@media(max-width:576px){
-  .timeline-item h5{font-size:.88rem;}
-  .timeline-item p{font-size:.81rem;}
-  .timeline-item{padding:.85rem 1rem;}
-  .timeline-toggle{font-size:.82rem;}
+/* ── Journey timeline small mobile ── */
+@media(max-width:480px){
+  .jrny-card{padding:1rem 1.1rem;}
+  .jrny-title{font-size:.9rem;}
+  .jrny-tab{padding:.5rem 1.1rem;font-size:.84rem;}
 }
 
 /* ── Skills ── */
 @media(max-width:360px){
-  .skills-grid{grid-template-columns:repeat(2,1fr);gap:.6rem;}
-  .skill-chart{width:66px;height:66px;}
-  .skill-name{font-size:.72rem;}
+  .skills-grid{grid-template-columns:1fr;gap:.6rem;}
+  .skill-chart{width:34px;height:34px;}
+  .skill-name{font-size:.82rem;}
 }
 
 /* ── Projects ── */
@@ -179,11 +179,8 @@
 }
 
 /* ── Footer ── */
-@media(max-width:576px){
-  /* Stack copyright above socials, but keep socials row horizontal */
-  footer .container.d-flex{flex-direction:column;align-items:center;gap:.5rem;text-align:center;}
-  footer .footer-social{flex-direction:row!important;justify-content:center;gap:1.25rem;}
-  footer .footer-copy{font-size:.78rem;}
+@media(max-width:480px){
+  footer .container{flex-direction:column;text-align:center;gap:.5rem;}
 }
 
 /* ── Toast — keep above mobile nav bar ── */
@@ -191,10 +188,6 @@
   #_toast{bottom:20px;font-size:.82rem;padding:.5rem 1.1rem;}
 }
 
-/* ── Back-to-top ── */
-@media(max-width:480px){
-  #backToTop{bottom:1.25rem;right:.85rem;width:40px;height:40px;font-size:.85rem;}
-}
 
 /* ── Hire banner ── */
 @media(max-width:480px){
@@ -272,18 +265,6 @@
   #about .col-lg-8{order:2;}
 }
 
-/* ── Timeline: single-column, full-width cards ── */
-@media(max-width:768px){
-  #timeline .timeline-line{left:0.9rem;transform:none;}
-  .section-education .timeline-item:nth-child(odd),
-  .section-education .timeline-item:nth-child(even),
-  .section-experience .timeline-item:nth-child(odd),
-  .section-experience .timeline-item:nth-child(even){
-    left:2rem;
-    width:calc(100% - 2.5rem);
-    padding-left:1.5rem;
-  }
-}
 
 
 /* ── Projects: single column on mobile ── */
@@ -324,8 +305,8 @@
 @media(max-width:768px){
   /* NOTE: .header-icon-btn intentionally excluded — it is display:none on mobile */
   .sidebar-link,.tc-arrow,
-  .sidebar-close-btn,.cm-close,.section-cert-close,
-  #backToTop,.header-menu-btn{
+  .sidebar-close-btn,.cert-modal-close,
+  .header-menu-btn{
     min-height:44px;min-width:44px;
     display:inline-flex;align-items:center;justify-content:center;
   }
@@ -336,8 +317,7 @@
 
 /* ── Footer: reduce padding on mobile ── */
 @media(max-width:768px){
-  footer{padding:.5rem 0;}
-  footer .container{padding-top:.5rem;padding-bottom:.5rem;}
+  footer{padding:1.75rem 0 1rem;}
 }
 
 /* ── Scrollbar decoration: hide on mobile and tablet ── */

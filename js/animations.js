@@ -63,14 +63,12 @@ function initAnimations(){
   gsap.from('.about-cta-row > *',{y:18,opacity:0,duration:0.55,stagger:0.12,ease:'power2.out',
     scrollTrigger:{trigger:'.about-cta-row',start:'top 88%'}});
 
-  // ── Timeline items — alternate left/right slide ──
-  gsap.utils.toArray('.timeline-item').forEach((item,i)=>{
-    gsap.from(item,{
-      x:i%2===0 ? -50 : 50,
-      opacity:0,duration:0.75,ease:'power3.out',
-      scrollTrigger:{trigger:item,start:'top 85%',toggleActions:'play none none none'}
-    });
-  });
+  // ── Journey "Now" banner — fade + slide in ──
+  const jrnyNow = document.querySelector('.jrny-now');
+  if(jrnyNow){
+    gsap.from(jrnyNow,{y:12,opacity:0,duration:0.6,ease:'power2.out',
+      scrollTrigger:{trigger:jrnyNow,start:'top 88%',toggleActions:'play none none none'}});
+  }
 
   // ── Skill cards — wave stagger left-to-right ──
   gsap.utils.toArray('.skill-card').forEach((c,i)=>{

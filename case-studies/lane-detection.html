@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lane Line Detection Case Study | Veera Venkata Ganesh Nurukurthi</title>
+  <meta name="description" content="Case study: Lane Line Detection using OpenCV, Canny Edge Detection, and Hough Transform on dashcam footage."/>
+  <link rel="icon" type="image/jpeg" href="../images/Headshot.jpg"/>
+  <script>(function(){var t=localStorage.getItem('theme');if(t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.setAttribute('data-theme','dark');})()</script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/tokens.css"/>
+  <link rel="stylesheet" href="../css/base.css"/>
+  <link rel="stylesheet" href="../css/components.css"/>
+  <style>
+    body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+    .cs-back{display:inline-flex;align-items:center;gap:.5rem;color:var(--text-muted);text-decoration:none;font-size:.9rem;font-weight:500;padding:.4rem .8rem;border-radius:.5rem;transition:color var(--t),background var(--t);margin-bottom:2rem;}
+    .cs-back:hover{color:var(--primary);background:rgba(79,70,229,.07);}
+    .cs-hero{padding:3rem 0 2.5rem;border-bottom:1px solid var(--border);}
+    .cs-tag{display:inline-block;padding:.25rem .75rem;background:rgba(79,70,229,.1);color:var(--primary);border-radius:2rem;font-size:.75rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:1rem;}
+    .cs-title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;line-height:1.15;margin-bottom:.75rem;color:var(--text-dark);}
+    .cs-subtitle{font-size:1.05rem;color:var(--text-muted);max-width:680px;margin-bottom:1.5rem;}
+    .cs-meta{display:flex;flex-wrap:wrap;gap:.75rem;}
+    .cs-meta-item{display:flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--text-muted);}
+    .cs-meta-item i{color:var(--primary);width:14px;}
+    .cs-links{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.5rem;}
+    .cs-section{padding:2.5rem 0;border-bottom:1px solid var(--border);}
+    .cs-section:last-child{border-bottom:none;}
+    .cs-section-title{font-size:1.3rem;font-weight:800;color:var(--text-dark);margin-bottom:1rem;display:flex;align-items:center;gap:.6rem;}
+    .cs-section-title i{color:var(--primary);}
+    .cs-highlight-box{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:.75rem;padding:1.25rem 1.5rem;margin-bottom:1rem;}
+    .cs-pipeline{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:1rem 0;}
+    .cs-pipe-step{display:flex;align-items:center;gap:.4rem;}
+    .cs-pipe-box{background:var(--card);border:1px solid var(--border);border-radius:.5rem;padding:.4rem .8rem;font-size:.82rem;font-weight:600;color:var(--text-dark);}
+    .cs-pipe-arrow{color:var(--text-muted);font-size:.75rem;}
+    .cs-step{display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.25rem;}
+    .cs-step-num{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;}
+    .cs-step-body h4{font-size:.95rem;font-weight:700;margin:0 0 .25rem;color:var(--text-dark);}
+    .cs-step-body p{font-size:.88rem;color:var(--text-muted);margin:0;}
+    .cs-tech-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .75rem;background:var(--card);border:1px solid var(--border);border-radius:2rem;font-size:.78rem;font-weight:600;color:var(--text-muted);margin:.2rem;}
+    .cs-result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:1rem;}
+    .cs-result-card{background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:1.25rem;text-align:center;}
+    .cs-result-num{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#4f46e5,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;}
+    .cs-result-label{font-size:.78rem;color:var(--text-muted);margin-top:.25rem;}
+  </style>
+</head>
+<body>
+<script>(function(){var t=document.documentElement.getAttribute('data-theme');if(t)document.body.setAttribute('data-theme',t);})()</script>
+<main class="container" style="max-width:820px;padding-top:2rem;padding-bottom:4rem;">
+
+  <a href="../index.html#projects" class="cs-back"><i class="fas fa-arrow-left"></i> Back to Portfolio</a>
+
+  <!-- Hero -->
+  <div class="cs-hero">
+    <span class="cs-tag">AI · Computer Vision</span>
+    <h1 class="cs-title">Lane Line Detection System</h1>
+    <p class="cs-subtitle">A real-time computer vision pipeline that identifies road lane markings from dashcam footage using OpenCV, Canny edge detection, and probabilistic Hough Transform.</p>
+    <div class="cs-meta">
+      <span class="cs-meta-item"><i class="fas fa-calendar-alt"></i> 2023</span>
+      <span class="cs-meta-item"><i class="fas fa-user"></i> Solo Developer</span>
+      <span class="cs-meta-item"><i class="fas fa-clock"></i> ~3 weeks</span>
+      <span class="cs-meta-item"><i class="fas fa-layer-group"></i> Python · OpenCV · NumPy</span>
+    </div>
+    <div class="cs-links">
+      <a href="https://nveeravenkataganesh.github.io/Lane_Line_Detection/" target="_blank" rel="noopener noreferrer" class="btn btn-primary"><i class="fas fa-external-link-alt me-2"></i>Live Demo</a>
+      <a href="https://github.com/NVEERAVENKATAGANESH/Lane_Line_Detection" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary"><i class="fab fa-github me-2"></i>Source Code</a>
+    </div>
+  </div>
+
+  <!-- Problem -->
+  <div class="cs-section">
+    <h2 class="cs-section-title"><i class="fas fa-exclamation-circle"></i> The Problem</h2>
+    <div class="cs-highlight-box">
+      <p class="mb-0">Autonomous and driver-assistance systems need to reliably detect lane boundaries in real-time under varying lighting, road wear, and weather conditions. A purely geometric solution (no deep learning) must be computationally cheap enough to run frame-by-frame while remaining robust to noise and perspective distortion.</p>
+    </div>
+    <ul>
+      <li>Lane markings vary in color, width, and continuity (dashed vs. solid)</li>
+      <li>Shadows, reflections, and road texture introduce false edges</li>
+      <li>The Region of Interest (ROI) must exclude sky, vehicles, and roadside clutter</li>
+      <li>Detected line segments must be averaged and extrapolated into smooth full-length guides</li>
+    </ul>
+  </div>
+
+  <!-- Pipeline -->
+  <div class="cs-section">
+    <h2 class="cs-section-title"><i class="fas fa-stream"></i> Processing Pipeline</h2>
+    <div class="cs-pipeline">
+      <div class="cs-pipe-step"><div class="cs-pipe-box">Grayscale</div><span class="cs-pipe-arrow">→</span></div>
+      <div class="cs-pipe-step"><div class="cs-pipe-box">Gaussian Blur</div><span class="cs-pipe-arrow">→</span></div>
+      <div class="cs-pipe-step"><div class="cs-pipe-box">Canny Edge</div><span class="cs-pipe-arrow">→</span></div>
+      <div class="cs-pipe-step"><div class="cs-pipe-box">ROI Mask</div><span class="cs-pipe-arrow">→</span></div>
+      <div class="cs-pipe-step"><div class="cs-pipe-box">Hough Lines</div><span class="cs-pipe-arrow">→</span></div>
+      <div class="cs-pipe-step"><div class="cs-pipe-box">Slope Filter</div><span class="cs-pipe-arrow">→</span></div>
+      <div class="cs-pipe-step"><div class="cs-pipe-box">Line Average</div><span class="cs-pipe-arrow">→</span></div>
+      <div class="cs-pipe-step"><div class="cs-pipe-box">Overlay</div></div>
+    </div>
+  </div>
+
+  <!-- Approach -->
+  <div class="cs-section">
+    <h2 class="cs-section-title"><i class="fas fa-route"></i> Approach</h2>
+    <div class="cs-step">
+      <div class="cs-step-num">1</div>
+      <div class="cs-step-body">
+        <h4>Pre-processing</h4>
+        <p>Convert to grayscale and apply a 5×5 Gaussian blur to suppress high-frequency noise before edge detection. This reduces spurious edges from road texture and minor lighting variation.</p>
+      </div>
+    </div>
+    <div class="cs-step">
+      <div class="cs-step-num">2</div>
+      <div class="cs-step-body">
+        <h4>Canny Edge Detection</h4>
+        <p>Apply Canny with tuned low/high thresholds (50/150). The double-threshold hysteresis keeps only strong edges and edges connected to them, discarding isolated weak edges from noise.</p>
+      </div>
+    </div>
+    <div class="cs-step">
+      <div class="cs-step-num">3</div>
+      <div class="cs-step-body">
+        <h4>Region of Interest Masking</h4>
+        <p>Define a trapezoidal polygon covering only the road ahead (lower 60% of frame, narrowing to a vanishing point). Bitwise AND with the edge image removes edges outside the driving corridor.</p>
+      </div>
+    </div>
+    <div class="cs-step">
+      <div class="cs-step-num">4</div>
+      <div class="cs-step-body">
+        <h4>Probabilistic Hough Transform + Line Averaging</h4>
+        <p>HoughLinesP detects line segments. Segments are classified by slope sign (positive = right lane, negative = left lane). Each group is averaged into a single representative line then extrapolated from the bottom of the frame to the horizon.</p>
+      </div>
+    </div>
+    <div class="cs-step">
+      <div class="cs-step-num">5</div>
+      <div class="cs-step-body">
+        <h4>Overlay &amp; Video Loop</h4>
+        <p>Detected lane lines are drawn in semi-transparent green on the original frame using weighted_img (alpha blending). The pipeline runs on every frame of the input video in sequence.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="cs-section">
+    <h2 class="cs-section-title"><i class="fas fa-layer-group"></i> Tech Stack</h2>
+    <div>
+      <span class="cs-tech-chip"><i class="fab fa-python"></i> Python 3</span>
+      <span class="cs-tech-chip">OpenCV</span>
+      <span class="cs-tech-chip">NumPy</span>
+      <span class="cs-tech-chip">Matplotlib</span>
+      <span class="cs-tech-chip">Canny Edge Detection</span>
+      <span class="cs-tech-chip">Hough Transform</span>
+      <span class="cs-tech-chip">Jupyter Notebook</span>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="cs-section">
+    <h2 class="cs-section-title"><i class="fas fa-chart-line"></i> Results</h2>
+    <div class="cs-result-grid">
+      <div class="cs-result-card">
+        <div class="cs-result-num">~30</div>
+        <div class="cs-result-label">FPS on standard dashcam video</div>
+      </div>
+      <div class="cs-result-card">
+        <div class="cs-result-num">8-step</div>
+        <div class="cs-result-label">Fully classical CV pipeline</div>
+      </div>
+      <div class="cs-result-card">
+        <div class="cs-result-num">0</div>
+        <div class="cs-result-label">Deep learning dependencies</div>
+      </div>
+    </div>
+    <p class="mt-3 text-muted" style="font-size:.9rem;">The system successfully detects both dashed and solid lane lines across standard highway footage with a clean overlay. Edge cases (sharp curves, low contrast) are documented as future work for a curved-lane Hough variant.</p>
+  </div>
+
+  <!-- Key Learnings -->
+  <div class="cs-section">
+    <h2 class="cs-section-title"><i class="fas fa-lightbulb"></i> Key Learnings</h2>
+    <ul>
+      <li><strong>ROI tuning matters most</strong> — a poorly shaped mask lets in more false edges than any edge-detection threshold</li>
+      <li><strong>Slope filtering</strong> (discarding near-horizontal segments) is essential to clean up horizontal road cracks</li>
+      <li><strong>Gaussian blur kernel size</strong> directly trades noise suppression for edge sharpness; 5×5 is a good default</li>
+      <li><strong>Classical CV</strong> is still highly effective for constrained, well-lit driving footage and runs faster than any neural approach</li>
+    </ul>
+  </div>
+
+</main>
+</body>
+</html>

@@ -52,7 +52,23 @@
   <link rel="prefetch" href="gallery.html" />
 
   <!-- Dark-mode flash prevention — must run before body renders -->
-  <script>(function(){var t=localStorage.getItem('theme');if(t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.setAttribute('data-theme','dark');})()</script>
+  <script>(function(){var t=localStorage.getItem('theme');if(t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.setAttribute('data-theme','dark');if(sessionStorage.getItem('_pvst'))document.documentElement.classList.add('no-preload');})()</script>
+
+  <!-- Preloader critical CSS — inline so it applies before any stylesheet loads -->
+  <style>
+    #preloader{position:fixed;inset:0;z-index:99999;overflow:hidden;background:#07080f;}
+    .pre-half{position:absolute;left:0;right:0;background:#07080f;will-change:transform;transition:transform 1.1s cubic-bezier(0.65,0,0.35,1);}
+    .pre-half--top{top:0;height:calc(50% + 1px);}
+    .pre-half--bottom{bottom:0;height:calc(50% + 1px);}
+    .pre-inner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;z-index:1;transition:opacity .4s ease,transform .4s ease;}
+    #preloader.pre-done .pre-half--top{transform:translateY(-100%);transition-delay:.15s;}
+    #preloader.pre-done .pre-half--bottom{transform:translateY(100%);transition-delay:.15s;}
+    #preloader.pre-done .pre-inner{opacity:0;transform:translate(-50%,-52%) scale(.96);}
+    #preloader.pre-done{pointer-events:none;visibility:hidden;transition:visibility 0s 1.3s;}
+    body.pre-loading{overflow:hidden;height:100vh;}
+    html.no-preload #preloader{display:none!important;}
+    html.no-preload body.pre-loading{overflow:auto!important;height:auto!important;}
+  </style>
 
   <!-- Styles -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
@@ -67,7 +83,7 @@
   <link rel="stylesheet" href="css/animations.css" />
   <link rel="stylesheet" href="css/responsive.css" />
 
-  <!-- Structured data -->
+  <!-- Structured data — Person -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -86,13 +102,131 @@
     "knowsAbout": ["Python","JavaScript","React","Django","Machine Learning","Data Mining","AWS","Docker","Kubernetes","SQL"]
   }
   </script>
-</head>
-<body><script>(function(){var t=document.documentElement.getAttribute('data-theme');if(t)document.body.setAttribute('data-theme',t);})()</script>
 
-<canvas id="galaxyCanvas" aria-hidden="true"></canvas>
+  <!-- Structured data — Projects (ItemList + SoftwareApplication) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Portfolio Projects — Veera Venkata Ganesh Nurukurthi",
+    "url": "https://nveeravenkataganesh.github.io/#projects",
+    "numberOfItems": 16,
+    "itemListElement": [
+      {
+        "@type": "ListItem","position": 1,
+        "item": {
+          "@type": "SoftwareApplication",
+          "name": "UIMS: County Inventory Management System",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Web",
+          "description": "Asset-lifecycle platform for municipal government with Django REST Framework and React, featuring role-based access control and audit logging.",
+          "url": "https://county-inventory-system.vercel.app/_dev",
+          "author": {"@type":"Person","name":"Veera Venkata Ganesh Nurukurthi"},
+          "programmingLanguage": ["Python","JavaScript","React","Django"]
+        }
+      },
+      {
+        "@type": "ListItem","position": 2,
+        "item": {
+          "@type": "SoftwareApplication",
+          "name": "BenefitsConnect — Public Benefits Advisor",
+          "applicationCategory": "GovernmentService",
+          "operatingSystem": "Web",
+          "description": "Citizen-facing government benefits portal with a 5-step eligibility wizard, 12-program catalog, case worker approval workflows, and analytics dashboard.",
+          "url": "https://nveeravenkataganesh.github.io/PUBLIC-BENEFITS-ADVISOR/",
+          "author": {"@type":"Person","name":"Veera Venkata Ganesh Nurukurthi"},
+          "programmingLanguage": ["HTML","CSS","JavaScript"]
+        }
+      },
+      {
+        "@type": "ListItem","position": 3,
+        "item": {
+          "@type": "SoftwareApplication",
+          "name": "Lane Line Detection System",
+          "applicationCategory": "ComputerApplication",
+          "operatingSystem": "Cross-platform",
+          "description": "Computer vision pipeline using OpenCV, Canny Edge Detection, and Hough Transform to identify lane markings from dashcam footage.",
+          "url": "https://nveeravenkataganesh.github.io/Lane_Line_Detection/",
+          "author": {"@type":"Person","name":"Veera Venkata Ganesh Nurukurthi"},
+          "programmingLanguage": ["Python"]
+        }
+      },
+      {
+        "@type": "ListItem","position": 4,
+        "item": {
+          "@type": "SoftwareApplication",
+          "name": "UI Code Assistant",
+          "applicationCategory": "DeveloperApplication",
+          "operatingSystem": "Web",
+          "description": "AI-powered tool for on-the-fly HTML/JS component generation following MVC patterns, evaluated with Fitts' Law usability metrics.",
+          "url": "https://nveeravenkataganesh.github.io/UI-Buddy/",
+          "author": {"@type":"Person","name":"Veera Venkata Ganesh Nurukurthi"},
+          "programmingLanguage": ["JavaScript","HTML","CSS"]
+        }
+      },
+      {
+        "@type": "ListItem","position": 5,
+        "item": {
+          "@type": "SoftwareApplication",
+          "name": "Automated Homework Grading System",
+          "applicationCategory": "EducationalApplication",
+          "operatingSystem": "Web",
+          "description": "Real-time grading system with analytics dashboard, evaluated against Nielsen's usability heuristics.",
+          "url": "https://nveeravenkataganesh.github.io/GraderGenie/",
+          "author": {"@type":"Person","name":"Veera Venkata Ganesh Nurukurthi"},
+          "programmingLanguage": ["JavaScript","HTML","CSS"]
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- Structured data — Certifications -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Certifications — Veera Venkata Ganesh Nurukurthi",
+    "url": "https://nveeravenkataganesh.github.io/#achievements",
+    "itemListElement": [
+      {"@type":"ListItem","position":1,"item":{"@type":"EducationalOccupationalCredential","name":"Frontend Developer (React)","credentialCategory":"Certification","recognizedBy":{"@type":"Organization","name":"HackerRank"},"url":"https://www.hackerrank.com/certificates/iframe/8caacc789cf6"}},
+      {"@type":"ListItem","position":2,"item":{"@type":"EducationalOccupationalCredential","name":"SQL (Advanced)","credentialCategory":"Certification","recognizedBy":{"@type":"Organization","name":"HackerRank"},"url":"https://www.hackerrank.com/certificates/iframe/02aa2278056a"}},
+      {"@type":"ListItem","position":3,"item":{"@type":"EducationalOccupationalCredential","name":"Problem Solving (Basic)","credentialCategory":"Certification","recognizedBy":{"@type":"Organization","name":"HackerRank"},"url":"https://www.hackerrank.com/certificates/iframe/7e73b6e77762"}},
+      {"@type":"ListItem","position":4,"item":{"@type":"EducationalOccupationalCredential","name":"Python (Basic)","credentialCategory":"Certification","recognizedBy":{"@type":"Organization","name":"HackerRank"},"url":"https://www.hackerrank.com/certificates/iframe/4da3a40f66c8"}},
+      {"@type":"ListItem","position":5,"item":{"@type":"EducationalOccupationalCredential","name":"Database Foundations","credentialCategory":"Certification","recognizedBy":{"@type":"Organization","name":"Oracle Academy"}}}
+    ]
+  }
+  </script>
+</head>
+<body class="pre-loading"><script>(function(){var t=document.documentElement.getAttribute('data-theme');if(t)document.body.setAttribute('data-theme',t);})()</script>
+
+<!-- ══ PRELOADER ══ -->
+<div id="preloader" aria-hidden="true" aria-label="Loading portfolio">
+  <div class="pre-half pre-half--top"></div>
+  <div class="pre-half pre-half--bottom"></div>
+  <div class="pre-inner">
+    <div class="pre-logo-wrap">
+      <svg class="pre-ring" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+        <circle cx="60" cy="60" r="54" stroke="url(#preGrad)" stroke-width="2" stroke-dasharray="8 6" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="preGrad" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#6366f1"/>
+            <stop offset="100%" stop-color="#67e8f9"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="pre-monogram">G</div>
+    </div>
+    <div class="pre-name">Veera Venkata Ganesh</div>
+    <div class="pre-tagline">Software Developer</div>
+    <div class="pre-bar-wrap"><div class="pre-bar"></div></div>
+  </div>
+</div>
+
 <div id="scrollBar" role="progressbar" aria-hidden="true"></div>
 <!-- nav injected by buildNav() in main.js -->
 <div id="nav-root"></div>
+
 
 <main id="main-content">
 
@@ -206,59 +340,134 @@
 <section id="timeline" class="py-5" aria-labelledby="timeline-heading">
   <div class="container">
     <h2 id="timeline-heading" class="section-heading text-center mb-5"><i class="fas fa-route me-2"></i>My Journey</h2>
-    <div class="timeline-toggle" data-active="education" role="tablist">
-      <button class="toggle-btn" data-section="education"  role="tab" aria-selected="true"  id="tab-edu">Education</button>
-      <button class="toggle-btn" data-section="experience" role="tab" aria-selected="false" id="tab-exp">Experience</button>
+
+    <div class="jrny-toggle" role="tablist">
+      <button class="jrny-tab" data-panel="edu" role="tab" aria-selected="true" id="jtab-edu">
+        <i class="fas fa-graduation-cap me-2" aria-hidden="true"></i>Education
+      </button>
+      <button class="jrny-tab" data-panel="exp" role="tab" aria-selected="false" id="jtab-exp">
+        <i class="fas fa-briefcase me-2" aria-hidden="true"></i>Experience
+      </button>
     </div>
-    <div class="position-relative mt-4">
-<div class="timeline-line" aria-hidden="true"></div>
-      <div class="timeline-section section-education" id="section-education" role="tabpanel" aria-labelledby="tab-edu">
-        <div class="timeline-item">
-          <div class="d-flex align-items-center gap-2 mb-2"><div class="tl-icon"><i class="fas fa-graduation-cap"></i></div><span class="badge tl-badge--edu">Aug 2023 – May 2025</span></div>
-          <h5>M.Sc. in Computer Science</h5>
-          <p class="tl-institution"><i class="fas fa-university me-1"></i>George Mason University &mdash; Fairfax, VA</p>
-          <p class="mb-0 tl-desc">Specialized in <strong>AI &amp; Data Mining</strong>. Advanced coursework in Machine Learning, Data Visualization, and Statistical Analysis.</p>
-          <div class="tl-tags"><span class="tl-tag">Machine Learning</span><span class="tl-tag">Data Mining</span><span class="tl-tag">Data Visualization</span><span class="tl-tag">AI</span></div>
-        </div>
-        <div class="timeline-item">
-          <div class="d-flex align-items-center gap-2 mb-2"><div class="tl-icon"><i class="fas fa-graduation-cap"></i></div><span class="badge tl-badge--edu">Jun 2019 – May 2023</span></div>
-          <h5>B.Tech in Computer Science Engineering</h5>
-          <p class="tl-institution"><i class="fas fa-university me-1"></i>SRM Institute of Science &amp; Technology &mdash; Chennai, India</p>
-          <p class="mb-0 tl-desc">Focused on AI, Computer Vision, and Web Development. Graduated with <strong>First Class Honors</strong>.</p>
-          <div class="tl-tags"><span class="tl-tag">AI</span><span class="tl-tag">Computer Vision</span><span class="tl-tag">Web Development</span><span class="tl-tag">OpenCV</span></div>
+
+    <!-- Education -->
+    <div class="jrny-panel" id="jpanel-edu" role="tabpanel" aria-labelledby="jtab-edu">
+      <div class="jrny-spine" aria-hidden="true"></div>
+
+      <div class="jrny-entry jrny-entry--left">
+        <div class="jrny-node jrny-node--edu"><i class="fas fa-graduation-cap" aria-hidden="true"></i></div>
+        <div class="jrny-card">
+          <span class="jrny-date">Aug 2023 – May 2025</span>
+          <h4 class="jrny-title">M.Sc. in Computer Science</h4>
+          <p class="jrny-place"><i class="fas fa-university me-1" aria-hidden="true"></i>George Mason University &mdash; Fairfax, VA</p>
+          <p class="jrny-desc">Specialized in <strong>AI &amp; Data Mining</strong>. Advanced coursework in Machine Learning, Data Visualization, and Statistical Analysis.</p>
+          <div class="jrny-tags">
+            <span class="jrny-tag">Machine Learning</span><span class="jrny-tag">Data Mining</span>
+            <span class="jrny-tag">Data Visualization</span><span class="jrny-tag">AI</span>
+          </div>
         </div>
       </div>
-      <div class="timeline-section section-experience d-none" id="section-experience" role="tabpanel" aria-labelledby="tab-exp">
-        <div class="timeline-item">
-          <div class="d-flex align-items-center gap-2 mb-2"><div class="tl-icon tl-icon--exp"><i class="fas fa-laptop-code"></i></div><span class="badge tl-badge--exp">Feb 2026 – Present</span></div>
-          <h5>Software Development Intern</h5>
-          <p class="tl-institution"><i class="fas fa-building me-1"></i>International Software Systems, Inc. &mdash; Greenbelt, MD</p>
-          <ul class="tl-bullets"><li>Building backend features using <strong>Python &amp; Django</strong></li><li>SQL database management, queries, and optimization</li><li>Debugging, testing, and issue resolution in dev environments</li><li>Full SDLC exposure collaborating with a professional engineering team</li></ul>
-          <div class="tl-tags"><span class="tl-tag tl-tag--exp">Python</span><span class="tl-tag tl-tag--exp">Django</span><span class="tl-tag tl-tag--exp">SQL</span><span class="tl-tag tl-tag--exp">SDLC</span></div>
-        </div>
-        <div class="timeline-item">
-          <div class="d-flex align-items-center gap-2 mb-2"><div class="tl-icon tl-icon--exp"><i class="fas fa-users-cog"></i></div><span class="badge tl-badge--exp">Jun 2019 – May 2023</span></div>
-          <h5>Organizer — Operations &amp; Resource Management and Challenges &amp; Championships</h5>
-          <p class="tl-institution"><i class="fas fa-building me-1"></i>Aaruush Techno-Management Fest &mdash; SRM IST, Chennai</p>
-          <ul class="tl-bullets"><li>Led <strong>300+ volunteers</strong> across 60+ technical and cultural events</li><li>Oversaw budgeting, logistics, and multi-stakeholder coordination</li></ul>
-          <div class="tl-tags"><span class="tl-tag tl-tag--exp">Leadership</span><span class="tl-tag tl-tag--exp">Event Management</span><span class="tl-tag tl-tag--exp">Operations</span></div>
-        </div>
-        <div class="timeline-item">
-          <div class="d-flex align-items-center gap-2 mb-2"><div class="tl-icon tl-icon--exp"><i class="fas fa-rocket"></i></div><span class="badge tl-badge--exp">Feb 2021 – Jan 2023</span></div>
-          <h5>Local Lead — NASA Space Apps Challenge</h5>
-          <p class="tl-institution"><i class="fas fa-globe me-1"></i>SRM IST &mdash; Chennai, India</p>
-          <ul class="tl-bullets"><li>Organized NASA's global hackathon for <strong>1,200+ participants</strong></li><li>Mentored teams; led team earned a Global Honorable Nomination</li></ul>
-          <div class="tl-tags"><span class="tl-tag tl-tag--exp">Hackathon</span><span class="tl-tag tl-tag--exp">Mentorship</span><span class="tl-tag tl-tag--exp">NASA</span></div>
-        </div>
-        <div class="timeline-item">
-          <div class="d-flex align-items-center gap-2 mb-2"><div class="tl-icon tl-icon--exp"><i class="fas fa-star"></i></div><span class="badge tl-badge--exp">Jun 2019 – May 2023</span></div>
-          <h5>Committee Head — Milan Cultural Fest</h5>
-          <p class="tl-institution"><i class="fas fa-building me-1"></i>SRM IST &mdash; Chennai, India</p>
-          <ul class="tl-bullets"><li>Led Hospitality, Operations, Discipline, and Creative Arts committees</li></ul>
-          <div class="tl-tags"><span class="tl-tag tl-tag--exp">Leadership</span><span class="tl-tag tl-tag--exp">Cultural Events</span></div>
+
+      <div class="jrny-entry jrny-entry--right">
+        <div class="jrny-node jrny-node--edu"><i class="fas fa-graduation-cap" aria-hidden="true"></i></div>
+        <div class="jrny-card">
+          <span class="jrny-date">Jun 2019 – May 2023</span>
+          <h4 class="jrny-title">B.Tech in Computer Science Engineering</h4>
+          <p class="jrny-place"><i class="fas fa-university me-1" aria-hidden="true"></i>SRM Institute of Science &amp; Technology &mdash; Chennai, India</p>
+          <p class="jrny-desc">Focused on AI, Computer Vision, and Web Development. Graduated with <strong>First Class Honors</strong>.</p>
+          <div class="jrny-tags">
+            <span class="jrny-tag">AI</span><span class="jrny-tag">Computer Vision</span>
+            <span class="jrny-tag">Web Development</span><span class="jrny-tag">OpenCV</span>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Experience -->
+    <div class="jrny-panel d-none" id="jpanel-exp" role="tabpanel" aria-labelledby="jtab-exp">
+      <div class="jrny-spine" aria-hidden="true"></div>
+
+      <div class="jrny-now" aria-label="Currently active">
+        <span class="jrny-now-dot" aria-hidden="true"></span>
+        Now &mdash; Software Dev Intern @ International Software Systems Inc
+      </div>
+
+      <div class="jrny-entry jrny-entry--left">
+        <div class="jrny-node jrny-node--exp"><i class="fas fa-laptop-code" aria-hidden="true"></i></div>
+        <div class="jrny-card jrny-card--exp">
+          <span class="jrny-date jrny-date--exp">Feb 2026 – Present</span>
+          <h4 class="jrny-title">Software Development Intern</h4>
+          <p class="jrny-place"><i class="fas fa-building me-1" aria-hidden="true"></i>International Software Systems, Inc. &mdash; Greenbelt, MD</p>
+          <ul class="jrny-bullets">
+            <li>Building backend features using <strong>Python &amp; Django</strong></li>
+            <li>SQL database management, queries, and optimization</li>
+            <li>Full SDLC exposure collaborating with a professional engineering team</li>
+          </ul>
+          <div class="jrny-tags">
+            <span class="jrny-tag jrny-tag--exp">Python</span><span class="jrny-tag jrny-tag--exp">Django</span>
+            <span class="jrny-tag jrny-tag--exp">SQL</span><span class="jrny-tag jrny-tag--exp">SDLC</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="jrny-entry jrny-entry--right">
+        <div class="jrny-node jrny-node--exp"><i class="fas fa-users-cog" aria-hidden="true"></i></div>
+        <div class="jrny-card jrny-card--exp">
+          <span class="jrny-date jrny-date--exp">Jun 2019 – May 2023</span>
+          <h4 class="jrny-title">Organizer — Operations &amp; Challenges</h4>
+          <p class="jrny-place"><i class="fas fa-building me-1" aria-hidden="true"></i>Aaruush Techno-Management Fest &mdash; SRM IST, Chennai</p>
+          <ul class="jrny-bullets">
+            <li>Led <strong>300+ volunteers</strong> across 60+ technical and cultural events</li>
+            <li>Oversaw budgeting, logistics, and multi-stakeholder coordination</li>
+          </ul>
+          <div class="jrny-stats">
+            <div class="jrny-stat"><strong>300+</strong><span>Volunteers</span></div>
+            <div class="jrny-stat"><strong>60+</strong><span>Events</span></div>
+          </div>
+          <div class="jrny-tags">
+            <span class="jrny-tag jrny-tag--exp">Leadership</span><span class="jrny-tag jrny-tag--exp">Event Management</span>
+            <span class="jrny-tag jrny-tag--exp">Operations</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="jrny-entry jrny-entry--left">
+        <div class="jrny-node jrny-node--exp"><i class="fas fa-rocket" aria-hidden="true"></i></div>
+        <div class="jrny-card jrny-card--exp">
+          <span class="jrny-date jrny-date--exp">Feb 2021 – Jan 2023</span>
+          <h4 class="jrny-title">Local Lead — NASA Space Apps Challenge</h4>
+          <p class="jrny-place"><i class="fas fa-globe me-1" aria-hidden="true"></i>SRM IST &mdash; Chennai, India</p>
+          <ul class="jrny-bullets">
+            <li>Organized NASA's global hackathon for <strong>1,200+ participants</strong></li>
+            <li>Mentored teams; led team earned a Global Honorable Nomination</li>
+          </ul>
+          <div class="jrny-stats">
+            <div class="jrny-stat"><strong>1,200+</strong><span>Participants</span></div>
+            <div class="jrny-stat"><strong>Global</strong><span>Nomination</span></div>
+          </div>
+          <div class="jrny-tags">
+            <span class="jrny-tag jrny-tag--exp">Hackathon</span><span class="jrny-tag jrny-tag--exp">Mentorship</span>
+            <span class="jrny-tag jrny-tag--exp">NASA</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="jrny-entry jrny-entry--right">
+        <div class="jrny-node jrny-node--exp"><i class="fas fa-masks-theater" aria-hidden="true"></i></div>
+        <div class="jrny-card jrny-card--exp">
+          <span class="jrny-date jrny-date--exp">Jun 2019 – May 2023</span>
+          <h4 class="jrny-title">Committee Head — Milan Cultural Fest</h4>
+          <p class="jrny-place"><i class="fas fa-building me-1" aria-hidden="true"></i>SRM IST &mdash; Chennai, India</p>
+          <ul class="jrny-bullets">
+            <li>Led Hospitality, Operations, Discipline, and Creative Arts committees</li>
+          </ul>
+          <div class="jrny-tags">
+            <span class="jrny-tag jrny-tag--exp">Leadership</span><span class="jrny-tag jrny-tag--exp">Cultural Events</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -314,48 +523,60 @@
 <section id="projects" class="py-5" aria-labelledby="projects-heading">
   <div class="container">
     <h2 id="projects-heading" class="section-heading text-center mb-4"><i class="fas fa-folder-open me-2"></i>Projects</h2>
-    <div class="row mb-4 justify-content-center g-2">
-      <div class="col-md-4 col-lg-3"><input type="text" id="projectSearch" class="form-control" placeholder="Search projects..." aria-label="Search"/></div>
-      <div class="col-md-3 col-lg-2"><select id="projectFilter" class="form-select" title="Filter projects"><option value="all">All Categories</option><option value="ai">AI / ML</option><option value="frontend">Frontend</option><option value="fullstack">Full-Stack</option><option value="graphics">Graphics</option><option value="hci">HCI</option><option value="web">Web</option><option value="government">Government</option></select></div>
-      <div class="col-md-3 col-lg-2"><select id="projectSort" class="form-select" title="Sort projects"><option value="none">Sort by...</option><option value="az">A - Z</option><option value="za">Z - A</option></select></div>
+    <!-- Search + Sort row -->
+    <div class="row mb-3 justify-content-center g-2">
+      <div class="col-sm-8 col-md-5 col-lg-4">
+        <div class="proj-search-wrap">
+          <i class="fas fa-search proj-search-icon" aria-hidden="true"></i>
+          <input type="text" id="projectSearch" class="form-control proj-search-input" placeholder="Search projects…" aria-label="Search projects"/>
+        </div>
+      </div>
+      <div class="col-auto">
+        <select id="projectSort" class="form-select proj-sort-select" title="Sort projects" aria-label="Sort projects">
+          <option value="none">Sort by…</option>
+          <option value="az">A – Z</option>
+          <option value="za">Z – A</option>
+        </select>
+      </div>
     </div>
-    <div class="alert alert-info text-center d-none" id="noProjectsMsg" aria-live="polite">No projects match your search.</div>
+    <!-- Category pill filters -->
+    <div class="proj-filter-pills" role="group" aria-label="Filter by category" id="projectFilterPills">
+      <button type="button" class="proj-pill active" data-cat="all" aria-pressed="true">All <span class="proj-pill-count" id="ppCount-all"></span></button>
+      <button type="button" class="proj-pill" data-cat="ai" aria-pressed="false">AI / ML <span class="proj-pill-count" id="ppCount-ai"></span></button>
+      <button type="button" class="proj-pill" data-cat="web" aria-pressed="false">Web <span class="proj-pill-count" id="ppCount-web"></span></button>
+      <button type="button" class="proj-pill" data-cat="graphics" aria-pressed="false">Graphics <span class="proj-pill-count" id="ppCount-graphics"></span></button>
+      <button type="button" class="proj-pill" data-cat="government" aria-pressed="false">Gov Tech <span class="proj-pill-count" id="ppCount-government"></span></button>
+      <button type="button" class="proj-pill" data-cat="frontend" aria-pressed="false">Frontend <span class="proj-pill-count" id="ppCount-frontend"></span></button>
+      <button type="button" class="proj-pill" data-cat="hci" aria-pressed="false">HCI <span class="proj-pill-count" id="ppCount-hci"></span></button>
+    </div>
+    <!-- Result count -->
+    <p class="proj-result-count" id="projResultCount" aria-live="polite"></p>
+    <!-- Empty state -->
+    <div class="proj-empty d-none" id="noProjectsMsg" aria-live="polite">
+      <i class="fas fa-search proj-empty-icon" aria-hidden="true"></i>
+      <p class="proj-empty-title">No projects found</p>
+      <p class="proj-empty-sub">Try a different search term or category.</p>
+    </div>
     <div class="row g-4" id="projectGallery">
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="ai"><article class="card h-100" aria-labelledby="proj-title-1"><div class="project-thumb" data-type="cv" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">AI / CV</span><h5 class="card-title mt-2" id="proj-title-1">Lane Line Detection</h5><p class="card-text flex-grow-1">Computer vision system using OpenCV, Canny Edge Detection, and Hough Transform to identify lane markings from dashcam footage.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/Lane_Line_Detection/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/Lane_Line_Detection" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a></div></div></article></div>
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="web"><article class="card h-100" aria-labelledby="proj-title-2"><div class="project-thumb" data-type="health" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Web</span><h5 class="card-title mt-2" id="proj-title-2">Online Doctor Consultancy</h5><p class="card-text flex-grow-1">Healthcare portal providing primary consultation and emergency triage, built with HTML, CSS, and JavaScript.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/Mediconnect/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/Mediconnect" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a></div></div></article></div>
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="ai"><article class="card h-100" aria-labelledby="proj-title-3"><div class="project-thumb" data-type="ml" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">AI / ML</span><h5 class="card-title mt-2" id="proj-title-3">Diabetes Prediction</h5><p class="card-text flex-grow-1">Classification model trained on the Pima Indians dataset with a web form for real-time predictions.</p><div class="project-actions mt-3"><button type="button" class="btn btn-sm btn-outline-secondary" disabled aria-disabled="true">Coming Soon</button></div></div></article></div>
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="ai"><article class="card h-100" aria-labelledby="proj-title-4"><div class="project-thumb" data-type="dl" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">AI / Deep Learning</span><h5 class="card-title mt-2" id="proj-title-4">Traffic Prediction with Deep Learning</h5><p class="card-text flex-grow-1">Comparative analysis of LSTM, GRU, and CNN architectures for traffic flow prediction with hybrid model proposals.</p><div class="project-actions mt-3"><button type="button" class="btn btn-sm btn-outline-secondary" disabled aria-disabled="true">Coming Soon</button></div></div></article></div>
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="web"><article class="card h-100" aria-labelledby="proj-title-5"><div class="project-thumb" data-type="db" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Web / DB</span><h5 class="card-title mt-2" id="proj-title-5">Student Database Management System</h5><p class="card-text flex-grow-1">Full-stack app using Bootstrap, JavaScript, and MySQL to manage student records, enrolments, and grades with role-based access.</p><div class="project-actions mt-3"><button type="button" class="btn btn-sm btn-outline-secondary" disabled aria-disabled="true">Coming Soon</button></div></div></article></div>
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="web"><article class="card h-100" aria-labelledby="proj-title-6"><div class="project-thumb" data-type="shop" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Web / HCI</span><h5 class="card-title mt-2" id="proj-title-6">Instant Market Online Store</h5><p class="card-text flex-grow-1">eCommerce platform built with HTML, Bootstrap, and JavaScript, designed using HCI usability metrics.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/InstantMarket/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/InstantMarket" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a></div></div></article></div>
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="web"><article class="card h-100" aria-labelledby="proj-title-7"><div class="project-thumb" data-type="access" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Web / Accessibility</span><h5 class="card-title mt-2" id="proj-title-7">Academic Advisor Application</h5><p class="card-text flex-grow-1">Planning and communication system built with semantic HTML, ARIA attributes, and WCAG accessibility standards.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/EduAdvisor/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/EduAdvisor" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a></div></div></article></div>
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="ai"><article class="card h-100" aria-labelledby="proj-title-8"><div class="project-thumb" data-type="ai" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">AI / HCI</span><h5 class="card-title mt-2" id="proj-title-8">UI Code Assistant</h5><p class="card-text flex-grow-1">AI-powered tool for on-the-fly HTML/JS component generation following MVC patterns, evaluated with Fitts' Law metrics.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/UI-Buddy/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/UI-Buddy" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a></div></div></article></div>
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="ai"><article class="card h-100" aria-labelledby="proj-title-9"><div class="project-thumb" data-type="edu" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">AI / HCI</span><h5 class="card-title mt-2" id="proj-title-9">Automated Homework Grading</h5><p class="card-text flex-grow-1">Real-time grading system with analytics dashboard, evaluated against Nielsen's usability heuristics.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/GraderGenie/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/GraderGenie" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a></div></div></article></div>
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="frontend"><article class="card h-100" aria-labelledby="proj-title-10"><div class="project-thumb" data-type="portfolio" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Frontend</span><h5 class="card-title mt-2" id="proj-title-10">Personal Portfolio &amp; Gallery</h5><p class="card-text flex-grow-1">Responsive portfolio with dark mode, GSAP animations, PWA support, and interactive gallery.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/Portfolio/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a></div></div></article></div>
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="graphics"><article class="card h-100" aria-labelledby="proj-title-11"><div class="project-thumb" data-type="gl3d" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Graphics / OpenGL</span><h5 class="card-title mt-2" id="proj-title-11">3D Model Builder</h5><p class="card-text flex-grow-1">Hierarchical 3D modelling tool in OpenGL &amp; FLTK with .ply mesh loading, animated characters, and transformation controls.</p><div class="project-actions mt-3"><button type="button" class="btn btn-sm btn-outline-secondary" disabled aria-disabled="true">Coming Soon</button></div></div></article></div>
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="graphics"><article class="card h-100" aria-labelledby="proj-title-12"><div class="project-thumb" data-type="proc" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Graphics / Simulation</span><h5 class="card-title mt-2" id="proj-title-12">Procedural Modeling</h5><p class="card-text flex-grow-1">L-system plant generation and Boids flocking simulation in a 3D world with real-time parameter sliders using OpenGL.</p><div class="project-actions mt-3"><button type="button" class="btn btn-sm btn-outline-secondary" disabled aria-disabled="true">Coming Soon</button></div></div></article></div>
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="hci"><article class="card h-100" aria-labelledby="proj-title-13"><div class="project-thumb" data-type="research" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">HCI / Research</span><h5 class="card-title mt-2" id="proj-title-13">User Evaluation &amp; Analysis</h5><p class="card-text flex-grow-1">HCI study comparing VR, coaching, and video training using ANOVA and Chi-squared tests.</p><div class="project-actions mt-3"><button type="button" class="btn btn-sm btn-outline-secondary" disabled aria-disabled="true">Coming Soon</button></div></div></article></div>
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="graphics"><article class="card h-100" aria-labelledby="proj-title-14"><div class="project-thumb" data-type="home" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Graphics / Optimization</span><h5 class="card-title mt-2" id="proj-title-14">Make-it-Home: Furniture Layout</h5><p class="card-text flex-grow-1">Simulated-annealing optimizer for automatic furniture placement with spatial constraints and cost-function visualisation.</p><div class="project-actions mt-3"><button type="button" class="btn btn-sm btn-outline-secondary" disabled aria-disabled="true">Coming Soon</button></div></div></article></div>
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="government"><article class="card h-100" aria-labelledby="proj-title-15"><div class="project-thumb" data-type="gov" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Full-Stack / Gov Tech</span><h5 class="card-title mt-2" id="proj-title-15">UIMS: County Inventory Management</h5><p class="card-text flex-grow-1">Asset-lifecycle platform for municipal government built with Django REST Framework and React, with role-scoped access.</p><div class="project-actions mt-3"><a href="https://county-inventory-system.vercel.app/_dev" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/county-inventory-system" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a></div></div></article></div>
-      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="government"><article class="card h-100" aria-labelledby="proj-title-16"><div class="project-thumb" data-type="civic" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Full-Stack / Gov Tech</span><h5 class="card-title mt-2" id="proj-title-16">BenefitsConnect — Public Benefits Advisor</h5><p class="card-text flex-grow-1">Citizen-facing government benefits portal with a 5-step eligibility wizard, program catalog with smart filtering, case worker approval workflows, and a live analytics dashboard tracking trends across 12 benefit programs.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/PUBLIC-BENEFITS-ADVISOR/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/PUBLIC-BENEFITS-ADVISOR" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="ai" data-tags="opencv python computer-vision canny hough edge-detection"><article class="card h-100" aria-labelledby="proj-title-1"><div class="project-thumb" data-type="cv" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">AI / CV</span><h5 class="card-title mt-2" id="proj-title-1">Lane Line Detection</h5><p class="card-text flex-grow-1">Computer vision system using OpenCV, Canny Edge Detection, and Hough Transform to identify lane markings from dashcam footage.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/Lane_Line_Detection/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/Lane_Line_Detection" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/lane-detection.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="web" data-tags="html css javascript healthcare portal triage"><article class="card h-100" aria-labelledby="proj-title-2"><div class="project-thumb" data-type="health" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Web</span><h5 class="card-title mt-2" id="proj-title-2">Online Doctor Consultancy</h5><p class="card-text flex-grow-1">Healthcare portal providing primary consultation and emergency triage, built with HTML, CSS, and JavaScript.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/Mediconnect/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/Mediconnect" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/mediconnect.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="ai" data-tags="python machine-learning classification sklearn pima diabetes prediction"><article class="card h-100" aria-labelledby="proj-title-3"><div class="project-thumb" data-type="ml" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">AI / ML</span><h5 class="card-title mt-2" id="proj-title-3">Diabetes Prediction</h5><p class="card-text flex-grow-1">Classification model trained on the Pima Indians dataset with a web form for real-time predictions.</p><div class="project-actions mt-3"><a href="404.html" class="btn btn-sm btn-primary">Demo</a><a href="404.html" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/diabetes-prediction.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="ai" data-tags="lstm gru cnn deep-learning traffic prediction neural network python"><article class="card h-100" aria-labelledby="proj-title-4"><div class="project-thumb" data-type="dl" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">AI / Deep Learning</span><h5 class="card-title mt-2" id="proj-title-4">Traffic Prediction with Deep Learning</h5><p class="card-text flex-grow-1">Comparative analysis of LSTM, GRU, and CNN architectures for traffic flow prediction with hybrid model proposals.</p><div class="project-actions mt-3"><a href="404.html" class="btn btn-sm btn-primary">Demo</a><a href="404.html" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/traffic-prediction.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="web" data-tags="bootstrap javascript mysql database role-based access management"><article class="card h-100" aria-labelledby="proj-title-5"><div class="project-thumb" data-type="db" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Web / DB</span><h5 class="card-title mt-2" id="proj-title-5">Student Database Management System</h5><p class="card-text flex-grow-1">Full-stack app using Bootstrap, JavaScript, and MySQL to manage student records, enrolments, and grades with role-based access.</p><div class="project-actions mt-3"><a href="404.html" class="btn btn-sm btn-primary">Demo</a><a href="404.html" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/student-db.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="web" data-tags="html bootstrap javascript ecommerce shop hci usability"><article class="card h-100" aria-labelledby="proj-title-6"><div class="project-thumb" data-type="shop" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Web / HCI</span><h5 class="card-title mt-2" id="proj-title-6">Instant Market Online Store</h5><p class="card-text flex-grow-1">eCommerce platform built with HTML, Bootstrap, and JavaScript, designed using HCI usability metrics.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/InstantMarket/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/InstantMarket" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/instant-market.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="web" data-tags="html aria wcag accessibility semantic advisor planning"><article class="card h-100" aria-labelledby="proj-title-7"><div class="project-thumb" data-type="access" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Web / Accessibility</span><h5 class="card-title mt-2" id="proj-title-7">Academic Advisor Application</h5><p class="card-text flex-grow-1">Planning and communication system built with semantic HTML, ARIA attributes, and WCAG accessibility standards.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/EduAdvisor/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/EduAdvisor" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/edu-advisor.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="ai" data-tags="ai javascript html mvc fitts-law hci code generator assistant"><article class="card h-100" aria-labelledby="proj-title-8"><div class="project-thumb" data-type="ai" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">AI / HCI</span><h5 class="card-title mt-2" id="proj-title-8">UI Code Assistant</h5><p class="card-text flex-grow-1">AI-powered tool for on-the-fly HTML/JS component generation following MVC patterns, evaluated with Fitts' Law metrics.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/UI-Buddy/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/UI-Buddy" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/ui-buddy.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="ai" data-tags="ai grading dashboard analytics heuristics hci education automation"><article class="card h-100" aria-labelledby="proj-title-9"><div class="project-thumb" data-type="edu" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">AI / HCI</span><h5 class="card-title mt-2" id="proj-title-9">Automated Homework Grading</h5><p class="card-text flex-grow-1">Real-time grading system with analytics dashboard, evaluated against Nielsen's usability heuristics.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/GraderGenie/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/GraderGenie" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/grader-genie.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="frontend" data-tags="javascript css html dark-mode gsap pwa three.js portfolio gallery responsive"><article class="card h-100" aria-labelledby="proj-title-10"><div class="project-thumb" data-type="portfolio" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Frontend</span><h5 class="card-title mt-2" id="proj-title-10">Personal Portfolio &amp; Gallery</h5><p class="card-text flex-grow-1">Responsive portfolio with dark mode, GSAP animations, PWA support, and interactive gallery.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/Portfolio/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="404.html" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/portfolio.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="graphics" data-tags="opengl fltk 3d ply c++ graphics mesh animation hierarchical"><article class="card h-100" aria-labelledby="proj-title-11"><div class="project-thumb" data-type="gl3d" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Graphics / OpenGL</span><h5 class="card-title mt-2" id="proj-title-11">3D Model Builder</h5><p class="card-text flex-grow-1">Hierarchical 3D modelling tool in OpenGL &amp; FLTK with .ply mesh loading, animated characters, and transformation controls.</p><div class="project-actions mt-3"><a href="404.html" class="btn btn-sm btn-primary">Demo</a><a href="404.html" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/3d-model-builder.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="graphics" data-tags="opengl l-system boids flocking simulation 3d procedural c++ graphics"><article class="card h-100" aria-labelledby="proj-title-12"><div class="project-thumb" data-type="proc" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Graphics / Simulation</span><h5 class="card-title mt-2" id="proj-title-12">Procedural Modeling</h5><p class="card-text flex-grow-1">L-system plant generation and Boids flocking simulation in a 3D world with real-time parameter sliders using OpenGL.</p><div class="project-actions mt-3"><a href="404.html" class="btn btn-sm btn-primary">Demo</a><a href="404.html" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/procedural-modeling.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="hci" data-tags="hci vr research anova chi-squared usability study evaluation training"><article class="card h-100" aria-labelledby="proj-title-13"><div class="project-thumb" data-type="research" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">HCI / Research</span><h5 class="card-title mt-2" id="proj-title-13">User Evaluation &amp; Analysis</h5><p class="card-text flex-grow-1">HCI study comparing VR, coaching, and video training using ANOVA and Chi-squared tests.</p><div class="project-actions mt-3"><a href="404.html" class="btn btn-sm btn-primary">Demo</a><a href="404.html" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/user-evaluation.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="graphics" data-tags="simulated-annealing optimization spatial constraints furniture layout graphics c++"><article class="card h-100" aria-labelledby="proj-title-14"><div class="project-thumb" data-type="home" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Graphics / Optimization</span><h5 class="card-title mt-2" id="proj-title-14">Make-it-Home: Furniture Layout</h5><p class="card-text flex-grow-1">Simulated-annealing optimizer for automatic furniture placement with spatial constraints and cost-function visualisation.</p><div class="project-actions mt-3"><a href="404.html" class="btn btn-sm btn-primary">Demo</a><a href="404.html" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/furniture-layout.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="government" data-tags="django react postgresql jwt rbac api fullstack government inventory asset management"><article class="card h-100" aria-labelledby="proj-title-15"><div class="project-thumb" data-type="gov" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Full-Stack / Gov Tech</span><h5 class="card-title mt-2" id="proj-title-15">UIMS: County Inventory Management</h5><p class="card-text flex-grow-1">Asset-lifecycle platform for municipal government built with Django REST Framework and React, with role-scoped access.</p><div class="project-actions mt-3"><a href="https://county-inventory-system.vercel.app/_dev" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/county-inventory-system" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/uims.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
+      <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="government" data-tags="javascript bootstrap chart.js wcag government benefits eligibility wizard civic portal"><article class="card h-100" aria-labelledby="proj-title-16"><div class="project-thumb" data-type="civic" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Full-Stack / Gov Tech</span><h5 class="card-title mt-2" id="proj-title-16">BenefitsConnect — Public Benefits Advisor</h5><p class="card-text flex-grow-1">Citizen-facing government benefits portal with a 5-step eligibility wizard, program catalog with smart filtering, case worker approval workflows, and a live analytics dashboard tracking trends across 12 benefit programs.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/PUBLIC-BENEFITS-ADVISOR/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Demo</a><a href="https://github.com/NVEERAVENKATAGANESH/PUBLIC-BENEFITS-ADVISOR" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Source</a><a href="case-studies/benefitsconnect.html" class="btn btn-sm btn-outline-primary">Case Study</a></div></div></article></div>
     </div>
   </div>
 
-  <!-- PROJECT DETAIL MODAL — inside section so it overlays exactly here -->
-  <div id="projectModal" class="section-cert-modal" aria-modal="true" role="dialog" aria-hidden="true" aria-labelledby="projModalTitle">
-    <div class="section-cert-modal-box" tabindex="-1">
-      <div class="cm-header">
-        <div>
-          <span id="projModalTag" class="project-tag mb-1 d-inline-block"></span>
-          <h2 class="cm-title" id="projModalTitle"></h2>
-        </div>
-        <button type="button" id="projModalClose" class="cm-close" aria-label="Close"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="cm-body">
-        <p id="projModalDesc" class="cm-subtitle proj-modal-desc"></p>
-      </div>
-      <div class="cm-footer" id="projModalActions"></div>
-    </div>
-  </div>
 
 </section>
 
@@ -377,12 +598,7 @@
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
               <a href="https://22nd.aaruush.org" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Learn More</a>
-              <button class="btn btn-sm btn-primary"
-                      data-cert="images/certificates/Aaruush_Certificate.pdf"
-                      data-cert-name="Aaruush Event Organizer Certificate"
-                      data-cert-modal="achievements">
-                View Cert
-              </button>
+              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/certificates/Aaruush_Certificate.pdf" data-certificate-name="Aaruush Event Organizer Certificate"><i class="fas fa-eye me-1"></i>View Cert</button>
             </div>
           </div>
         </div>
@@ -398,18 +614,8 @@
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
               <a href="https://2022.spaceappschallenge.org/locations/aaruush-chennai/event" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Learn More</a>
-              <a href="https://2022.spaceappschallenge.org/challenges/2022-challenges/nimbus-to-now/teams/singularity-6/project"
-                 target="_blank" rel="noopener noreferrer"
-                 class="btn btn-sm btn-outline-success"
-                 aria-label="View Global Nominee Project">
-                <i class="fas fa-globe me-1"></i>Global Nominee
-              </a>
-              <button type="button" class="btn btn-sm btn-primary"
-                      data-cert="images/NASA-SAC.jpg"
-                      data-cert-name="NASA Space App Certificate"
-                      data-cert-modal="achievements">
-                View Cert
-              </button>
+              <a href="https://2022.spaceappschallenge.org/challenges/2022-challenges/nimbus-to-now/teams/singularity-6/project" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-success" aria-label="View Global Nominee Project"><i class="fas fa-globe me-1"></i>Global Nominee</a>
+              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/NASA-SAC.jpg" data-certificate-name="NASA Space Apps Certificate"><i class="fas fa-eye me-1"></i>View Cert</button>
             </div>
           </div>
         </div>
@@ -425,12 +631,7 @@
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
               <a href="https://coursera.org/share/3d93e3f678518262dba19188844ce389" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Verify</a>
-              <button class="btn btn-sm btn-primary"
-                      data-cert="images/certificates/Matlab-Programming-Certificate.pdf"
-                      data-cert-name="MATLAB Programming Certificate"
-                      data-cert-modal="achievements">
-                View Cert
-              </button>
+              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/certificates/Matlab-Programming-Certificate.pdf" data-certificate-name="MATLAB Programming Certificate"><i class="fas fa-eye me-1"></i>View Cert</button>
             </div>
           </div>
         </div>
@@ -446,12 +647,7 @@
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
               <a href="https://padhai.onefourthlabs.in/certificates/snoaxsoysc" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Verify</a>
-              <button class="btn btn-sm btn-primary"
-                      data-cert="images/certificates/Foundations-DS-Certificate.pdf"
-                      data-cert-name="Foundations of Data Science Certificate"
-                      data-cert-modal="achievements">
-                View Cert
-              </button>
+              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/certificates/Foundations-DS-Certificate.pdf" data-certificate-name="Foundations of Data Science Certificate"><i class="fas fa-eye me-1"></i>View Cert</button>
             </div>
           </div>
         </div>
@@ -467,12 +663,7 @@
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
               <a href="https://www.hackerrank.com/certificates/iframe/7e73b6e77762" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Verify</a>
-              <button class="btn btn-sm btn-primary"
-                      data-cert="images/certificates/problem_solving_basic certificate.pdf"
-                      data-cert-name="HackerRank Problem Solving (Basic)"
-                      data-cert-modal="achievements">
-                View Cert
-              </button>
+              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/certificates/problem_solving_basic certificate.pdf" data-certificate-name="Problem Solving (Basic) — HackerRank"><i class="fas fa-eye me-1"></i>View Cert</button>
             </div>
           </div>
         </div>
@@ -488,12 +679,7 @@
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
               <a href="https://www.hackerrank.com/certificates/iframe/4da3a40f66c8" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Verify</a>
-              <button class="btn btn-sm btn-primary"
-                      data-cert="images/certificates/python_basic certificate.pdf"
-                      data-cert-name="HackerRank Python (Basic)"
-                      data-cert-modal="achievements">
-                View Cert
-              </button>
+              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/certificates/python_basic certificate.pdf" data-certificate-name="Python (Basic) — HackerRank"><i class="fas fa-eye me-1"></i>View Cert</button>
             </div>
           </div>
         </div>
@@ -509,12 +695,7 @@
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
               <a href="https://www.hackerrank.com/certificates/iframe/8caacc789cf6" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Verify</a>
-              <button class="btn btn-sm btn-primary"
-                      data-cert="images/certificates/frontend_developer_react certificate.pdf"
-                      data-cert-name="HackerRank Frontend Developer (React)"
-                      data-cert-modal="achievements">
-                View Cert
-              </button>
+              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/certificates/frontend_developer_react certificate.pdf" data-certificate-name="Frontend Developer (React) — HackerRank"><i class="fas fa-eye me-1"></i>View Cert</button>
             </div>
           </div>
         </div>
@@ -530,12 +711,7 @@
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
               <a href="https://www.hackerrank.com/certificates/iframe/02aa2278056a" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Verify</a>
-              <button class="btn btn-sm btn-primary"
-                      data-cert="images/certificates/sql_advanced certificate.pdf"
-                      data-cert-name="HackerRank SQL (Advanced)"
-                      data-cert-modal="achievements">
-                View Cert
-              </button>
+              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/certificates/sql_advanced certificate.pdf" data-certificate-name="SQL (Advanced) — HackerRank"><i class="fas fa-eye me-1"></i>View Cert</button>
             </div>
           </div>
         </div>
@@ -551,43 +727,39 @@
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
               <a href="https://signon.oracle.com/signin" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Learn More</a>
-              <button class="btn btn-sm btn-primary"
-                      data-cert="images/certificates/clmsCertificate.prMain.pdf"
-                      data-cert-name="Database Foundations - Oracle"
-                      data-cert-modal="achievements">
-                View Cert
-              </button>
+              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/certificates/clmsCertificate.prMain.pdf" data-certificate-name="Database Foundations — Oracle"><i class="fas fa-eye me-1"></i>View Cert</button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ACHIEVEMENTS LOCAL CERT MODAL -->
-    <div id="achievementsCertModal" class="section-cert-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="achievementsCertModalTitle" aria-describedby="achievementsCertModalSubtitle">
-      <div class="section-cert-modal-box" tabindex="-1">
-        <div class="cm-header">
-          <h2 class="cm-title" id="achievementsCertModalTitle">Certificate Preview</h2>
-          <button class="cm-close section-cert-close" type="button" aria-label="Close">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
+  </div>
 
-        <div class="cm-body">
-          <p class="cm-subtitle" id="achievementsCertModalSubtitle"></p>
-          <div class="section-cert-content" id="achievementsCertModalContent"></div>
-        </div>
+  <!-- Backdrop lives here so it only covers the achievements section -->
+  <div id="certPopBackdrop" class="cert-pop-backdrop" aria-hidden="true"></div>
 
-        <div class="cm-footer">
-          <a id="achievementsCertModalOpenLink" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
-            <i class="fas fa-external-link-alt me-1"></i>Open Full Size
-          </a>
-          <a id="achievementsCertModalDownload" href="#" download class="btn btn-outline-light btn-sm">
-            <i class="fas fa-download me-1"></i>Download
-          </a>
-          <button type="button" class="btn btn-outline-light btn-sm section-cert-close">Close</button>
-        </div>
+  <!-- Popover lives here so it is constrained to the achievements section -->
+  <div id="certPopover" class="cert-popover" role="dialog" aria-modal="true" aria-labelledby="certPopTitle" aria-hidden="true">
+    <div class="cert-pop-header">
+      <div class="cert-pop-hd-left">
+        <span class="cert-pop-icon" aria-hidden="true"><i class="fas fa-certificate"></i></span>
+        <span id="certPopTitle" class="cert-pop-title">Certificate</span>
       </div>
+      <button type="button" class="cert-pop-close" id="certPopClose" aria-label="Close certificate preview">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="cert-pop-body">
+      <div class="cert-pop-loading" id="certPopLoading"><span class="cert-pop-spinner"></span></div>
+      <img id="certPopImg" src="" alt="Certificate preview" class="cert-pop-img d-none" />
+      <iframe id="certPopFrame" src="" title="Certificate PDF" class="cert-pop-frame d-none"></iframe>
+    </div>
+    <div class="cert-pop-footer">
+      <a id="certPopDl" href="" download class="cert-pop-btn cert-pop-btn--dl">
+        <i class="fas fa-download me-1"></i>Download
+      </a>
+      <button type="button" id="certPopCloseBtn" class="cert-pop-btn cert-pop-btn--ghost">Close</button>
     </div>
   </div>
 </section>
@@ -603,113 +775,99 @@
       <i class="fas fa-quote-left me-2"></i>Testimonials
     </h2>
 
-    <!-- Testimonials Grid with Pagination -->
-    <div class="testimonials-paginator" id="testimonialsPaginator">
-      <!-- Pagination arrows (hidden when only 1 page) -->
-      <div class="tp-nav" id="tpNav">
-        <button type="button" class="tc-arrow tc-prev" id="tpPrev" aria-label="Previous page"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
-        <span class="tp-page-info" id="tpPageInfo"></span>
-        <button type="button" class="tc-arrow tc-next" id="tpNext" aria-label="Next page"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+    <!-- Testimonials Auto-scroll Carousel -->
+    <div class="tc-carousel" id="testimonialsCarousel" role="region" aria-label="Testimonials" aria-roledescription="carousel">
+      <div class="tc-viewport">
+        <div class="tc-track" id="tcTrack">
+
+          <div class="tc-slide" role="group" aria-roledescription="slide" aria-label="Testimonial 1 of 3">
+            <div class="card testimonial-card">
+              <div class="card-body d-flex flex-column">
+                <i class="fas fa-quote-left testimonial-quote-icon mb-3"></i>
+                <p class="flex-grow-1 fst-italic">
+                  “Ganesh is sincere in his work and handles responsibilities with care. He is willing to learn, takes feedback positively, and puts in steady effort.”
+                </p>
+                <div class="d-flex align-items-center mt-4">
+                  <img src="images/testimonials/Headshot 1.jpg" alt="Dr. A Rathinam" class="testimonial-headshot me-3" width="50" height="50" loading="lazy"/>
+                  <div>
+                    <strong>
+                      <a href="https://www.linkedin.com/in/rathinam-ananthanarayanan-75470710/" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                        Dr. A Rathinam
+                      </a>
+                    </strong>
+                    <p class="mb-0 small text-muted">
+                      Director of Alumni Affairs &amp; Professor, EEE<br>
+                      Convenor, Aaruush &mdash; SRM IST
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tc-slide" role="group" aria-roledescription="slide" aria-label="Testimonial 2 of 3">
+            <div class="card testimonial-card">
+              <div class="card-body d-flex flex-column">
+                <i class="fas fa-quote-left testimonial-quote-icon mb-3"></i>
+                <p class="flex-grow-1 fst-italic">
+                  “Ganesh has shown a good level of commitment in the work he takes on. He is focused and consistent in his approach.”
+                </p>
+                <div class="d-flex align-items-center mt-4">
+                  <img src="images/testimonials/Headshot 2.jpg" alt="Dr. V Thirumurugan" class="testimonial-headshot me-3" width="50" height="50" loading="lazy"/>
+                  <div>
+                    <strong>
+                      <a href="https://www.linkedin.com/in/dr-varatharajan-thirumurugan-02110812/" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                        Dr. V Thirumurugan
+                      </a>
+                    </strong>
+                    <p class="mb-0 small text-muted">
+                      Associate Director (Campus Life)<br>
+                      SRM Institute of Science and Technology
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tc-slide" role="group" aria-roledescription="slide" aria-label="Testimonial 3 of 3">
+            <div class="card testimonial-card">
+              <div class="card-body d-flex flex-column">
+                <i class="fas fa-quote-left testimonial-quote-icon mb-3"></i>
+                <p class="flex-grow-1 fst-italic">
+                  “Ganesh shows commitment in the work he does and approaches tasks with sincerity. He is open to guidance and works in a calm and focused way.”
+                </p>
+                <div class="d-flex align-items-center mt-4">
+                  <img src="images/testimonials/Headshot 3.jpg" alt="Dr. A Shanthini" class="testimonial-headshot me-3" width="50" height="50" loading="lazy"/>
+                  <div>
+                    <strong>
+                      <a href="https://www.linkedin.com/in/shanthini-a-984544244/" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                        Dr. A Shanthini
+                      </a>
+                    </strong>
+                    <p class="mb-0 small text-muted">
+                      Associate Professor<br>
+                      SRM University
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- end tc-track -->
+      </div><!-- end tc-viewport -->
+
+      <div class="tc-controls">
+        <button type="button" class="tc-arrow tc-prev" id="tpPrev" aria-label="Previous testimonial"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="tc-dots" id="tcDots" role="tablist" aria-label="Jump to testimonial">
+          <button type="button" class="tc-dot" role="tab" aria-selected="true"  data-idx="0" aria-label="Testimonial 1"></button>
+          <button type="button" class="tc-dot" role="tab" aria-selected="false" data-idx="1" aria-label="Testimonial 2"></button>
+          <button type="button" class="tc-dot" role="tab" aria-selected="false" data-idx="2" aria-label="Testimonial 3"></button>
+        </div>
+        <button type="button" class="tc-arrow tc-next" id="tpNext" aria-label="Next testimonial"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
       </div>
-
-      <!-- Testimonial cards grid -->
-      <div class="row g-4" id="tpGrid">
-
-        <div class="col-md-4 tp-card" data-page="0">
-          <div class="card testimonial-card h-100">
-            <div class="card-body d-flex flex-column">
-              <i class="fas fa-quote-left testimonial-quote-icon mb-3"></i>
-              <p class="flex-grow-1 fst-italic">
-                "Working with Ganesh was a delight. He brought creative solutions to complex issues and consistently exceeded expectations."
-              </p>
-              <div class="d-flex align-items-center mt-4">
-                <img src="images/testimonials/Headshot 1.jpg" alt="Dr. A Rathinam" class="testimonial-headshot me-3" width="50" height="50" loading="lazy"/>
-                <div>
-                  <strong>
-                    <a href="https://www.linkedin.com/in/rathinam-ananthanarayanan-75470710/" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-                      Dr. A Rathinam
-                    </a>
-                  </strong>
-                  <p class="mb-0 small text-muted">
-                    Director of Alumni Affairs &amp; Professor, EEE<br>
-                    Convenor, Aaruush &mdash; SRM IST
-                  </p>
-                </div>
-              </div>
-              <button type="button" class="btn btn-sm btn-outline-primary mt-3"
-                      data-cert="images/certificates/Aaruush_Certificate.pdf"
-                      data-cert-name="Aaruush Certificate"
-                      data-cert-modal="testimonials">
-                View Certificate
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4 tp-card" data-page="0">
-          <div class="card testimonial-card h-100">
-            <div class="card-body d-flex flex-column">
-              <i class="fas fa-quote-left testimonial-quote-icon mb-3"></i>
-              <p class="flex-grow-1 fst-italic">
-                "Ganesh's coding skills are top-notch. He consistently delivered on time and went above and beyond every project requirement."
-              </p>
-              <div class="d-flex align-items-center mt-4">
-                <img src="images/testimonials/Headshot 2.jpg" alt="Dr. V Thirumurugan" class="testimonial-headshot me-3" width="50" height="50" loading="lazy"/>
-                <div>
-                  <strong>
-                    <a href="https://www.linkedin.com/in/dr-varatharajan-thirumurugan-02110812/" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-                      Dr. V Thirumurugan
-                    </a>
-                  </strong>
-                  <p class="mb-0 small text-muted">
-                    Associate Director (Campus Life)<br>
-                    SRM Institute of Science and Technology
-                  </p>
-                </div>
-              </div>
-              <button type="button" class="btn btn-sm btn-outline-primary mt-3"
-                      data-cert="images/certificates/certificate_thirumurugan.jpg"
-                      data-cert-name="Thirumurugan Certificate"
-                      data-cert-modal="testimonials">
-                View Certificate
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4 tp-card" data-page="0">
-          <div class="card testimonial-card h-100">
-            <div class="card-body d-flex flex-column">
-              <i class="fas fa-quote-left testimonial-quote-icon mb-3"></i>
-              <p class="flex-grow-1 fst-italic">
-                "He was instrumental in our startup's success, providing robust front-end and AI solutions that truly elevated our product."
-              </p>
-              <div class="d-flex align-items-center mt-4">
-                <img src="images/testimonials/Headshot 3.jpg" alt="Dr. A Shanthini" class="testimonial-headshot me-3" width="50" height="50" loading="lazy"/>
-                <div>
-                  <strong>
-                    <a href="https://www.linkedin.com/in/shanthini-a-984544244/" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-                      Dr. A Shanthini
-                    </a>
-                  </strong>
-                  <p class="mb-0 small text-muted">
-                    Associate Professor<br>
-                    SRM University
-                  </p>
-                </div>
-              </div>
-              <button type="button" class="btn btn-sm btn-outline-primary mt-3"
-                      data-cert="images/certificates/A.SHANTHINI LOR.pdf"
-                      data-cert-name="Shanthini Letter of Recommendation"
-                      data-cert-modal="testimonials">
-                View Certificate
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- end tpGrid -->
-    </div><!-- end testimonials-paginator -->
+    </div><!-- end tc-carousel -->
 
     <!-- Leave a Testimonial Button -->
     <div class="text-center mt-5">
@@ -718,54 +876,21 @@
       </button>
     </div>
 
-
-    <!-- TESTIMONIALS LOCAL CERT MODAL -->
-    <div id="testimonialsCertModal" class="section-cert-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="testimonialsCertModalTitle" aria-describedby="testimonialsCertModalSubtitle">
-      <div class="section-cert-modal-box" tabindex="-1">
-        <div class="cm-header">
-          <h2 class="cm-title" id="testimonialsCertModalTitle">Certificate Preview</h2>
-          <button class="cm-close section-cert-close" type="button" aria-label="Close">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-
-        <div class="cm-body">
-          <p class="cm-subtitle" id="testimonialsCertModalSubtitle"></p>
-          <div class="section-cert-content" id="testimonialsCertModalContent"></div>
-        </div>
-
-        <div class="cm-footer">
-          <a id="testimonialsCertModalOpenLink" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
-            <i class="fas fa-external-link-alt me-1"></i>Open Full Size
-          </a>
-          <a id="testimonialsCertModalDownload" href="#" download class="btn btn-outline-light btn-sm">
-            <i class="fas fa-download me-1"></i>Download
-          </a>
-          <button type="button" class="btn btn-outline-light btn-sm section-cert-close">Close</button>
-        </div>
-      </div>
-    </div>
-
     <!-- LEAVE A TESTIMONIAL MODAL — inside section so it overlays exactly here -->
-    <div id="leaveTestimonialModal" class="section-cert-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="ltmTitle">
-      <div class="section-cert-modal-box" tabindex="-1">
-        <div class="cm-header">
-          <h2 class="cm-title" id="ltmTitle"><i class="fas fa-pen me-2"></i>Leave a Testimonial</h2>
-          <button type="button" class="cm-close" id="ltmClose" aria-label="Close"><i class="fas fa-times"></i></button>
+    <div id="leaveTestimonialModal" class="cert-modal-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="ltmTitle">
+      <div class="cert-modal-box" tabindex="-1">
+        <div class="cert-modal-header">
+          <div class="cert-modal-header-left">
+            <div class="cert-modal-icon" aria-hidden="true"><i class="fas fa-pen"></i></div>
+            <h2 id="ltmTitle" class="cert-modal-title">Leave a Testimonial</h2>
+          </div>
+          <button type="button" class="cert-modal-close" id="ltmClose" aria-label="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
         </div>
-        <div class="cm-body">
+        <div class="cert-modal-body cert-modal-body--form">
           <form id="leaveTestimonialForm" novalidate>
             <div class="mb-3">
               <label for="ltmName" class="form-label">Your Name <span class="text-danger">*</span></label>
               <input type="text" class="form-control" id="ltmName" placeholder="Your full name" required/>
-            </div>
-            <div class="mb-3">
-              <label for="ltmRole" class="form-label">Your Role / Organisation</label>
-              <input type="text" class="form-control" id="ltmRole" placeholder="e.g. Software Engineer, Google"/>
-            </div>
-            <div class="mb-3">
-              <label for="ltmLinkedIn" class="form-label">LinkedIn Profile URL</label>
-              <input type="url" class="form-control" id="ltmLinkedIn" placeholder="https://linkedin.com/in/…"/>
             </div>
             <div class="mb-3">
               <label for="ltmMessage" class="form-label">Your Testimonial <span class="text-danger">*</span></label>
@@ -825,9 +950,21 @@
           <div id="contactError" class="alert alert-danger d-flex align-items-center gap-2 d-none" role="alert">
             <i class="fas fa-exclamation-circle"></i><span>Something went wrong — <span class="error-hint">please try again or email me directly.</span> <a href="mailto:nveeravenkataganesh@gmail.com">nveeravenkataganesh@gmail.com</a></span>
           </div>
-          <div class="mb-4"><label for="name" class="form-label fw-semibold">Full Name</label><input type="text" class="form-control form-control-lg" id="name" name="name" autocomplete="name" aria-describedby="name-error" required/><div class="invalid-feedback" id="name-error">Please enter your name.</div></div>
-          <div class="mb-4"><label for="email" class="form-label fw-semibold">Email Address</label><input type="email" class="form-control form-control-lg" id="email" name="email" autocomplete="email" aria-describedby="email-error" required/><div class="invalid-feedback" id="email-error">Please enter a valid email.</div></div>
-          <div class="mb-4"><label for="message" class="form-label fw-semibold">Message</label><textarea class="form-control form-control-lg" id="message" name="message" rows="5" autocomplete="off" aria-describedby="message-error" required></textarea><div class="invalid-feedback" id="message-error">Please enter a message.</div></div>
+          <div class="form-floating mb-4">
+            <input type="text" class="form-control form-control-lg" id="name" name="name" placeholder=" " autocomplete="name" aria-describedby="name-error" required/>
+            <label for="name">Full Name</label>
+            <div class="invalid-feedback" id="name-error">Please enter your name.</div>
+          </div>
+          <div class="form-floating mb-4">
+            <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder=" " autocomplete="email" aria-describedby="email-error" required/>
+            <label for="email">Email Address</label>
+            <div class="invalid-feedback" id="email-error">Please enter a valid email.</div>
+          </div>
+          <div class="form-floating mb-4">
+            <textarea class="form-control form-control-lg contact-message-field" id="message" name="message" placeholder=" " rows="5" autocomplete="off" aria-describedby="message-error" required></textarea>
+            <label for="message">Message</label>
+            <div class="invalid-feedback" id="message-error">Please enter a message.</div>
+          </div>
           <div class="d-grid"><button type="submit" class="btn btn-primary btn-lg" id="contactSubmitBtn"><i class="fas fa-paper-plane me-2"></i>Send Message</button></div>
         </form>
       </div>
@@ -837,15 +974,63 @@
 
 <!-- RESUME -->
 <section id="resume" class="py-5" aria-labelledby="resume-heading">
-  <div class="container text-center">
+  <div class="container">
     <h2 id="resume-heading" class="section-heading text-center mb-2"><i class="fas fa-file-alt me-2"></i>Resume</h2>
-    <p class="text-muted mb-4">Preview or download my full resume below.</p>
-    <div class="resume-preview mx-auto mb-4">
-      <object data="Ganesh_SDE.pdf#view=FitH" type="application/pdf" style="width:100%;height:600px;border:none;border-radius:0.875rem;" aria-label="Resume PDF">
-        <p class="text-center py-4">PDF preview not available in your browser. <a href="Ganesh_SDE.pdf" download class="text-primary">Download Resume (PDF)</a></p>
-      </object>
+    <div class="resume-card">
+      <!-- Left: info -->
+      <div class="resume-card-info">
+        <div class="resume-card-name">Veera Venkata Ganesh Nurukurthi</div>
+        <div class="resume-card-role">Software Developer · MS CS, George Mason University</div>
+        <ul class="resume-card-highlights">
+          <li><i class="fas fa-layer-group"></i> Full-Stack: React, Angular, Spring Boot, Django</li>
+          <li><i class="fas fa-cloud"></i> Cloud &amp; DevOps: AWS, Docker, Kubernetes, CI/CD</li>
+          <li><i class="fas fa-brain"></i> GenAI: LangChain, RAG, OpenAI, LangGraph</li>
+        </ul>
+        <span class="resume-updated-badge"><i class="fas fa-circle-check me-1"></i>Updated Mar 2026</span>
+      </div>
+
+      <!-- Right: actions -->
+      <div class="resume-card-actions">
+        <button type="button" class="resume-btn resume-btn--preview" id="resumePreviewBtn">
+          <i class="fas fa-eye"></i>
+          <span>Preview</span>
+        </button>
+        <a href="Ganesh_SDE.pdf" download class="resume-btn resume-btn--download">
+          <i class="fas fa-download"></i>
+          <span>Download</span>
+        </a>
+        <button type="button" class="resume-btn resume-btn--print" id="resumePrintBtn">
+          <i class="fas fa-print"></i>
+          <span>Print</span>
+        </button>
+      </div>
     </div>
-    <a href="Ganesh_SDE.pdf" class="btn btn-primary btn-lg" download><i class="fas fa-download me-2"></i>Download Resume (PDF)</a>
+
+  </div>
+
+  <!-- Modal lives here so it is constrained to the resume section -->
+  <div id="pvResumeModal" class="pv-modal" role="dialog" aria-modal="true" aria-labelledby="pvResumeTitle" aria-hidden="true">
+    <div class="pv-card pv-card--wide" role="document">
+      <div class="pv-header">
+        <span id="pvResumeTitle" class="pv-title">Resume Preview</span>
+        <button type="button" class="pv-close" id="pvResumeClose" aria-label="Close preview">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="pv-body">
+        <div class="pv-loading" id="pvResumeLoading">
+          <span class="pv-spinner"></span>
+          <span>Loading…</span>
+        </div>
+        <iframe id="pvResumeFrame" class="pv-frame" src="" title="Resume PDF" tabindex="-1"></iframe>
+      </div>
+      <div class="pv-footer">
+        <a href="Ganesh_SDE.pdf" download class="pv-btn pv-btn--primary">
+          <i class="fas fa-download me-1"></i>Download
+        </a>
+        <button type="button" class="pv-btn pv-btn--ghost" id="pvResumeCloseBtn">Close</button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -853,7 +1038,7 @@
 
 <!-- FOOTER -->
 <footer role="contentinfo">
-  <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2 py-1">
+  <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2 py-2">
     <p class="mb-0 small fw-semibold footer-copy">&copy; <span id="footerYear"></span> Veera Venkata Ganesh Nurukurthi</p>
     <div class="footer-social d-flex gap-3">
       <a href="https://www.linkedin.com/in/veera-venkata-ganesh-nurukurthi-437195226/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin fa-lg"></i></a>
@@ -863,15 +1048,15 @@
   </div>
 </footer>
 
-<button id="backToTop" aria-label="Back to top"><i class="fas fa-chevron-up"></i></button>
 
 <!-- Scripts — all defer so they execute in order after DOM parse; Three.js must be before main.js -->
+<script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script defer src="js/main.js"></script>
-<script defer src="js/theme.js"></script>
 <script defer src="js/nav.js"></script>
+<script defer src="js/theme.js"></script>
+<script defer src="js/main.js"></script>
 <script defer src="js/animations.js"></script>
 <script defer src="js/background.js"></script>
 <script>
@@ -883,3 +1068,4 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
+

@@ -8,8 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
       { type:'photo', src:'images/Ganesh.jpg',                 alt:'Admiration Day' },
       { type:'photo', src:'images/IMG20220805181152.jpg',       alt:'August 15 Event' },
       { type:'photo', src:'images/IMG_3351.JPG',               alt:'IMG_3351' },
-      { type:'youtube', ytId:'gNVA7PGJWEg', alt:'Hack Summit 3.0 Teaser' },
-      { type:'youtube', ytId:'9JQ1v5sp870', alt:'Hack Summit 3.0 After Movie' }
+      { type:'youtube', ytId:'gNVA7PGJWEg', alt:'Hack Summit 3.0 Teaser',
+        transcript:'Hack Summit 3.0 promotional teaser showcasing the hackathon event at SRM IST with highlights of participants, venue, and activities.' },
+      { type:'youtube', ytId:'9JQ1v5sp870', alt:'Hack Summit 3.0 After Movie',
+        transcript:'After movie for Hack Summit 3.0 — recap of the 24-hour hackathon including team introductions, mentoring sessions, project demos, and award ceremony.' }
     ];
 
     // ── STATE ──
@@ -23,12 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── HELPERS ──
     const filtered = () => items.filter(i => {
       if (filterType === 'all') return true;
-      if (filterType === 'video') return i.type === 'video' || i.type === 'youtube';
+      if (filterType === 'video') return i.type === 'youtube' || i.type === 'video';
       return i.type === filterType;
     });
     const clamp    = (idx, list) => ((idx % list.length) + list.length) % list.length;
 
-    const showToast = (msg, dur) => typeof window.showToast === 'function' ? window.showToast(msg) : undefined;
+    const showToast = (msg) => typeof window.showToast === 'function' ? window.showToast(msg) : undefined;
 
     // ── COUNTER ELEMENTS ──
     const visibleCountEl = document.getElementById('visibleCount');
@@ -150,6 +152,20 @@ document.addEventListener('DOMContentLoaded', () => {
           iframe.allowFullscreen = true;
           iframe.style.cssText = 'width:100%;height:100%;min-height:320px;border:none;border-radius:var(--radius-sm);';
           previewMedia.appendChild(iframe);
+          // Transcript fallback for accessibility / non-JS players
+          if (item.transcript) {
+            const details = document.createElement('details');
+            details.style.cssText = 'margin-top:.75rem;font-size:.82rem;color:var(--text-muted);';
+            const summary = document.createElement('summary');
+            summary.textContent = 'Video description / transcript';
+            summary.style.cssText = 'cursor:pointer;font-weight:600;margin-bottom:.35rem;';
+            const p = document.createElement('p');
+            p.textContent = item.transcript;
+            p.style.cssText = 'margin:.35rem 0 0;line-height:1.55;';
+            details.appendChild(summary);
+            details.appendChild(p);
+            previewMedia.appendChild(details);
+          }
         } else {
           const vid = document.createElement('video');
           vid.src = item.src;

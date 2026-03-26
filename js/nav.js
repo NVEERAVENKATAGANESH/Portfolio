@@ -153,12 +153,30 @@ function initHeader(){
     ...document.querySelectorAll('.header-link[href^="#"]'),
     ...document.querySelectorAll('.sidebar-link[href^="#"]')
   ];
+  const HEADER_H = 70;
   const hl=()=>{
-    const y=window.scrollY+80;
+    // At the very top of the page always highlight home
+    if(window.scrollY < 60){
+      allLinks.forEach(a=>a.classList.toggle('active-link', a.getAttribute('href')==='#home'));
+      return;
+    }
+    let active = null;
+    let bestDist = Infinity;
     allLinks.forEach(a=>{
       const s=document.querySelector(a.getAttribute('href'));
-      a.classList.toggle('active-link',s&&s.offsetTop<=y&&s.offsetTop+s.offsetHeight>y);
+      if(!s) return;
+      const dist = s.getBoundingClientRect().top - HEADER_H;
+      if(dist <= 0 && Math.abs(dist) < bestDist){
+        bestDist = Math.abs(dist);
+        active = a.getAttribute('href');
+      }
+    });
+    // Fallback: if nothing matched, keep home active
+    if(!active) active = '#home';
+    allLinks.forEach(a=>{
+      a.classList.toggle('active-link', a.getAttribute('href')===active);
     });
   };
-  window.addEventListener('scroll',throttle(hl,100),{passive:true}); hl();
+  window.addEventListener('scroll',throttle(hl,80),{passive:true});
+  requestAnimationFrame(hl);
 }

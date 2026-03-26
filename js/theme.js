@@ -8,12 +8,10 @@ function initTheme(){
   const sbIcon = document.getElementById('sidebarThemeIcon');
   const saved = localStorage.getItem('theme');
   const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const theme = saved || (systemDark ? 'dark' : 'light');
+  const theme = saved || 'light';
   document.body.setAttribute('data-theme', theme);
   t.checked = (theme === 'dark');
   if(sbIcon) sbIcon.className = (theme === 'dark') ? 'fas fa-sun' : 'fas fa-moon';
-  // Sync galaxy with initial theme
-  theme === 'dark' ? _galaxyCtrl?.start() : _galaxyCtrl?.stop();
 
   function applyTheme(dark){
     const th = dark ? 'dark' : 'light';
@@ -21,7 +19,6 @@ function initTheme(){
     localStorage.setItem('theme', th);
     t.checked = dark;
     if(sbIcon) sbIcon.className = dark ? 'fas fa-sun' : 'fas fa-moon';
-    dark ? _galaxyCtrl?.start() : _galaxyCtrl?.stop();
   }
   t.addEventListener('change', ()=>applyTheme(t.checked));
   if(sb) sb.addEventListener('click', ()=>applyTheme(document.body.getAttribute('data-theme') !== 'dark'));
