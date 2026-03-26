@@ -871,40 +871,9 @@
 
     <!-- Leave a Testimonial Button -->
     <div class="text-center mt-5">
-      <button type="button" class="btn btn-primary btn-lg" id="leaveTestimonialBtn">
+      <a href="404.html" class="btn btn-primary btn-lg">
         <i class="fas fa-pen me-2"></i>Leave a Testimonial
-      </button>
-    </div>
-
-    <!-- LEAVE A TESTIMONIAL MODAL — inside section so it overlays exactly here -->
-    <div id="leaveTestimonialModal" class="cert-modal-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="ltmTitle">
-      <div class="cert-modal-box" tabindex="-1">
-        <div class="cert-modal-header">
-          <div class="cert-modal-header-left">
-            <div class="cert-modal-icon" aria-hidden="true"><i class="fas fa-pen"></i></div>
-            <h2 id="ltmTitle" class="cert-modal-title">Leave a Testimonial</h2>
-          </div>
-          <button type="button" class="cert-modal-close" id="ltmClose" aria-label="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
-        </div>
-        <div class="cert-modal-body cert-modal-body--form">
-          <form id="leaveTestimonialForm" novalidate>
-            <div class="mb-3">
-              <label for="ltmName" class="form-label">Your Name <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="ltmName" placeholder="Your full name" required/>
-            </div>
-            <div class="mb-3">
-              <label for="ltmMessage" class="form-label">Your Testimonial <span class="text-danger">*</span></label>
-              <textarea class="form-control" id="ltmMessage" rows="4" placeholder="Share your experience working with Ganesh…" required></textarea>
-            </div>
-            <div id="ltmFeedback" class="mb-2 ltm-feedback-hidden" aria-live="polite"></div>
-            <div class="d-flex gap-2 justify-content-end">
-              <button type="button" class="btn btn-outline-secondary" id="ltmCancel">Cancel</button>
-              <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane me-2"></i>Submit</button>
-            </div>
-            <p class="text-muted mt-2 mb-0" style="font-size:.8rem;"><i class="fas fa-info-circle me-1"></i>Submissions are reviewed before being added.</p>
-          </form>
-        </div>
-      </div>
+      </a>
     </div>
   </div>
 </section>

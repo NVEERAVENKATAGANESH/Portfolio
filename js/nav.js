@@ -16,7 +16,7 @@ function buildNav() {
     { href: h('projects'),     icon: 'fa-folder-open',  label: 'Projects'     },
     { href: h('achievements'), icon: 'fa-award',        label: 'Achievements' },
     { href: h('testimonials'), icon: 'fa-quote-left',   label: 'Testimonials' },
-    { href: isGallery ? 'gallery.html' : '#gallery', icon: 'fa-images', label: 'Gallery', active: isGallery },
+    { href: isGallery ? 'gallery.html' : '#gallery', icon: 'fa-images', label: 'Gallery', active: location.pathname.includes('gallery') },
     { href: h('contact'),      icon: 'fa-envelope',     label: 'Contact'      },
     { href: h('resume'),       icon: 'fa-file-alt',     label: 'Resume'       },
   ];

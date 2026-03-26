@@ -3,7 +3,9 @@
 // Prevent browser from restoring scroll position on refresh — always start at top
 if('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
-const IS_GALLERY_PAGE = location.pathname.includes('gallery');
+// True on any page that is not the main portfolio index (gallery, 404, case studies, etc.)
+// Makes nav links resolve to index.html#section instead of bare #section anchors
+const IS_GALLERY_PAGE = !document.getElementById('home');
 const _preStart = Date.now(); // track page load start for smart preloader timing
 
 const throttle = (fn, ms=50) => { let l=0; return (...a) => { const n=Date.now(); if(n-l>=ms){l=n;fn(...a);} }; };
@@ -813,6 +815,18 @@ document.addEventListener('DOMContentLoaded', () => {
   initStatCounters();
   initHashSync();
   initProjectThumbs();
+});
+
+// Bfcache (back/forward cache) restore — DOMContentLoaded won't re-fire when the browser
+// serves the page from memory (e.g. navigating gallery → home).  Restart the Three.js
+// sphere so the animation loop is alive again.
+window.addEventListener('pageshow', e => {
+  if (!e.persisted || IS_GALLERY_PAGE) return;
+  const container = document.getElementById('heroSphere');
+  if (container && typeof initHeroSphere === 'function') {
+    container.innerHTML = ''; // remove stale canvas
+    initHeroSphere();
+  }
 });
 
 // Two flags so initAnimations only runs once GSAP is ready AND preloader is done
