@@ -738,10 +738,15 @@ function initCertPreview(){
       position();
       pop.style.opacity = '';
       document.getElementById('certPopClose')?.focus();
-      // Scroll the modal into view on tablet/desktop (position:absolute).
-      // Skip on mobile — the modal is position:fixed and already in the viewport.
+      // Scroll to bring the modal into focus on all viewports.
+      // Desktop/tablet: scroll the popover itself (position:absolute inside section).
+      // Mobile: popover is position:fixed so scrollIntoView on it is a no-op;
+      //         instead scroll the achievements section into view so the page
+      //         background aligns with the modal for a consistent experience.
       if(window.innerWidth >= 768){
         pop.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     });
 
