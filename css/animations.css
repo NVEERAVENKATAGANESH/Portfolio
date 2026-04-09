@@ -1,0 +1,194 @@
+/* ══ PRELOADER ══ */
+/* Critical layout/exit rules are inline in <head>; this file adds decoration only */
+.pre-inner{
+  gap:1rem;
+  -webkit-user-select:none;user-select:none;
+}
+
+.pre-logo-wrap{
+  position:relative;width:120px;height:120px;
+  display:flex;align-items:center;justify-content:center;
+}
+.pre-ring{
+  position:absolute;inset:0;width:100%;height:100%;
+  animation:preRingSpin 3s linear infinite;
+}
+@keyframes preRingSpin{to{transform:rotate(360deg);}}
+
+.pre-monogram{
+  font-size:2.6rem;font-weight:800;letter-spacing:-.02em;
+  background:linear-gradient(135deg,#6366f1,#67e8f9);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:preMonoPulse 2s ease-in-out infinite;
+  font-family:'Inter',sans-serif;
+}
+@keyframes preMonoPulse{
+  0%,100%{opacity:.85;transform:scale(1);}
+  50%{opacity:1;transform:scale(1.08);}
+}
+
+.pre-name{
+  font-size:clamp(.78rem,2.8vw,1rem);font-weight:700;letter-spacing:.04em;
+  color:#e2e8f0;font-family:'Inter',sans-serif;
+  animation:preFadeUp .7s ease both;
+  animation-delay:.25s;opacity:0;
+  white-space:nowrap;
+}
+.pre-tagline{
+  font-size:.78rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;
+  color:#6366f1;font-family:'Inter',sans-serif;
+  animation:preFadeUp .7s ease both;
+  animation-delay:.4s;opacity:0;
+}
+@keyframes preFadeUp{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.pre-bar-wrap{
+  width:180px;height:2px;border-radius:1px;
+  background:rgba(99,102,241,.18);
+  margin-top:.5rem;overflow:hidden;
+}
+.pre-bar{
+  height:100%;width:100%;border-radius:1px;
+  background:linear-gradient(90deg,#6366f1,#67e8f9);
+  transform:scaleX(0);transform-origin:left center;
+  will-change:transform;
+  animation:preBarFill 2.8s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes preBarFill{
+  0%{transform:scaleX(0);}
+  60%{transform:scaleX(.75);}
+  100%{transform:scaleX(1);}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #preloader{transition:none;}
+  .pre-ring,.pre-monogram,.pre-name,.pre-tagline,.pre-bar{animation:none!important;opacity:1!important;width:100%!important;}
+}
+
+/* ══ KEYFRAMES ══ */
+
+@keyframes pulseRing{0%{transform:scale(.8);opacity:.5}70%{transform:scale(1.9);opacity:0}100%{transform:scale(.8);opacity:0}}
+
+@keyframes orbDrift1{0%{transform:translate(0,0);}100%{transform:translate(40px,30px);}}
+@keyframes orbDrift2{0%{transform:translate(0,0);}100%{transform:translate(-30px,40px);}}
+@keyframes orbDrift3{0%{transform:translate(0,0);}100%{transform:translate(25px,-35px);}}
+
+@media(prefers-reduced-motion:no-preference){
+  .hero-orb-1{animation:orbDrift1 14s ease-in-out infinite alternate;}
+  .hero-orb-2{animation:orbDrift2 16s ease-in-out infinite alternate;}
+  .hero-orb-3{animation:orbDrift3 18s ease-in-out infinite alternate;}
+}
+
+@keyframes badgeFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-4px)}
+}
+@media(prefers-reduced-motion:no-preference){.hero-badge-dot::after{animation:badgePulse 2.2s ease-out infinite;}}
+@keyframes badgePulse{
+  0%{transform:scale(1);opacity:.6;}
+  100%{transform:scale(3);opacity:0;}
+}
+
+@keyframes nameShimmer{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+/* Typed cursor */
+.typed-cursor{
+  display:inline-block;
+  color:#67e8f9;
+  font-weight:300;
+  margin-left:2px;
+  animation:cursorBlink .7s step-end infinite;
+  text-shadow: 0 0 8px rgba(103,232,249,.8);
+}
+@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+
+@keyframes scrollDrop{
+  0%{transform:scaleY(0);opacity:1;}
+  60%{transform:scaleY(1);opacity:1;}
+  100%{transform:scaleY(1);opacity:0;}
+}
+
+/* Open-to-work dot animation */
+@media(prefers-reduced-motion:no-preference){.open-pulse-dot::after{animation:pulseRing 1.8s ease-out infinite;}}
+
+/* Hire banner pulse */
+@media(prefers-reduced-motion:no-preference){.hire-banner-pulse::after{animation:pulseRing 1.8s ease-out infinite;}}
+
+/* Cert spinner */
+@keyframes certSpin{to{transform:rotate(360deg)}}
+
+/* Stat counter pulse */
+@keyframes statPulse{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.08)}
+  100%{transform:scale(1)}
+}
+
+/* Button pulse ring */
+@keyframes btnPulseRing{
+  0%{transform:scale(1);opacity:0.8}
+  70%{transform:scale(1.12);opacity:0}
+  100%{transform:scale(1.12);opacity:0}
+}
+
+/* Testimonial ring orbit */
+@keyframes ringOrbit{
+  0%{transform:rotateX(72deg) rotateZ(0deg);}
+  100%{transform:rotateX(72deg) rotateZ(360deg);}
+}
+@media(prefers-reduced-motion:reduce){
+  .testimonial-ring--outer,.testimonial-ring--inner{animation:none;}
+}
+
+/* Gallery tunnel pulse */
+@keyframes tunnelPulse{
+  0%{opacity:0.5;transform:translateZ(calc(var(--r) * -30px)) scaleX(0.97);}
+  100%{opacity:1;transform:translateZ(calc(var(--r) * -30px)) scaleX(1.03);}
+}
+@media(prefers-reduced-motion:reduce){
+  .gallery-tunnel-ring{animation:none;}
+}
+
+/* ══ FOCUS VISIBLE — keyboard navigation ══ */
+:focus-visible{outline:2px solid var(--primary);outline-offset:3px;border-radius:3px;}
+a:focus-visible,button:focus-visible{border-radius:4px;}
+.skill-card:focus-visible,.jrny-card:focus-visible{outline-offset:4px;}
+
+/* ══ PREFERS-REDUCED-MOTION ══ */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+  }
+  html{scroll-behavior:auto!important}
+  /* Reveal GSAP-hidden hero elements instantly */
+  .hero-anim-title,.hero-anim-subtitle,.hero-anim-desc,.hero-anim-cta>*{opacity:1!important;transform:none!important;}
+  .hero-section{animation:none!important;background-position:0% 0%!important;}
+  .open-pulse-dot::after{animation:none!important;}
+}
+
+/* ══ PRINT STYLES ══ */
+@media print{
+  *,*::before,*::after{animation:none!important;transition:none!important;}
+  body{background:#fff!important;color:#000!important;font-size:11pt;}
+  #site-header,.mobile-sidebar,.sidebar-backdrop,.hire-banner,#scrollBar,
+  #backToTop,.header-menu-btn,.skip-link{display:none!important;}
+  main{display:block;}
+  section{page-break-inside:avoid;padding:1rem 0!important;}
+  /* Show only resume section in print */
+  section:not(#resume){display:none!important;}
+  #resume{display:block!important;}
+  .resume-preview{border:none;box-shadow:none;}
+  .resume-preview iframe{height:auto;min-height:100vh;}
+  footer{position:static!important;border:none;background:transparent!important;color:#000!important;}
+  a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#555;}
+  a[href^="#"]::after,.btn::after{content:none;}
+}

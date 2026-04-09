@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BenefitsConnect Case Study | Veera Venkata Ganesh Nurukurthi</title>
+  <meta name="description" content="Case study: BenefitsConnect — citizen-facing government benefits portal with eligibility wizard, case worker workflows, and analytics dashboard."/>
+  <link rel="icon" type="image/jpeg" href="../images/Headshot.jpg"/>
+  <script>(function(){var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})()</script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/tokens.css"/>
+  <link rel="stylesheet" href="../css/base.css"/>
+  <link rel="stylesheet" href="../css/components.css"/>
+  <style>
+    body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+    .cs-back{display:inline-flex;align-items:center;gap:.5rem;color:var(--text-muted);text-decoration:none;font-size:.9rem;font-weight:500;padding:.4rem .8rem;border-radius:.5rem;transition:color var(--t),background var(--t);margin-bottom:2rem;}
+    .cs-back:hover{color:var(--primary);background:rgba(79,70,229,.07);}
+    .cs-hero{padding:0.6rem 0 1.75rem;border-bottom:1px solid var(--border);}
+    .cs-tag{display:inline-block;padding:.25rem .75rem;background:rgba(79,70,229,.1);color:var(--primary);border-radius:2rem;font-size:.75rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:1rem;}
+    .cs-title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;line-height:1.15;margin-bottom:.75rem;color:var(--text-dark);}
+    .cs-subtitle{font-size:1.05rem;color:var(--text-muted);max-width:680px;margin-bottom:1.5rem;}
+    .cs-meta{display:flex;flex-wrap:wrap;gap:.75rem;}
+    .cs-meta-item{display:flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--text-muted);}
+    .cs-meta-item i{color:var(--primary);width:14px;}
+    .cs-links{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.5rem;}
+    .cs-section{padding:2.5rem 0;border-bottom:1px solid var(--border);}
+    .cs-section:last-child{border-bottom:none;}
+    .cs-section-title{font-size:1.3rem;font-weight:800;color:var(--text-dark);margin-bottom:1rem;display:flex;align-items:center;gap:.6rem;}
+    .cs-section-title i{color:var(--primary);}
+    .cs-highlight-box{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:.75rem;padding:1.25rem 1.5rem;margin-bottom:1rem;}
+    .cs-step{display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.25rem;}
+    .cs-step-num{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;}
+    .cs-step-body h4{font-size:.95rem;font-weight:700;margin:0 0 .25rem;color:var(--text-dark);}
+    .cs-step-body p{font-size:.88rem;color:var(--text-muted);margin:0;}
+    .cs-tech-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .75rem;background:var(--card);border:1px solid var(--border);border-radius:2rem;font-size:.78rem;font-weight:600;color:var(--text-muted);margin:.2rem;}
+    .cs-feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem;}
+    .cs-feature-card{background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:1.1rem;}
+    .cs-feature-card i{color:var(--primary);margin-bottom:.4rem;font-size:1.1rem;}
+    .cs-feature-card h5{font-size:.88rem;font-weight:700;margin:0 0 .3rem;color:var(--text-dark);}
+    .cs-feature-card p{font-size:.8rem;color:var(--text-muted);margin:0;}
+    .cs-result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:1rem;}
+    .cs-result-card{background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:1.25rem;text-align:center;}
+    .cs-result-num{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#4f46e5,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;}
+    .cs-result-label{font-size:.78rem;color:var(--text-muted);margin-top:.25rem;}
+
+    /* CS NAV */
+    .cs-nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
+    .cs-nav-inner{max-width:860px;margin:0 auto;padding:.65rem 1.25rem;display:flex;align-items:center;justify-content:space-between;}
+    .cs-nav-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--text-dark);font-weight:700;font-size:.95rem;transition:color var(--t);}
+    .cs-nav-brand:hover{color:var(--primary);}
+    .cs-nav-initials{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#06b6d4);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;flex-shrink:0;}
+    .cs-nav-actions{display:flex;align-items:center;gap:.6rem;}
+    .cs-nav-back{display:inline-flex;align-items:center;gap:.4rem;text-decoration:none;color:var(--text-muted);font-size:.82rem;font-weight:500;padding:.3rem .65rem;border-radius:.5rem;border:1px solid var(--border);transition:color var(--t),background var(--t),border-color var(--t);}
+    .cs-nav-back:hover{color:var(--primary);border-color:var(--primary);background:rgba(79,70,229,.06);}
+    .cs-nav-theme{background:none;border:1px solid var(--border);border-radius:.5rem;padding:.3rem .55rem;color:var(--text-muted);cursor:pointer;font-size:.85rem;line-height:1;transition:color var(--t),border-color var(--t);}
+    .cs-nav-theme:hover{color:var(--primary);border-color:var(--primary);}
+    /* CS FOOTER */
+    .cs-footer{border-top:1px solid var(--border);padding:1.25rem 1.25rem;margin-top:2rem;}
+    .cs-footer-inner{max-width:860px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.75rem;}
+    .cs-footer-copy{font-size:.78rem;color:var(--text-muted);}
+    .cs-footer-links{display:flex;align-items:center;gap:1.1rem;}
+    .cs-footer-links a{color:var(--text-muted);text-decoration:none;font-size:.82rem;display:inline-flex;align-items:center;gap:.35rem;transition:color var(--t);}
+    .cs-footer-links a:hover{color:var(--primary);}
+  </style>
+</head>
+<body>
+<script>(function(){var t=document.documentElement.getAttribute('data-theme');if(t)document.body.setAttribute('data-theme',t);})()</script>
+<header class="cs-nav">
+  <div class="cs-nav-inner">
+    <a href="../index.html" class="cs-nav-brand">
+      <span class="cs-nav-initials">GN</span>
+      <span>Ganesh Nurukurthi</span>
+    </a>
+    <div class="cs-nav-actions">
+      <a href="../index.html#projects" class="cs-nav-back"><i class="fas fa-arrow-left"></i> All Projects</a>
+      <button class="cs-nav-theme" id="csThemeToggle" aria-label="Toggle dark mode"><i class="fas fa-moon" id="csThemeIcon"></i></button>
+    </div>
+  </div>
+</header>
+<main class="container" style="max-width:820px;padding-top:0;padding-bottom:4rem;">
+
+  <!-- Hero -->
+  <div class="cs-hero">
+    <span class="cs-tag">Full-Stack · Gov Tech</span>
+    <h1 class="cs-title">BenefitsConnect — Public Benefits Advisor</h1>
+    <p class="cs-subtitle">A citizen-facing government benefits portal featuring a 5-step eligibility wizard, a 12-program catalog with smart filtering, case worker approval workflows, and a live analytics dashboard.</p>
+    <div class="cs-meta">
+      <span class="cs-meta-item"><i class="fas fa-calendar-alt"></i> 2024</span>
+      <span class="cs-meta-item"><i class="fas fa-user"></i> Solo Developer</span>
+      <span class="cs-meta-item"><i class="fas fa-clock"></i> ~5 weeks</span>
+      <span class="cs-meta-item"><i class="fas fa-layer-group"></i> HTML · CSS · JavaScript</span>
+    </div>
+    <div class="cs-links">
+      <a href="https://nveeravenkataganesh.github.io/PUBLIC-BENEFITS-ADVISOR/" target="_blank" rel="noopener noreferrer" class="btn btn-primary"><i class="fas fa-external-link-alt me-2"></i>Live Demo</a>
+      <a href="https://github.com/NVEERAVENKATAGANESH/PUBLIC-BENEFITS-ADVISOR" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary"><i class="fab fa-github me-2"></i>Source Code</a>
+    </div>
+  </div>
+
+  <!-- Problem -->
+  <div class="cs-section">
+    <h2 class="cs-section-title"><i class="fas fa-exclamation-circle"></i> The Problem</h2>
+    <div class="cs-highlight-box">
+      <p class="mb-0">Millions of eligible citizens miss out on government benefits because program information is scattered, confusing, and difficult to navigate. Existing government portals are often inaccessible, use bureaucratic language, and offer no guidance on which programs a person actually qualifies for.</p>
+    </div>
+    <ul>
+      <li>Citizens don't know what benefits they qualify for without reading many pages of eligibility rules</li>
+      <li>Application processes are disconnected — different portals per program</li>
+      <li>Case workers have no central tool to track, review, and approve applications</li>
+      <li>Program administrators lack real-time visibility into application volume and trends</li>
+    </ul>
+  </div>
+
+  <!-- Approach -->
+  <div class="cs-section">
+    <h2 class="cs-section-title"><i class="fas fa-route"></i> Approach</h2>
+    <div class="cs-step">
+      <div class="cs-step-num">1</div>
+      <div class="cs-step-body">
+        <h4>Citizen-first UX Design</h4>
+        <p>Prioritized plain language, large touch targets, and clear progress indicators. Adopted WCAG 2.1 AA accessibility standards throughout: semantic HTML, ARIA labels, and keyboard-navigable forms.</p>
+      </div>
+    </div>
+    <div class="cs-step">
+      <div class="cs-step-num">2</div>
+      <div class="cs-step-body">
+        <h4>5-Step Eligibility Wizard</h4>
+        <p>Built a multi-step form that collects household size, income, age, employment status, and special circumstances. After submission, a matching algorithm scores each of 12 benefit programs and surfaces only those the user likely qualifies for.</p>
+      </div>
+    </div>
+    <div class="cs-step">
+      <div class="cs-step-num">3</div>
+      <div class="cs-step-body">
+        <h4>Program Catalog with Smart Filtering</h4>
+        <p>A searchable, filterable catalog of 12 programs (housing, food, healthcare, education, etc.) with details, eligibility summaries, and one-click application start. Filters by category, income bracket, and family status.</p>
+      </div>
+    </div>
+    <div class="cs-step">
+      <div class="cs-step-num">4</div>
+      <div class="cs-step-body">
+        <h4>Case Worker Approval Workflow</h4>
+        <p>A protected case worker view shows a queue of pending applications with applicant details. Workers can approve, deny (with reason), or flag for follow-up. Status updates are reflected in the citizen view.</p>
+      </div>
+    </div>
+    <div class="cs-step">
+      <div class="cs-step-num">5</div>
+      <div class="cs-step-body">
+        <h4>Live Analytics Dashboard</h4>
+        <p>An admin dashboard with charts showing application volume per program, approval rates, average processing time, and demographic trends across all 12 benefit programs. Built with Chart.js.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Features -->
+  <div class="cs-section">
+    <h2 class="cs-section-title"><i class="fas fa-star"></i> Key Features</h2>
+    <div class="cs-feature-grid">
+      <div class="cs-feature-card">
+        <i class="fas fa-list-ol"></i>
+        <h5>5-Step Eligibility Wizard</h5>
+        <p>Guided form with smart program matching based on income, age, household size</p>
+      </div>
+      <div class="cs-feature-card">
+        <i class="fas fa-filter"></i>
+        <h5>Smart Program Catalog</h5>
+        <p>12 benefit programs with multi-faceted filtering and plain-language summaries</p>
+      </div>
+      <div class="cs-feature-card">
+        <i class="fas fa-user-check"></i>
+        <h5>Case Worker Portal</h5>
+        <p>Approval queue with status tracking, notes, and denial reasons</p>
+      </div>
+      <div class="cs-feature-card">
+        <i class="fas fa-chart-bar"></i>
+        <h5>Analytics Dashboard</h5>
+        <p>Real-time charts tracking trends across all 12 programs</p>
+      </div>
+      <div class="cs-feature-card">
+        <i class="fas fa-universal-access"></i>
+        <h5>WCAG 2.1 AA</h5>
+        <p>Fully accessible — keyboard navigation, screen reader support, high contrast</p>
+      </div>
+      <div class="cs-feature-card">
+        <i class="fas fa-mobile-alt"></i>
+        <h5>Fully Responsive</h5>
+        <p>Optimized for mobile-first access — many low-income users access via smartphone</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="cs-section">
+    <h2 class="cs-section-title"><i class="fas fa-layer-group"></i> Tech Stack</h2>
+    <div>
+      <span class="cs-tech-chip">HTML5 / CSS3</span>
+      <span class="cs-tech-chip"><i class="fab fa-js-square"></i> Vanilla JavaScript</span>
+      <span class="cs-tech-chip"><i class="fab fa-bootstrap"></i> Bootstrap 5</span>
+      <span class="cs-tech-chip">Chart.js</span>
+      <span class="cs-tech-chip">LocalStorage (state)</span>
+      <span class="cs-tech-chip">WCAG 2.1 AA</span>
+      <span class="cs-tech-chip">GitHub Pages</span>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="cs-section">
+    <h2 class="cs-section-title"><i class="fas fa-chart-line"></i> Results</h2>
+    <div class="cs-result-grid">
+      <div class="cs-result-card">
+        <div class="cs-result-num">12</div>
+        <div class="cs-result-label">Benefit programs covered</div>
+      </div>
+      <div class="cs-result-card">
+        <div class="cs-result-num">5-step</div>
+        <div class="cs-result-label">Guided eligibility wizard</div>
+      </div>
+      <div class="cs-result-card">
+        <div class="cs-result-num">AA</div>
+        <div class="cs-result-label">WCAG 2.1 accessibility level</div>
+      </div>
+      <div class="cs-result-card">
+        <div class="cs-result-num">3</div>
+        <div class="cs-result-label">User roles (citizen, worker, admin)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Learnings -->
+  <div class="cs-section">
+    <h2 class="cs-section-title"><i class="fas fa-lightbulb"></i> Key Learnings</h2>
+    <ul>
+      <li><strong>Government UX demands radical simplicity</strong> — every word of jargon replaced with plain language measurably reduces user drop-off in multi-step forms</li>
+      <li><strong>Mobile-first is essential</strong> for civic tech; a significant portion of low-income users access services exclusively via smartphone</li>
+      <li><strong>Role separation</strong> (citizen vs. case worker vs. admin) should be enforced at the routing level, not just hidden via CSS</li>
+      <li><strong>LocalStorage state</strong> is sufficient for demo-scale applications but would need to be replaced with a backend DB for real deployments with privacy requirements</li>
+    </ul>
+  </div>
+
+</main>
+<footer class="cs-footer">
+  <div class="cs-footer-inner">
+    <span class="cs-footer-copy">&copy; <span id="csYear"></span> Veera Venkata Ganesh Nurukurthi</span>
+    <div class="cs-footer-links">
+      <a href="../index.html#projects"><i class="fas fa-folder-open"></i> All Projects</a>
+      <a href="https://github.com/NVEERAVENKATAGANESH" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github"></i></a>
+      <a href="https://www.linkedin.com/in/veera-venkata-ganesh-nurukurthi-437195226/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+    </div>
+  </div>
+</footer>
+<script>
+  document.getElementById('csYear').textContent = new Date().getFullYear();
+  (function(){
+    var btn=document.getElementById('csThemeToggle'),icon=document.getElementById('csThemeIcon');
+    function upd(){icon.className=document.documentElement.getAttribute('data-theme')==='dark'?'fas fa-sun':'fas fa-moon';}
+    upd();
+    btn.addEventListener('click',function(){
+      var next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+      document.documentElement.setAttribute('data-theme',next);
+      document.body.setAttribute('data-theme',next);
+      localStorage.setItem('theme',next);
+      upd();
+    });
+  })();
+</script>
+</body>
+</html>
