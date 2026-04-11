@@ -398,7 +398,7 @@ function init3DBackground() {
     renderer.dispose();
   };
 
-  } catch(e) { initGalaxy(); }
+  } catch(e) { console.error('[background] Three.js init failed:', e); initGalaxy(); }
 }
 
 /* ── 20. HERO SPHERE (Three.js wireframe) ── */

@@ -148,3 +148,12 @@ function initStatCounters(){
   counters.forEach(c=>obs.observe(c));
 }
 
+
+
+// Kill all ScrollTrigger instances on page unload to prevent memory leaks
+// when navigating back via bfcache (pageshow event re-fires initAnimations)
+window.addEventListener('beforeunload', () => {
+  if (typeof ScrollTrigger !== 'undefined') {
+    ScrollTrigger.getAll().forEach(t => t.kill());
+  }
+});

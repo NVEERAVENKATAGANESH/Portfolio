@@ -41,11 +41,12 @@
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
 
   <!-- Dark-mode flash prevention — must run before body renders -->
-  <script>(function(){var t=localStorage.getItem('theme');if(t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.setAttribute('data-theme','dark');})()</script>
+  <script>(function(){var t=localStorage.getItem('vvg-theme');if(t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.setAttribute('data-theme','dark');})()</script>
 
   <!-- Styles -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha384-/o6I2CkkWC//PSjvWC/eYN7l3xM3tJm8ZzVkCOfp//W05QcE3mlGskpoHB6XqI+B" crossorigin="anonymous" media="print" onload="this.media='all'"/>
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha384-/o6I2CkkWC//PSjvWC/eYN7l3xM3tJm8ZzVkCOfp//W05QcE3mlGskpoHB6XqI+B" crossorigin="anonymous"/></noscript>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
@@ -625,7 +626,7 @@
       <div id="previewMedia" class="visible"></div>
       <div class="slideshow-progress" id="slideshowProgress"></div>
       <div id="captionContainer">
-        <span class="caption-counter" id="captionCounter"></span>
+        <span class="caption-counter" id="captionCounter" aria-live="polite" aria-atomic="true"></span>
         <span id="captionText">Loading…</span>
         <span class="caption-type-badge" id="captionType">Photo</span>
       </div>
@@ -651,9 +652,9 @@
 
   <!-- ── MOBILE NAV ── -->
   <div class="mobile-nav-bar">
-    <button type="button" class="mobile-nav-btn" id="mobilePrev"><i class="fas fa-chevron-left"></i> Prev</button>
+    <button type="button" class="mobile-nav-btn" id="mobilePrev" aria-label="Previous image"><i class="fas fa-chevron-left"></i> Prev</button>
     <span id="mobileCounter" class="mobile-counter-label"></span>
-    <button type="button" class="mobile-nav-btn" id="mobileNext">Next <i class="fas fa-chevron-right"></i></button>
+    <button type="button" class="mobile-nav-btn" id="mobileNext" aria-label="Next image">Next <i class="fas fa-chevron-right"></i></button>
     <button type="button" class="mobile-nav-btn" id="mobileFullscreen" aria-label="Toggle fullscreen"><i class="fas fa-expand"></i></button>
   </div>
 
@@ -672,7 +673,7 @@
   </main>
 
   <!-- Scripts -->
-  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
   <script defer src="js/nav.js"></script>
   <script defer src="js/theme.js"></script>
   <script defer src="js/main.js"></script>

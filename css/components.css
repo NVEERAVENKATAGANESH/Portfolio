@@ -162,6 +162,8 @@ body[data-theme="dark"] .form-select:focus{
 }
 body[data-theme="dark"] .form-control::placeholder{color:var(--text-muted);opacity:1}
 body[data-theme="dark"] .form-label{color:var(--text)}
+/* Ensure visible focus ring on inputs in all browsers/themes */
+.form-control:focus-visible,.form-select:focus-visible{outline:2px solid var(--primary);outline-offset:1px;}
 
 /* btn-outline-secondary — dark border/text on dark bg */
 body[data-theme="dark"] .btn-outline-secondary{
@@ -262,7 +264,7 @@ body[data-theme="dark"] .skill-bar-track{background:#1f2937}
 body[data-theme="dark"] .skill-chart.kafka{--clr:#a78bfa}
 
 /* ══ PROJECT CARDS ══ */
-.project-card .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-card);transition:transform var(--t),box-shadow var(--t),border-color var(--t);border-top-width:3px;overflow:hidden;}
+.project-card .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-card);transition:transform var(--t),box-shadow var(--t),border-color var(--t);border-top-width:3px;overflow:hidden;min-height:300px;}
 .project-card .card:hover{box-shadow:-4px 0 20px rgba(99,102,241,.35),0 16px 48px rgba(99,102,241,.3),0 0 0 1px rgba(99,102,241,.2);border-color:rgba(99,102,241,.3);border-left-color:#4f46e5;}
 body[data-theme="dark"] .project-card .card:hover{border-left-color:#818cf8;border-color:rgba(129,140,248,.35);box-shadow:-4px 0 20px rgba(99,102,241,.35),0 0 0 1px rgba(129,140,248,.2),0 12px 40px rgba(79,70,229,.25);}
 .project-card[data-category="ai"] .card{border-top-color:#8b5cf6}
@@ -274,7 +276,33 @@ body[data-theme="dark"] .project-card .card:hover{border-left-color:#818cf8;bord
 .project-card[data-category="government"] .card{border-top-color:#0ea5e9}
 .project-tag{display:inline-block;padding:.2rem .65rem;background:rgba(79,70,229,.1);color:var(--primary);border-radius:999px;font-size:.72rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;}
 body[data-theme="dark"] .project-tag{background:rgba(129,140,248,.15);color:#a5b4fc}
-.project-actions{display:flex;flex-wrap:wrap;gap:.4rem}
+.project-actions{display:flex;flex-wrap:nowrap;gap:.35rem;align-items:center;}
+.btn-muted{display:inline-flex;align-items:center;justify-content:center;gap:.3rem;padding:.3rem .6rem;border:1px solid;border-radius:.4rem;font-size:.75rem;font-weight:600;text-decoration:none;white-space:nowrap;line-height:1.4;flex:1;transition:color var(--t),border-color var(--t),background var(--t),transform .1s ease;}
+.btn-muted i{font-size:.8rem;flex-shrink:0;}
+.btn-muted:active{transform:scale(.96);}
+.btn-muted--na{opacity:.32;cursor:not-allowed;pointer-events:none;}
+
+/* Demo — vivid indigo */
+.btn-muted--demo{color:#c7d2fe;border-color:rgba(99,102,241,.55);background:rgba(99,102,241,.18);}
+.btn-muted--demo:hover{color:#fff;border-color:#6366f1;background:rgba(99,102,241,.32);}
+
+/* Source — vivid slate-white */
+.btn-muted--source{color:#e2e8f0;border-color:rgba(148,163,184,.5);background:rgba(148,163,184,.14);}
+.btn-muted--source:hover{color:#fff;border-color:#94a3b8;background:rgba(148,163,184,.26);}
+
+/* Case Study — vivid cyan */
+.btn-muted--case{color:#67e8f9;border-color:rgba(6,182,212,.55);background:rgba(6,182,212,.16);}
+.btn-muted--case:hover{color:#fff;border-color:#22d3ee;background:rgba(6,182,212,.3);}
+
+/* Light mode */
+body[data-theme="light"] .btn-muted--demo{color:#4338ca;background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.4);}
+body[data-theme="light"] .btn-muted--demo:hover{color:#fff;background:#4f46e5;border-color:#4f46e5;}
+body[data-theme="light"] .btn-muted--source{color:#334155;background:rgba(100,116,139,.1);border-color:rgba(100,116,139,.35);}
+body[data-theme="light"] .btn-muted--source:hover{color:#fff;background:#64748b;border-color:#64748b;}
+body[data-theme="light"] .btn-muted--case{color:#0e7490;background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.4);}
+body[data-theme="light"] .btn-muted--case:hover{color:#fff;background:#0891b2;border-color:#0891b2;}
+
+@media(max-width:575px){.btn-muted .btn-label{display:none;}.btn-muted{padding:.3rem .45rem;flex:0;}}
 /* ══ Project card — allow tilt shadow to overflow the column ══ */
 .project-card{overflow:visible;}
 

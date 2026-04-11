@@ -92,6 +92,7 @@
 @media(max-width:360px){
   .hero-title{font-size:clamp(1.55rem,7.5vw,2rem)!important;}
   .hero-badge{font-size:.68rem;}
+  .hero-btn-primary,.hero-btn-ghost{min-width:44px;}
 }
 
 /* ── About ── */
@@ -296,6 +297,15 @@
 /* ── Footer: reduce padding on mobile ── */
 @media(max-width:768px){
   footer{padding:1.75rem 0 1rem;}
+}
+
+/* ── Gallery: filter pills wrap + split-view height cap on mobile ── */
+@media(max-width:480px){
+  .view-pills{flex-wrap:wrap;gap:.3rem;}
+}
+@media(max-width:991px){
+  #previewContainer{max-height:60vh;overflow:hidden;}
+  #previewMedia{max-height:55vh;overflow:hidden;}
 }
 
 /* ── Scrollbar decoration: hide on mobile and tablet ── */

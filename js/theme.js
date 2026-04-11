@@ -6,7 +6,7 @@ function initTheme(){
   if(!t) return;
   const sb = document.getElementById('sidebarThemeToggle');
   const sbIcon = document.getElementById('sidebarThemeIcon');
-  const saved = localStorage.getItem('theme');
+  const saved = localStorage.getItem('vvg-theme');
   const theme = saved || 'light';
   document.body.setAttribute('data-theme', theme);
   t.checked = (theme === 'dark');
@@ -15,7 +15,7 @@ function initTheme(){
   function applyTheme(dark){
     const th = dark ? 'dark' : 'light';
     document.body.setAttribute('data-theme', th);
-    localStorage.setItem('theme', th);
+    localStorage.setItem('vvg-theme', th);
     t.checked = dark;
     if(sbIcon) sbIcon.className = dark ? 'fas fa-sun' : 'fas fa-moon';
   }

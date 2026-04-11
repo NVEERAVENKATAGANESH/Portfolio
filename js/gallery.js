@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showPreview(skipFade = false) {
       const list = filtered();
       if (!list.length) {
-        previewMedia.innerHTML = '<div class="empty-state"><i class="fas fa-photo-video"></i><span>No items to display</span></div>';
+        previewMedia.innerHTML = '<div class="empty-state" role="alert"><i class="fas fa-photo-video"></i><span>No items to display</span></div>';
         captionText.textContent = 'No items';
         return;
       }
@@ -262,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const lbContent = document.getElementById('lbContent');
     const lbCaption = document.getElementById('lbCaption');
     const lbCounter = document.getElementById('lbCounter');
+    if (lbCounter) { lbCounter.setAttribute('aria-live','polite'); lbCounter.setAttribute('aria-atomic','true'); }
     let lbIndex = 0;
 
     let _lbOpener = null;
@@ -325,10 +326,25 @@ document.addEventListener('DOMContentLoaded', () => {
       lbCounter.textContent = `${lbIndex + 1} / ${list.length}`;
     }
 
-    document.getElementById('lbClose')?.addEventListener('click', closeLightbox);
-    document.getElementById('lbPrev')?.addEventListener('click', () => { const _lbList=filtered(); lbIndex=((lbIndex-1)+_lbList.length)%_lbList.length; renderLightbox(); currentIndex=lbIndex; showPreview(true); });
-    document.getElementById('lbNext')?.addEventListener('click', () => { const _lbList=filtered(); lbIndex=(lbIndex+1)%_lbList.length; renderLightbox(); currentIndex=lbIndex; showPreview(true); });
-    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+    function closeLightboxAndSync() {
+      // Sync split-view to wherever user navigated in lightbox, then close
+      currentIndex = lbIndex;
+      closeLightbox();
+      showPreview(true);
+    }
+
+    document.getElementById('lbClose')?.addEventListener('click', closeLightboxAndSync);
+    document.getElementById('lbPrev')?.addEventListener('click', () => {
+      const list = filtered();
+      lbIndex = ((lbIndex - 1) + list.length) % list.length;
+      renderLightbox();
+    });
+    document.getElementById('lbNext')?.addEventListener('click', () => {
+      const list = filtered();
+      lbIndex = (lbIndex + 1) % list.length;
+      renderLightbox();
+    });
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightboxAndSync(); });
     // Focus trap — keep keyboard focus inside lightbox while open
     lightbox.addEventListener('keydown', e => {
       if (e.key !== 'Tab' || !lightbox.classList.contains('open')) return;
@@ -392,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.key === 'ArrowLeft')  { e.preventDefault(); navigate(-1); }
       if (e.key === 'ArrowRight') { e.preventDefault(); navigate(1);  }
       if (e.key === 'f' || e.key === 'F') toggleFullscreen();
-      if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+      if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightboxAndSync();
 
       if (e.key === ' ') {
         e.preventDefault();

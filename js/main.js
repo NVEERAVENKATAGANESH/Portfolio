@@ -53,9 +53,13 @@ function initPhotoTilt(){
 /* ── 7. SCROLL BAR ── */
 function initScrollBar(){
   const bar=document.getElementById('scrollBar'); if(!bar) return;
+  let _scrollMax=document.documentElement.scrollHeight-window.innerHeight;
+  window.addEventListener('resize',debounce(()=>{
+    _scrollMax=document.documentElement.scrollHeight-window.innerHeight;
+  },150),{passive:true});
   window.addEventListener('scroll',throttle(()=>{
-    const {scrollTop,scrollHeight,clientHeight}=document.documentElement;
-    bar.style.width=(scrollTop/(scrollHeight-clientHeight)*100)+'%';
+    if(_scrollMax<=0) return;
+    bar.style.width=(document.documentElement.scrollTop/_scrollMax*100)+'%';
   },16),{passive:true});
 }
 
@@ -105,6 +109,7 @@ function initSkills(){
     });
   });
 }
+
 function initSkillCharts(){
   const charts=Array.from(document.querySelectorAll('.skill-chart'));
   if(!charts.length) return;
@@ -263,7 +268,7 @@ function initContact(){
     }
     form.querySelectorAll('[aria-invalid]').forEach(el=>el.removeAttribute('aria-invalid'));
 
-    if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin me-2"></i>Sending…'; }
+    if(btn){ btn.disabled=true; btn.setAttribute('aria-busy','true'); btn.innerHTML='<i class="fas fa-spinner fa-spin me-2"></i>Sending…'; }
     successEl?.classList.add('d-none');
     errorEl?.classList.add('d-none');
 
@@ -287,7 +292,7 @@ function initContact(){
           : 'Server error — please email me directly if this persists.';
       }
     } finally{
-      if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane me-2"></i>Send Message'; }
+      if(btn){ btn.disabled=false; btn.removeAttribute('aria-busy'); btn.innerHTML='<i class="fas fa-paper-plane me-2"></i>Send Message'; }
     }
   });
 }
@@ -702,10 +707,14 @@ function initCertPreview(){
     backdrop.classList.toggle('cert-pop-backdrop--mobile', isMobile);
     if(isMobile) return;
     const section = document.getElementById('achievements');
+    if(!section) return;
     const POP_W   = Math.min(420, section.offsetWidth * 0.94);
     const POP_H   = pop.offsetHeight || 500;
     const left = (section.offsetWidth  - POP_W) / 2;
-    const top  = section.scrollTop + (section.clientHeight - POP_H) / 2;
+    // Use window.innerHeight so modal centres in the visible viewport, not the full section height
+    const sectionTop = section.getBoundingClientRect().top;
+    const visibleTop = Math.max(0, -sectionTop);
+    const top  = visibleTop + (window.innerHeight - POP_H) / 2;
     pop.style.left = Math.max(14, left) + 'px';
     pop.style.top  = Math.max(14, top)  + 'px';
     pop.style.transformOrigin = '50% 50%';
@@ -728,29 +737,35 @@ function initCertPreview(){
     // PDFs: hide spinner after a short delay (iframe load event is unreliable for PDFs)
     if(isPDF) setTimeout(() => { if(loading) loading.classList.add('hidden'); }, 800);
 
-    backdrop.classList.add('is-open');
-    pop.setAttribute('aria-hidden', 'false');
+    const isMobileOpen = window.innerWidth < 768;
 
-    // Measure then position
-    pop.style.opacity = '0';
-    pop.classList.add('is-open');
-    requestAnimationFrame(() => {
-      position();
-      pop.style.opacity = '';
-      document.getElementById('certPopClose')?.focus();
-      // Scroll to bring the modal into focus on all viewports.
-      // Desktop/tablet: scroll the popover itself (position:absolute inside section).
-      // Mobile: popover is position:fixed so scrollIntoView on it is a no-op;
-      //         instead scroll the achievements section into view so the page
-      //         background aligns with the modal for a consistent experience.
-      if(window.innerWidth >= 768){
-        pop.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } else {
-        document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    });
+    // On mobile: scroll the achievements section into view BEFORE the modal opens
+    // so the background is in place when the fixed modal appears.
+    // On desktop/tablet: open immediately, then scroll the absolute-positioned popover into view.
+    const doOpen = () => {
+      backdrop.classList.add('is-open');
+      pop.setAttribute('aria-hidden', 'false');
+      pop.style.opacity = '0';
+      pop.classList.add('is-open');
+      requestAnimationFrame(() => {
+        position();
+        pop.style.opacity = '';
+        document.getElementById('certPopClose')?.focus();
+        if(!isMobileOpen){
+          pop.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+      document.body.classList.add('pv-open');
+    };
 
-    document.body.classList.add('pv-open');
+    if(isMobileOpen){
+      const section = document.getElementById('achievements');
+      section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Wait for scroll to settle before opening the modal
+      setTimeout(doOpen, 400);
+    } else {
+      doOpen();
+    }
   }
 
   function close(){
@@ -800,6 +815,15 @@ function initResumePreview(){
       frame.onload = ()=>{ frame.classList.add('pv-loaded'); if(loading) loading.classList.add('pv-hidden'); };
       frame.src = 'Ganesh_SDE.pdf';
       setTimeout(()=>{ modal.querySelector('button,[href]')?.focus(); }, 50);
+      // Scroll to bring the resume modal into view on all viewports.
+      // Modal is position:absolute inside #resume on desktop, position:fixed on mobile.
+      requestAnimationFrame(() => {
+        if(window.innerWidth >= 768){
+          modal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
     }
     function closeResume(){
       section.classList.remove('resume-modal-open');
@@ -879,7 +903,8 @@ window.addEventListener('pageshow', e => {
   if (!e.persisted || IS_GALLERY_PAGE) return;
   const container = document.getElementById('heroSphere');
   if (container && typeof initHeroSphere === 'function') {
-    container.innerHTML = ''; // remove stale canvas
+    window._heroSphereCleanup?.(); // dispose renderer + cancel rAF before reinit
+    container.innerHTML = '';
     initHeroSphere();
   }
 });

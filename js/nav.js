@@ -3,9 +3,11 @@
 /* ── NAV BUILDER — single source of truth for header + sidebar on all pages ──
    Edit NAV_LINKS or the HTML template here to update every page at once.       */
 function buildNav() {
-  const isGallery = IS_GALLERY_PAGE;
-  const h         = s => isGallery ? `index.html#${s}` : `#${s}`;
-  const brandHref = isGallery ? 'index.html' : '#home';
+  const isGallery    = IS_GALLERY_PAGE;
+  const isCaseStudy  = window.location.pathname.includes('/case-studies/');
+  const base         = isCaseStudy ? '../' : '';
+  const h            = s => isGallery ? `${base}index.html#${s}` : `#${s}`;
+  const brandHref    = isGallery ? `${base}index.html` : '#home';
   const brandAriaLabel = isGallery ? 'Back to portfolio' : 'Go to top';
 
   const NAV_LINKS = [
@@ -13,7 +15,7 @@ function buildNav() {
     { href: h('about'),        icon: 'fa-user',         label: 'About'        },
     { href: h('timeline'),     icon: 'fa-route',        label: 'Journey'      },
     { href: h('skills'),       icon: 'fa-code',         label: 'Skills'       },
-    { href: h('projects'),     icon: 'fa-folder-open',  label: 'Projects'     },
+    { href: h('projects'),     icon: 'fa-folder-open',  label: 'Projects',  active: isCaseStudy },
     { href: h('achievements'), icon: 'fa-award',        label: 'Achievements' },
     { href: h('testimonials'), icon: 'fa-quote-left',   label: 'Testimonials' },
     { href: isGallery ? 'gallery.html' : '#gallery', icon: 'fa-images', label: 'Gallery', active: location.pathname.includes('gallery') },
@@ -42,7 +44,7 @@ function buildNav() {
         `<div class="header-controls">` +
           `<a href="https://www.linkedin.com/in/veera-venkata-ganesh-nurukurthi-437195226/" target="_blank" rel="noopener noreferrer" class="header-icon-btn" aria-label="LinkedIn"><i class="fab fa-linkedin" aria-hidden="true"></i></a>` +
           `<a href="https://github.com/NVEERAVENKATAGANESH" target="_blank" rel="noopener noreferrer" class="header-icon-btn" aria-label="GitHub"><i class="fab fa-github" aria-hidden="true"></i></a>` +
-          `<a href="https://22nd.aaruush.org" target="_blank" rel="noopener noreferrer" class="header-icon-btn header-icon-btn--aaruush" aria-label="Aaruush"><img src="images/Aaruush-logo.png" alt="Aaruush" width="22" height="22"/></a>` +
+          `<a href="https://22nd.aaruush.org" target="_blank" rel="noopener noreferrer" class="header-icon-btn header-icon-btn--aaruush" aria-label="Aaruush"><img src="${base}images/Aaruush-logo.png" alt="Aaruush" width="22" height="22"/></a>` +
           `<label class="header-theme-switch" aria-label="Toggle dark/light theme">` +
             `<input type="checkbox" id="theme-toggle"/>` +
             `<span class="header-slider"><span class="header-slider-thumb"></span></span>` +
@@ -75,7 +77,7 @@ function buildNav() {
           `<a href="https://www.linkedin.com/in/veera-venkata-ganesh-nurukurthi-437195226/" target="_blank" rel="noopener noreferrer" class="sidebar-social-link" aria-label="LinkedIn"><i class="fab fa-linkedin" aria-hidden="true"></i><span>LinkedIn</span></a>` +
           `<a href="https://github.com/NVEERAVENKATAGANESH" target="_blank" rel="noopener noreferrer" class="sidebar-social-link" aria-label="GitHub"><i class="fab fa-github" aria-hidden="true"></i><span>GitHub</span></a>` +
           `<a href="mailto:nveeravenkataganesh@gmail.com" class="sidebar-social-link" aria-label="Email"><i class="fas fa-envelope" aria-hidden="true"></i><span>Email</span></a>` +
-          `<a href="https://22nd.aaruush.org" target="_blank" rel="noopener noreferrer" class="sidebar-social-link" aria-label="Aaruush"><img src="images/Aaruush-logo.png" alt="" aria-hidden="true" width="30" height="30"/><span>Aaruush</span></a>` +
+          `<a href="https://22nd.aaruush.org" target="_blank" rel="noopener noreferrer" class="sidebar-social-link" aria-label="Aaruush"><img src="${base}images/Aaruush-logo.png" alt="" aria-hidden="true" width="30" height="30"/><span>Aaruush</span></a>` +
         `</div>` +
       `</nav>` +
     `</aside>`;
