@@ -30,7 +30,7 @@
 
 .pre-name{
   font-size:clamp(.78rem,2.8vw,1rem);font-weight:700;letter-spacing:.04em;
-  color:#e2e8f0;font-family:'Inter',sans-serif;
+  color:#1e293b;font-family:'Inter',sans-serif;
   animation:preFadeUp .7s ease both;
   animation-delay:.25s;opacity:0;
   white-space:nowrap;
@@ -48,7 +48,7 @@
 
 .pre-bar-wrap{
   width:180px;height:2px;border-radius:1px;
-  background:rgba(99,102,241,.18);
+  background:rgba(99,102,241,.15);
   margin-top:.5rem;overflow:hidden;
 }
 .pre-bar{

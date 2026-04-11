@@ -56,8 +56,8 @@
 
   <!-- Preloader critical CSS — inline so it applies before any stylesheet loads -->
   <style>
-    #preloader{position:fixed;inset:0;z-index:99999;overflow:hidden;background:#07080f;}
-    .pre-half{position:absolute;left:0;right:0;background:#07080f;will-change:transform;transition:transform 1.1s cubic-bezier(0.65,0,0.35,1);}
+    #preloader{position:fixed;inset:0;z-index:99999;overflow:hidden;background:#f8fafc;}
+    .pre-half{position:absolute;left:0;right:0;background:#f8fafc;will-change:transform;transition:transform 1.1s cubic-bezier(0.65,0,0.35,1);}
     .pre-half--top{top:0;height:calc(50% + 1px);}
     .pre-half--bottom{bottom:0;height:calc(50% + 1px);}
     .pre-inner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;z-index:1;transition:opacity .4s ease,transform .4s ease;}
@@ -320,11 +320,11 @@
           <div class="col-4"><div class="about-stat-card"><span class="about-stat-number stat-counter" data-target="300" data-suffix="+">300+</span><span class="about-stat-label">Volunteers Led</span></div></div>
         </div>
         <div class="about-cta-row">
-          <a href="Ganesh_SDE.pdf" class="btn btn-primary btn-about-cta rounded-pill" target="_blank" rel="noopener noreferrer" download>
-            <i class="fas fa-download me-2"></i>Download Resume
+          <a href="Ganesh_SDE.pdf" class="btn-muted btn-muted--demo btn-about-cta" target="_blank" rel="noopener noreferrer" download>
+            <i class="fas fa-download" aria-hidden="true"></i> <span class="btn-label">Download Resume</span>
           </a>
-          <a href="#contact" class="btn btn-outline-primary btn-about-cta rounded-pill">
-            <i class="fas fa-paper-plane me-2"></i>Get in Touch
+          <a href="#contact" class="btn-muted btn-muted--source btn-about-cta">
+            <i class="fas fa-paper-plane" aria-hidden="true"></i> <span class="btn-label">Get in Touch</span>
           </a>
         </div>
       </div>
@@ -637,8 +637,8 @@
               Recognized for excellence in coordinating large-scale innovation events, fostering collaboration among 1,200+ participants.
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
-              <a href="https://22nd.aaruush.org" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Learn More</a>
-              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/certificates/Aaruush_Certificate.pdf" data-certificate-name="Aaruush Event Organizer Certificate"><i class="fas fa-eye me-1"></i>View Cert</button>
+              <a href="https://22nd.aaruush.org" target="_blank" rel="noopener noreferrer" class="btn-muted btn-muted--source"><i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i> <span class="btn-label">Learn More</span></a>
+              <button type="button" class="btn-muted btn-muted--demo" data-certificate="images/certificates/Aaruush_Certificate.pdf" data-certificate-name="Aaruush Event Organizer Certificate"><i class="fas fa-eye" aria-hidden="true"></i> <span class="btn-label">View Cert</span></button>
             </div>
           </div>
         </div>
@@ -653,9 +653,9 @@
               Local Lead for NASA 2022 Space Apps in Chennai &mdash; 1,200+ participants, Global Honorable Nomination.
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
-              <a href="https://2022.spaceappschallenge.org/locations/aaruush-chennai/event" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Learn More</a>
-              <a href="https://2022.spaceappschallenge.org/challenges/2022-challenges/nimbus-to-now/teams/singularity-6/project" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-success" aria-label="View Global Nominee Project"><i class="fas fa-globe me-1"></i>Global Nominee</a>
-              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/NASA-SAC.jpg" data-certificate-name="NASA Space Apps Certificate"><i class="fas fa-eye me-1"></i>View Cert</button>
+              <a href="https://2022.spaceappschallenge.org/locations/aaruush-chennai/event" target="_blank" rel="noopener noreferrer" class="btn-muted btn-muted--source"><i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i> <span class="btn-label">Learn More</span></a>
+              <a href="https://2022.spaceappschallenge.org/challenges/2022-challenges/nimbus-to-now/teams/singularity-6/project" target="_blank" rel="noopener noreferrer" class="btn-muted btn-muted--case" aria-label="View Global Nominee Project"><i class="fas fa-globe" aria-hidden="true"></i> <span class="btn-label">Global Nominee</span></a>
+              <button type="button" class="btn-muted btn-muted--demo" data-certificate="images/NASA-SAC.jpg" data-certificate-name="NASA Space Apps Certificate"><i class="fas fa-eye" aria-hidden="true"></i> <span class="btn-label">View Cert</span></button>
             </div>
           </div>
         </div>
@@ -675,8 +675,8 @@
             <p class="card-text flex-grow-1">
               Validates expertise in developing, deploying, and debugging cloud-based applications on AWS — earned alongside hands-on cloud and DevOps project work.
             </p>
-            <div class="mt-auto">
-              <a href="https://aws.amazon.com/certification/certified-developer-associate/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">View Cert</a>
+            <div class="mt-auto d-flex flex-wrap gap-2">
+              <a href="https://aws.amazon.com/certification/certified-developer-associate/" target="_blank" rel="noopener noreferrer" class="btn-muted btn-muted--demo"><i class="fas fa-eye" aria-hidden="true"></i> <span class="btn-label">View Cert</span></a>
             </div>
           </div>
         </div>
@@ -691,8 +691,8 @@
               Mastered algorithm design, matrix operations, and data visualisation through Vanderbilt University's course.
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
-              <a href="https://coursera.org/share/3d93e3f678518262dba19188844ce389" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Verify</a>
-              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/certificates/Matlab-Programming-Certificate.pdf" data-certificate-name="MATLAB Programming Certificate"><i class="fas fa-eye me-1"></i>View Cert</button>
+              <a href="https://coursera.org/share/3d93e3f678518262dba19188844ce389" target="_blank" rel="noopener noreferrer" class="btn-muted btn-muted--source"><i class="fas fa-check-circle" aria-hidden="true"></i> <span class="btn-label">Verify</span></a>
+              <button type="button" class="btn-muted btn-muted--demo" data-certificate="images/certificates/Matlab-Programming-Certificate.pdf" data-certificate-name="MATLAB Programming Certificate"><i class="fas fa-eye" aria-hidden="true"></i> <span class="btn-label">View Cert</span></button>
             </div>
           </div>
         </div>
@@ -707,8 +707,8 @@
               22-week programme covering statistical analysis, preprocessing, visualisation, and introductory machine learning.
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
-              <a href="https://padhai.onefourthlabs.in/certificates/snoaxsoysc" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Verify</a>
-              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/certificates/Foundations-DS-Certificate.pdf" data-certificate-name="Foundations of Data Science Certificate"><i class="fas fa-eye me-1"></i>View Cert</button>
+              <a href="https://padhai.onefourthlabs.in/certificates/snoaxsoysc" target="_blank" rel="noopener noreferrer" class="btn-muted btn-muted--source"><i class="fas fa-check-circle" aria-hidden="true"></i> <span class="btn-label">Verify</span></a>
+              <button type="button" class="btn-muted btn-muted--demo" data-certificate="images/certificates/Foundations-DS-Certificate.pdf" data-certificate-name="Foundations of Data Science Certificate"><i class="fas fa-eye" aria-hidden="true"></i> <span class="btn-label">View Cert</span></button>
             </div>
           </div>
         </div>
@@ -723,8 +723,8 @@
               Certified in React component architecture, hooks, state management, and modern CSS.
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
-              <a href="https://www.hackerrank.com/certificates/iframe/8caacc789cf6" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Verify</a>
-              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/certificates/frontend_developer_react certificate.pdf" data-certificate-name="Frontend Developer (React) — HackerRank"><i class="fas fa-eye me-1"></i>View Cert</button>
+              <a href="https://www.hackerrank.com/certificates/iframe/8caacc789cf6" target="_blank" rel="noopener noreferrer" class="btn-muted btn-muted--source"><i class="fas fa-check-circle" aria-hidden="true"></i> <span class="btn-label">Verify</span></a>
+              <button type="button" class="btn-muted btn-muted--demo" data-certificate="images/certificates/frontend_developer_react certificate.pdf" data-certificate-name="Frontend Developer (React) — HackerRank"><i class="fas fa-eye" aria-hidden="true"></i> <span class="btn-label">View Cert</span></button>
             </div>
           </div>
         </div>
@@ -739,8 +739,8 @@
               Certified in advanced SQL including query optimisation, window functions, CTEs, and pivots.
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
-              <a href="https://www.hackerrank.com/certificates/iframe/02aa2278056a" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Verify</a>
-              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/certificates/sql_advanced certificate.pdf" data-certificate-name="SQL (Advanced) — HackerRank"><i class="fas fa-eye me-1"></i>View Cert</button>
+              <a href="https://www.hackerrank.com/certificates/iframe/02aa2278056a" target="_blank" rel="noopener noreferrer" class="btn-muted btn-muted--source"><i class="fas fa-check-circle" aria-hidden="true"></i> <span class="btn-label">Verify</span></a>
+              <button type="button" class="btn-muted btn-muted--demo" data-certificate="images/certificates/sql_advanced certificate.pdf" data-certificate-name="SQL (Advanced) — HackerRank"><i class="fas fa-eye" aria-hidden="true"></i> <span class="btn-label">View Cert</span></button>
             </div>
           </div>
         </div>
@@ -755,7 +755,7 @@
               Certified in database schema design, normalisation, and SQL operations through Oracle Academy.
             </p>
             <div class="mt-auto d-flex flex-wrap gap-2">
-              <button type="button" class="btn btn-sm btn-primary" data-certificate="images/certificates/clmsCertificate.prMain.pdf" data-certificate-name="Database Foundations — Oracle"><i class="fas fa-eye me-1"></i>View Cert</button>
+              <button type="button" class="btn-muted btn-muted--demo" data-certificate="images/certificates/clmsCertificate.prMain.pdf" data-certificate-name="Database Foundations — Oracle"><i class="fas fa-eye" aria-hidden="true"></i> <span class="btn-label">View Cert</span></button>
             </div>
           </div>
         </div>
@@ -899,8 +899,8 @@
 
     <!-- Leave a Testimonial -->
     <div class="text-center mt-5">
-      <a href="404.html" class="btn btn-primary btn-lg">
-        <i class="fas fa-pen me-2"></i>Leave a Testimonial
+      <a href="404.html" class="btn-muted btn-muted--demo">
+        <i class="fas fa-pen" aria-hidden="true"></i> <span class="btn-label">Leave a Testimonial</span>
       </a>
     </div>
   </div>
@@ -923,7 +923,7 @@
       <a href="gallery.html" class="gallery-strip-item"><img src="images/IMG20220805181152.jpg" alt="August 15 Event" width="480" height="320" loading="lazy"/><div class="gallery-strip-overlay"><span>August 15 Event</span></div></a>
       <a href="gallery.html" class="gallery-strip-item"><img src="images/IMG_3351.JPG" alt="Admiration Day" width="480" height="320" loading="lazy"/><div class="gallery-strip-overlay gallery-strip-overlay--more"><i class="fas fa-images fa-2x mb-2"></i><span>+2 more &amp; videos</span></div></a>
     </div>
-    <div class="text-center mt-4"><a href="gallery.html" class="btn btn-outline-primary btn-lg"><i class="fas fa-th me-2"></i>View Full Gallery</a></div>
+    <div class="text-center mt-4"><a href="gallery.html" class="btn-muted btn-muted--source"><i class="fas fa-th" aria-hidden="true"></i> <span class="btn-label">View Full Gallery</span></a></div>
   </div>
 </section>
 
@@ -997,7 +997,7 @@
             <label for="message">Message</label>
             <div class="invalid-feedback" id="message-error">Please enter a message.</div>
           </div>
-          <div class="d-grid"><button type="submit" class="btn btn-primary btn-lg" id="contactSubmitBtn"><i class="fas fa-paper-plane me-2"></i>Send Message</button></div>
+          <div class="d-grid"><button type="submit" class="btn-muted btn-muted--demo" id="contactSubmitBtn" style="width:100%;padding:.6rem 1rem;font-size:.85rem;"><i class="fas fa-paper-plane" aria-hidden="true"></i> <span class="btn-label">Send Message</span></button></div>
         </form>
       </div>
     </div>

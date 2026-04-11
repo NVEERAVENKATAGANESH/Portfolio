@@ -185,8 +185,8 @@ body[data-theme="dark"] .about-chip--open{background:#14532d;border-color:#16653
 .about-stat-number{display:block;font-size:2rem;font-weight:800;line-height:1;margin-bottom:.3rem;background:var(--primary-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .about-stat-label{display:block;font-size:.74rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.07em;}
 .about-cta-row{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2rem;}
-.btn-about-cta{padding:.55rem 1.5rem;font-size:.95rem;font-weight:600;letter-spacing:.01em;box-shadow:0 2px 8px rgba(79,70,229,.15);transition:transform var(--t),box-shadow var(--t);}
-.btn-about-cta:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(79,70,229,.25);}
+.btn-about-cta{padding:.55rem 1.5rem;font-size:.9rem;border-radius:.6rem;}
+.btn-about-cta:hover{transform:translateY(-2px);}
 
 /* ══ TIMELINE / JOURNEY ══ */
 #timeline{background:transparent}
