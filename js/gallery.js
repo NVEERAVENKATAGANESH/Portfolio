@@ -220,6 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const div = document.createElement('div');
         div.className = 'grid-item';
         div.dataset.idx = idx;
+        div.dataset.type = item.type;
         div.setAttribute('role', 'button');
         div.setAttribute('tabindex', '0');
         div.setAttribute('aria-label', `Open ${item.alt}`);
@@ -491,6 +492,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const splitBtn  = document.getElementById('splitBtn');
     const gridBtn   = document.getElementById('gridBtn');
 
+    const mobileViewToggle = document.getElementById('mobileViewToggle');
+    const mobileViewIcon   = document.getElementById('mobileViewIcon');
+
     function setViewMode(mode) {
       viewMode = mode;
       if (mode === 'split') {
@@ -498,23 +502,35 @@ document.addEventListener('DOMContentLoaded', () => {
         gridView.classList.remove('active');
         splitBtn.classList.add('active');
         gridBtn.classList.remove('active');
+        if (mobileViewIcon) { mobileViewIcon.className = 'fas fa-th'; mobileViewToggle.title = 'Grid view'; mobileViewToggle.setAttribute('aria-label','Switch to grid view'); }
       } else {
         splitView.style.display = 'none';
         gridView.classList.add('active');
         splitBtn.classList.remove('active');
         gridBtn.classList.add('active');
         renderGrid();
+        if (mobileViewIcon) { mobileViewIcon.className = 'fas fa-columns'; mobileViewToggle.title = 'Split view'; mobileViewToggle.setAttribute('aria-label','Switch to split view'); }
       }
     }
 
     splitBtn.addEventListener('click', () => setViewMode('split'));
     gridBtn.addEventListener('click',  () => setViewMode('grid'));
+    mobileViewToggle?.addEventListener('click', () => {
+      const next = viewMode === 'grid' ? 'split' : 'grid';
+      setViewMode(next);
+      if (next === 'split') showPreview(true);
+    });
 
     // ── INIT ──
     const _fyEl = document.getElementById('footerYear');
     if (_fyEl) _fyEl.textContent = new Date().getFullYear();
     updateCounters();
     renderThumbnails();
-    showPreview(true);
+    // Default to grid view on mobile — more scannable than split view with no thumbnails
+    if (window.matchMedia('(max-width: 767px)').matches) {
+      setViewMode('grid');
+    } else {
+      showPreview(true);
+    }
 
   }); // end DOMContentLoaded

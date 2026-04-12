@@ -232,6 +232,7 @@ function initProjectFilter(){
     cont.appendChild(frag);
     noMsg.classList.toggle('d-none',vis>0);
     if(resultCount) resultCount.textContent=`Showing ${vis} of ${cards.length} project${cards.length!==1?'s':''}`;
+    cont.dispatchEvent(new CustomEvent('projects-filtered'));
   }
 
   pills.forEach(pill=>{
@@ -863,6 +864,108 @@ function initResumePreview(){
   printBtn.addEventListener('click', printPDF);
 }
 
+/* ── MOBILE PROJECTS COLLAPSE + LIST/GRID TOGGLE ── */
+function initMobileProjectsCollapse(){
+  const gallery=document.getElementById('projectGallery');
+  const showMoreWrap=document.getElementById('projShowMoreWrap');
+  const showMoreBtn=document.getElementById('projShowMore');
+  const showMoreLabel=document.getElementById('projShowMoreLabel');
+  const viewToggle=document.getElementById('projViewToggle');
+  const viewIcon=document.getElementById('projViewToggleIcon');
+  if(!gallery||!showMoreWrap||!showMoreBtn) return;
+
+  const LIMIT=4;
+  const mq=window.matchMedia('(max-width:767px)');
+  let expanded=false;
+
+  function isMobileFilterActive(){
+    const s=document.getElementById('projectSearch');
+    const ap=document.querySelector('.proj-pill.active');
+    return (s?.value.trim()!=='') || (ap?.dataset.cat!=='all');
+  }
+
+  function applyCollapse(){
+    const all=Array.from(gallery.querySelectorAll('.project-card'));
+    // Restore anything my code previously hid
+    all.forEach(c=>{ if(c.dataset.mobCollapsed){ c.style.removeProperty('display'); delete c.dataset.mobCollapsed; } });
+
+    if(!mq.matches || expanded || isMobileFilterActive()){
+      showMoreWrap.classList.remove('mob-visible'); return;
+    }
+    // Of the filter-visible cards, hide those beyond LIMIT
+    const visible=all.filter(c=>c.style.display!=='none');
+    const toHide=visible.slice(LIMIT);
+    toHide.forEach(c=>{ c.style.display='none'; c.dataset.mobCollapsed='1'; });
+    if(toHide.length>0){
+      showMoreLabel.textContent=`Show ${toHide.length} more project${toHide.length>1?'s':''}`;
+      showMoreWrap.classList.add('mob-visible');
+    } else {
+      showMoreWrap.classList.remove('mob-visible');
+    }
+  }
+
+  showMoreBtn.addEventListener('click',()=>{
+    expanded=true;
+    showMoreWrap.classList.remove('mob-visible');
+    Array.from(gallery.querySelectorAll('.project-card[data-mob-collapsed]')).forEach(c=>{
+      c.style.removeProperty('display'); delete c.dataset.mobCollapsed;
+    });
+  });
+
+  gallery.addEventListener('projects-filtered',()=>{ expanded=false; setTimeout(applyCollapse,0); });
+  mq.addEventListener('change',()=>{ expanded=false; applyCollapse(); });
+  applyCollapse();
+
+  // ── List / Grid toggle ──
+  if(!viewToggle||!viewIcon) return;
+  let isListView=false;
+  viewToggle.addEventListener('click',()=>{
+    isListView=!isListView;
+    gallery.classList.toggle('proj-list-view',isListView);
+    viewToggle.classList.toggle('active',isListView);
+    viewIcon.className=isListView?'fas fa-th-large':'fas fa-list';
+    viewToggle.setAttribute('aria-label',isListView?'Switch to grid view':'Switch to list view');
+    viewToggle.title=isListView?'Switch to grid view':'Switch to list view';
+  });
+}
+
+/* ── MOBILE CERTIFICATIONS COLLAPSE ── */
+function initMobileCertCollapse(){
+  const certRow=document.getElementById('certRow');
+  const showMoreWrap=document.getElementById('certShowMoreWrap');
+  const showMoreBtn=document.getElementById('certShowMore');
+  const showMoreLabel=document.getElementById('certShowMoreLabel');
+  if(!certRow||!showMoreWrap||!showMoreBtn) return;
+
+  const LIMIT=3;
+  const mq=window.matchMedia('(max-width:767px)');
+
+  function applyCollapse(){
+    const cards=Array.from(certRow.children);
+    if(!mq.matches){
+      cards.forEach(c=>c.style.removeProperty('display'));
+      showMoreWrap.classList.remove('mob-visible'); return;
+    }
+    cards.slice(0,LIMIT).forEach(c=>c.style.removeProperty('display'));
+    const toHide=cards.slice(LIMIT);
+    toHide.forEach(c=>c.style.display='none');
+    if(toHide.length>0){
+      showMoreLabel.textContent=`Show ${toHide.length} more certification${toHide.length>1?'s':''}`;
+      showMoreWrap.classList.add('mob-visible');
+    } else {
+      showMoreWrap.classList.remove('mob-visible');
+    }
+  }
+
+  showMoreBtn.addEventListener('click',()=>{
+    Array.from(certRow.children).forEach(c=>c.style.removeProperty('display'));
+    showMoreWrap.classList.remove('mob-visible');
+  });
+
+  mq.addEventListener('change',applyCollapse);
+  applyCollapse();
+}
+
 /* ── BOOT ── */
 document.addEventListener('DOMContentLoaded', () => {
   buildNav();           // inject nav first — all other inits depend on it
@@ -877,12 +980,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Index-only inits
   initHeroSphere();
-  // init3DBackground(); // galaxy removed
   initTyped();
   initTimeline();
   initSkills();
   initSkillCharts();
   initProjectFilter();
+  initMobileProjectsCollapse();
+  initMobileCertCollapse();
   initSkillFilter();
   initCertPreview();
   initResumePreview();

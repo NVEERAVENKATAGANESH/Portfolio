@@ -575,6 +575,11 @@
           <option value="za">Z – A</option>
         </select>
       </div>
+      <div class="col-auto d-md-none">
+        <button type="button" id="projViewToggle" class="proj-view-toggle" aria-label="Switch to list view" title="Switch to list view">
+          <i class="fas fa-list" id="projViewToggleIcon" aria-hidden="true"></i>
+        </button>
+      </div>
     </div>
     <!-- Category pill filters -->
     <div class="proj-filter-pills" role="group" aria-label="Filter by category" id="projectFilterPills">
@@ -611,6 +616,11 @@
       <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="graphics" data-tags="simulated-annealing optimization spatial constraints furniture layout graphics c++"><article class="card h-100" aria-labelledby="proj-title-14"><div class="project-thumb" data-type="home" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Graphics / Optimization</span><h5 class="card-title mt-2" id="proj-title-14">Make-it-Home: Furniture Layout</h5><p class="card-text flex-grow-1">Simulated-annealing optimizer for automatic furniture placement with spatial constraints and cost-function visualisation.</p><div class="project-actions mt-3"><a href="#" class="btn-muted btn-muted--demo btn-muted--na" aria-disabled="true" tabindex="-1" onclick="return false" ><i class="fas fa-external-link-alt" aria-hidden="true"></i> <span class="btn-label">Demo</span></a><a href="#" class="btn-muted btn-muted--source btn-muted--na" aria-disabled="true" tabindex="-1" onclick="return false" ><i class="fab fa-github" aria-hidden="true"></i> <span class="btn-label">Source</span></a><a href="case-studies/furniture-layout.html" class="btn-muted btn-muted--case"><i class="fas fa-file-alt" aria-hidden="true"></i> <span class="btn-label">Case Study</span></a></div></div></article></div>
       <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="government" data-tags="django react postgresql jwt rbac api fullstack government inventory asset management"><article class="card h-100" aria-labelledby="proj-title-15"><div class="project-thumb" data-type="gov" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Full-Stack / Gov Tech</span><h5 class="card-title mt-2" id="proj-title-15">UIMS: County Inventory Management</h5><p class="card-text flex-grow-1">Asset-lifecycle platform for municipal government built with Django REST Framework and React, with role-scoped access.</p><div class="project-actions mt-3"><a href="https://county-inventory-system.vercel.app/_dev" target="_blank" rel="noopener noreferrer" class="btn-muted btn-muted--demo"><i class="fas fa-external-link-alt" aria-hidden="true"></i> <span class="btn-label">Demo</span></a><a href="https://github.com/NVEERAVENKATAGANESH/county-inventory-system" target="_blank" rel="noopener noreferrer" class="btn-muted btn-muted--source"><i class="fab fa-github" aria-hidden="true"></i> <span class="btn-label">Source</span></a><a href="case-studies/uims.html" class="btn-muted btn-muted--case"><i class="fas fa-file-alt" aria-hidden="true"></i> <span class="btn-label">Case Study</span></a></div></div></article></div>
       <div class="col-sm-6 col-md-4 col-lg-3 project-card" data-category="government" data-tags="javascript bootstrap chart.js wcag government benefits eligibility wizard civic portal"><article class="card h-100" aria-labelledby="proj-title-16"><div class="project-thumb" data-type="civic" aria-hidden="true"></div><div class="card-body d-flex flex-column"><span class="project-tag">Full-Stack / Gov Tech</span><h5 class="card-title mt-2" id="proj-title-16">BenefitsConnect — Public Benefits Advisor</h5><p class="card-text flex-grow-1">Citizen-facing government benefits portal with a 5-step eligibility wizard, program catalog with smart filtering, case worker approval workflows, and a live analytics dashboard tracking trends across 12 benefit programs.</p><div class="project-actions mt-3"><a href="https://nveeravenkataganesh.github.io/PUBLIC-BENEFITS-ADVISOR/" target="_blank" rel="noopener noreferrer" class="btn-muted btn-muted--demo"><i class="fas fa-external-link-alt" aria-hidden="true"></i> <span class="btn-label">Demo</span></a><a href="https://github.com/NVEERAVENKATAGANESH/PUBLIC-BENEFITS-ADVISOR" target="_blank" rel="noopener noreferrer" class="btn-muted btn-muted--source"><i class="fab fa-github" aria-hidden="true"></i> <span class="btn-label">Source</span></a><a href="case-studies/benefitsconnect.html" class="btn-muted btn-muted--case"><i class="fas fa-file-alt" aria-hidden="true"></i> <span class="btn-label">Case Study</span></a></div></div></article></div>
+    </div>
+    <div id="projShowMoreWrap" class="proj-show-more-wrap" aria-live="polite">
+      <button type="button" id="projShowMore" class="proj-show-more-btn">
+        <i class="fas fa-chevron-down me-2" aria-hidden="true"></i><span id="projShowMoreLabel">Show more projects</span>
+      </button>
     </div>
   </div>
 
@@ -665,7 +675,7 @@
 
     <!-- ── Certifications ── -->
     <h3 class="achv-sub-heading"><i class="fas fa-certificate me-2"></i>Certifications</h3>
-    <div class="row g-4">
+    <div class="row g-4" id="certRow">
 
       <div class="col-12 col-sm-6 col-md-4 col-lg-3">
         <div class="card achievement-card h-100">
@@ -761,6 +771,11 @@
         </div>
       </div>
 
+    </div>
+    <div id="certShowMoreWrap" class="proj-show-more-wrap" aria-live="polite">
+      <button type="button" id="certShowMore" class="proj-show-more-btn">
+        <i class="fas fa-chevron-down me-2" aria-hidden="true"></i><span id="certShowMoreLabel">Show more certifications</span>
+      </button>
     </div>
   </div>
 
@@ -1023,7 +1038,7 @@
           <li><i class="fas fa-cloud"></i> Cloud &amp; DevOps: AWS, Docker, Kubernetes, CI/CD</li>
           <li><i class="fas fa-brain"></i> GenAI: LangChain, RAG, OpenAI, LangGraph</li>
         </ul>
-        <span class="resume-updated-badge"><i class="fas fa-circle-check me-1"></i>Updated Mar 2026</span>
+        <span class="resume-updated-badge"><i class="fas fa-circle-check me-1"></i>Updated Apr 2026</span>
       </div>
 
       <!-- Right: actions -->
