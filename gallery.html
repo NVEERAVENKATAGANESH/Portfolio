@@ -496,17 +496,22 @@
 
     @media (max-width: 991px) {
       footer {
-        position: relative;
-        height: auto;
-        padding: 1.25rem 0 0.75rem !important;
-        display: block;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: var(--footer-h);
+        padding: 0 !important;
+        display: flex;
+        align-items: center;
+        z-index: 500;
       }
-      /* body pad = nav bar height so footer is never hidden behind it */
+      /* body pad = mobile nav bar + fixed footer so grid is never hidden */
       body {
-        padding-bottom: 54px;
+        padding-bottom: calc(var(--footer-h) + 54px);
       }
       .mobile-nav-bar {
-        bottom: 0;
+        bottom: var(--footer-h);
       }
       .cs-mob-back {
         display: none;

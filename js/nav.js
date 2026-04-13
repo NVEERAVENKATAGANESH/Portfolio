@@ -44,7 +44,7 @@ function buildNav() {
         `<div class="header-controls">` +
           `<a href="https://www.linkedin.com/in/veera-venkata-ganesh-nurukurthi-437195226/" target="_blank" rel="noopener noreferrer" class="header-icon-btn" aria-label="LinkedIn"><i class="fab fa-linkedin" aria-hidden="true"></i></a>` +
           `<a href="https://github.com/NVEERAVENKATAGANESH" target="_blank" rel="noopener noreferrer" class="header-icon-btn" aria-label="GitHub"><i class="fab fa-github" aria-hidden="true"></i></a>` +
-          `<a href="https://22nd.aaruush.org" target="_blank" rel="noopener noreferrer" class="header-icon-btn header-icon-btn--aaruush" aria-label="Aaruush"><img src="${base}images/Aaruush-logo.png" alt="Aaruush" width="22" height="22"/></a>` +
+          `<a href="https://22nd.aaruush.org" target="_blank" rel="noopener noreferrer" class="header-icon-btn header-icon-btn--aaruush" aria-label="Aaruush"><img src="${base}images/Aaruush-logo.png" alt="Aaruush" width="44" height="44"/></a>` +
           `<label class="header-theme-switch" aria-label="Toggle dark/light theme">` +
             `<input type="checkbox" id="theme-toggle"/>` +
             `<span class="header-slider"><span class="header-slider-thumb"></span></span>` +

@@ -278,7 +278,7 @@ body[data-theme="dark"] .project-card .card:hover{border-left-color:#818cf8;bord
 .project-tag{display:inline-block;padding:.2rem .65rem;background:rgba(79,70,229,.1);color:var(--primary);border-radius:999px;font-size:.72rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;}
 body[data-theme="dark"] .project-tag{background:rgba(129,140,248,.15);color:#a5b4fc}
 .project-actions{display:flex;flex-wrap:nowrap;gap:.35rem;align-items:center;}
-.btn-muted{display:inline-flex;align-items:center;justify-content:center;gap:.3rem;padding:.32rem .55rem;border:1.5px solid;border-radius:.5rem;font-size:.73rem;font-weight:700;text-decoration:none;white-space:nowrap;line-height:1.4;flex:0 0 auto;letter-spacing:.01em;transition:color var(--t),border-color var(--t),background var(--t),box-shadow var(--t),transform .12s ease;}
+.btn-muted{display:inline-flex;align-items:center;justify-content:center;gap:.3rem;padding:.32rem .55rem;border:1.5px solid;border-radius:999px;font-size:.73rem;font-weight:700;text-decoration:none;white-space:nowrap;line-height:1.4;flex:0 0 auto;letter-spacing:.01em;transition:color var(--t),border-color var(--t),background var(--t),box-shadow var(--t),transform .12s ease;}
 .project-actions .btn-muted{flex:1;min-width:0;}
 .btn-muted i{font-size:.78rem;flex-shrink:0;}
 .btn-muted:active{transform:scale(.95);}
@@ -680,7 +680,7 @@ body[data-theme="dark"] .resume-updated-badge{color:#4ade80;border-color:rgba(34
 
 .resume-btn{
   display:inline-flex;align-items:center;justify-content:center;gap:.55rem;
-  padding:.7rem 1.4rem;border-radius:.75rem;
+  padding:.7rem 1.4rem;border-radius:999px;
   font-size:.9rem;font-weight:600;cursor:pointer;
   border:none;text-decoration:none;
   transition:transform .15s ease,box-shadow .15s ease,background var(--t),color var(--t),border-color var(--t);
@@ -825,7 +825,7 @@ body[data-theme="light"] .pv-header{border-bottom-color:rgba(99,102,241,.12);}
 
 .pv-btn{
   display:inline-flex;align-items:center;gap:.4rem;
-  padding:.45rem 1rem;border-radius:.5rem;
+  padding:.45rem 1rem;border-radius:999px;
   font-size:.85rem;font-weight:500;cursor:pointer;
   border:none;text-decoration:none;
   transition:background .18s,box-shadow .18s,color .18s;
@@ -945,7 +945,7 @@ body[data-theme="light"] .cert-pop-footer{background:rgba(0,0,0,.03);border-top-
 
 .cert-pop-btn{
   display:inline-flex;align-items:center;gap:.35rem;
-  padding:.4rem .85rem;border-radius:.5rem;
+  padding:.4rem .85rem;border-radius:999px;
   font-size:.8rem;font-weight:500;cursor:pointer;border:none;text-decoration:none;
   transition:background .15s,box-shadow .15s,color .15s;
 }
